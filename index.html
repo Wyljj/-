@@ -816,31 +816,113 @@ body {
 
   <div class="container">
     <!-- ── 左侧模板中心 ── -->
-    <aside class="template-sidebar">
+    
+<aside class="template-sidebar">
       <div class="template-header">
         <h3>模板中心</h3>
       </div>
       <div class="template-list">
         <div class="template-item active">
           <div class="template-title">🧪 监测断面计算</div>
-          <div class="template-desc">废气监测</div>
+          <div class="template-desc">已接入 · 在线计算</div>
           <div class="template-info">
-            <div class="info-item">💨 流速相对方差 σr</div>
+            <div class="info-item">💨 流速相对方差 σᵣ</div>
             <div class="info-item">📏 矩形排气筒/烟道当量直径 D</div>
           </div>
         </div>
+
         <div class="template-item">
-          <div class="template-title">🔄 预留模板位置</div>
-          <div class="template-desc">后续可添加</div>
+          <div class="template-title">🌫️ 有组织废气计算表</div>
+          <div class="template-desc">已添加模板目录</div>
           <div class="template-info">
-            <div class="info-item">💧 含湿量</div>
-            <div class="info-item">🌪️ 标干流量</div>
-            <div class="info-item">🧬 含氧量折算</div>
-            <div class="info-item">🔍 颗粒物浓度</div>
+            <div class="info-item">含湿量 / 标干流量</div>
+            <div class="info-item">含氧量折算 / 颗粒物</div>
+          </div>
+        </div>
+
+        <div class="template-item">
+          <div class="template-title">📢 噪声验算公式</div>
+          <div class="template-desc">已添加模板目录</div>
+          <div class="template-info">
+            <div class="info-item">Leq 验算</div>
+            <div class="info-item">厂界/道路噪声</div>
+          </div>
+        </div>
+
+        <div class="template-item">
+          <div class="template-title">🛣️ G219国道噪声</div>
+          <div class="template-desc">已添加模板目录</div>
+          <div class="template-info">
+            <div class="info-item">道路交通噪声</div>
+            <div class="info-item">监测结果计算</div>
+          </div>
+        </div>
+
+        <div class="template-item">
+          <div class="template-title">💧 巴歇尔槽流量计算</div>
+          <div class="template-desc">已添加模板目录</div>
+          <div class="template-info">
+            <div class="info-item">巴歇尔槽流量</div>
+            <div class="info-item">流量换算</div>
+          </div>
+        </div>
+
+        <div class="template-item">
+          <div class="template-title">🌬️ 气象</div>
+          <div class="template-desc">已添加模板目录</div>
+          <div class="template-info">
+            <div class="info-item">气象条件记录</div>
+            <div class="info-item">适宜程度判定</div>
+          </div>
+        </div>
+
+        <div class="template-item">
+          <div class="template-title">⚗️ 阴阳离子平衡计算表</div>
+          <div class="template-desc">已添加模板目录</div>
+          <div class="template-info">
+            <div class="info-item">水质离子平衡</div>
+            <div class="info-item">误差计算</div>
+          </div>
+        </div>
+
+        <div class="template-item">
+          <div class="template-title">👃 臭气浓度关系表</div>
+          <div class="template-desc">已添加模板目录</div>
+          <div class="template-info">
+            <div class="info-item">臭气浓度换算</div>
+            <div class="info-item">关系查询</div>
+          </div>
+        </div>
+
+        <div class="template-item">
+          <div class="template-title">🏭 CEMS 72小时调试报告</div>
+          <div class="template-desc">已添加模板目录</div>
+          <div class="template-info">
+            <div class="info-item">调试报告编制</div>
+            <div class="info-item">在线监测模板</div>
+          </div>
+        </div>
+
+        <div class="template-item">
+          <div class="template-title">🧰 职业卫生计算模板</div>
+          <div class="template-desc">已添加模板目录</div>
+          <div class="template-info">
+            <div class="info-item">化学因素</div>
+            <div class="info-item">物理因素</div>
+          </div>
+        </div>
+
+        <div class="template-item">
+          <div class="template-title">🧪 厂区东北侧O₆</div>
+          <div class="template-desc">已添加模板目录</div>
+          <div class="template-info">
+            <div class="info-item">厂区环境监测</div>
+            <div class="info-item">现场数据计算</div>
           </div>
         </div>
       </div>
     </aside>
+
 
     <!-- ── 右侧内容区 ── -->
     <div class="main">
@@ -857,7 +939,20 @@ body {
   <!-- ── 页签内容区域 ── -->
   <div class="tab-content">
     <!-- 数据录入页签 -->
+    
     <div class="tab-panel active" id="tab-data-entry">
+      <div class="card">
+        <div class="card-title">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M8 5.2v.1M8 7.1v3.7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          📚 计算模板说明
+        </div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.9">
+          已根据现有计算文件补充模板目录。当前页面已正式接入并可直接在线计算的模板为
+          <strong style="color:var(--text)">“监测断面计算”</strong>；
+          其他模板已加入模板中心，便于后续继续接入系统。
+        </div>
+      </div>
+
       <div class="print-report-header">
         <div style="font-size:22px;font-weight:700;margin-bottom:6px;">监测断面计算记录单</div>
         <div style="font-size:12px;line-height:1.8;">用于打印归档的断面测点流速计算结果。打印时仅展示数据录入与统计结果页面。</div>
