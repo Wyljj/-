@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>检验检测计算模板系统</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=Noto+Sans+SC:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root {
@@ -229,6 +230,8 @@ body {
   border-color: var(--border2);
 }
 
+.tab-navigation.template-hidden { display: none; }
+
 .tab-btn {
   flex: 1;
   padding: 12px 20px;
@@ -438,13 +441,28 @@ body {
 
 .vel-split {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: 1fr;
   gap: 16px;
   align-items: start;
 }
 
+@media (min-width: 1200px) {
+  .vel-split {
+    grid-template-columns: minmax(0, 1fr) 360px;
+  }
+}
+
+/* 确保批量导入区域不会与表格重叠 */
+.import-inline {
+  position: static;
+  width: 100%;
+  margin-top: 16px;
+  box-sizing: border-box;
+}
+
 .vel-left {
-  min-width: 0;
+  min-width: 100%;
+  overflow: visible;
 }
 
 .import-inline {
@@ -764,19 +782,200 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
 
+/* 移动端模板中心切换按钮 */
+.mobile-template-toggle {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  background: var(--accent2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.mobile-template-toggle:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
-  .sidebar { width: 180px; min-width: 180px; }
+  .template-sidebar { width: 180px; min-width: 180px; }
   .calc-grid { grid-template-columns: 1fr; }
   .chart-grid, .settings-grid, .io-grid, .vel-split { grid-template-columns: 1fr; }
   .import-inline { margin-top: 0; }
   .hist-item { grid-template-columns: 1fr auto; }
   .hist-sr, .hist-verdict { display: none; }
 }
+
 @media (max-width: 640px) {
-  .sidebar { display: none; }
+  .mobile-template-toggle {
+    display: block;
+  }
+  
+  .container {
+    flex-direction: row;
+  }
+  
+  .template-sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    width: 80%;
+    max-width: 280px;
+    height: 100vh;
+    z-index: 999;
+    margin: 0;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .template-sidebar.mobile-active {
+    left: 0;
+  }
+  
+  .template-list {
+    display: block;
+  }
+  
+  .template-item {
+    margin-bottom: 16px;
+    padding: 20px;
+  }
+  
+  .template-title {
+    font-size: 13px;
+  }
+  
+  .template-desc {
+    font-size: 11px;
+  }
+  
+  .template-info {
+    font-size: 10px;
+  }
+  
+  .main {
+    flex: 1;
+    width: 100%;
+  }
+  
   .panel { padding: 16px; }
   .topbar { padding: 12px 16px; }
+  .tab-navigation {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 4px;
+  }
+  .tab-btn {
+    flex: 1 0 48%;
+    margin: 2px;
+    font-size: 12px;
+    padding: 10px 8px;
+  }
+  .meta-row {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+  }
+  .field input {
+    font-size: 12px;
+    height: 28px;
+  }
+  .btn {
+    font-size: 11px;
+    padding: 0 10px;
+    height: 28px;
+  }
+  
+  /* 测点流速录入表格移动端适配 */
+  .vel-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+  
+  .vel-table {
+    min-width: 500px;
+    width: auto;
+  }
+  
+  .vel-table th,
+  .vel-table td {
+    padding: 2px 4px;
+    font-size: 8px;
+    white-space: nowrap;
+  }
+  
+  .vel-table th:nth-child(1),
+  .vel-table td:nth-child(1) {
+    min-width: 30px;
+  }
+  
+  .vel-table th:nth-child(2),
+  .vel-table td:nth-child(2) {
+    min-width: 80px;
+  }
+  
+  .vel-table th:nth-child(3),
+  .vel-table td:nth-child(3) {
+    min-width: 100px;
+  }
+  
+  .vel-table th:nth-child(4),
+  .vel-table td:nth-child(4) {
+    min-width: 120px;
+  }
+  
+  .vel-table th:nth-child(5),
+  .vel-table td:nth-child(5) {
+    min-width: 50px;
+  }
+  
+  .vi-input {
+    font-size: 8px;
+    height: 20px;
+    padding: 0 4px;
+    width: 100%;
+  }
+  
+  .import-inline {
+    margin-top: 16px;
+    width: 100%;
+  }
+  
+  .textarea-import {
+    font-size: 11px;
+    height: 100px;
+    width: 100%;
+  }
+  
+  /* 确保表格容器宽度足够 */
+  .vel-left {
+    width: 100%;
+    min-width: 100%;
+  }
+  
+  /* 优化按钮显示 */
+  .btn-row {
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+  }
+  
+  .btn {
+    flex: 1 0 45%;
+    min-width: 120px;
+    font-size: 10px;
+    padding: 0 8px;
+  }
 }
 
 /* ── Print ── */
@@ -795,353 +994,1307 @@ body {
   .vel-table th:last-child, .vel-table td:last-child { display: none !important; }
   .print-report-header { display: block !important; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #000; }
   .print-signature { display: flex !important; justify-content: space-between; margin-top: 28px; gap: 24px; }
+
+  body.print-cems .system-header,
+  body.print-cems .template-sidebar,
+  body.print-cems .tab-navigation,
+  body.print-cems #toasts,
+  body.print-cems .module-subnav,
+  body.print-cems .card-title,
+  body.print-cems .template-subtitle,
+  body.print-cems .report-actions,
+  body.print-cems .template-panel:not(#template-cems),
+  body.print-cems .module-subpanel:not([data-group="cems"][data-tab="report"]),
+  body.print-cems #tab-statistics,
+  body.print-cems #tab-visualization,
+  body.print-cems #tab-history { display:none !important; }
+
+  body.print-cems #tab-data-entry,
+  body.print-cems #template-cems,
+  body.print-cems #template-cems [data-group="cems"][data-tab="report"] { display:block !important; }
+
+  body.print-cems .report-sheet,
+  body.print-cems .report-sheet * {
+    color:#000 !important;
+    background:#fff !important;
+    border-color:#999 !important;
+    box-shadow:none !important;
+  }
 }
 .print-report-header, .print-signature { display: none; }
+
+/* ── Multi-template panels ── */
+.template-panel { display: none; }
+.template-panel.active { display: block; animation: fadeInUp 0.25s ease; }
+.template-grid-two { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.template-grid-three { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.template-subtitle { font-size:12px; color:var(--text2); margin-bottom:12px; }
+.result-box {
+  background: var(--bg3); border:1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px; min-height: 72px;
+}
+.result-label { font-size:11px; color:var(--text3); margin-bottom:6px; }
+.result-value { font-family: var(--mono); font-size:18px; color:var(--text); }
+.helper-text { font-size:11px; color:var(--text3); line-height:1.7; }
+.simple-table { width:100%; border-collapse: collapse; }
+.simple-table th, .simple-table td { border-bottom:1px solid var(--border); padding:8px 6px; text-align:center; font-size:12px; }
+.simple-table th { color:var(--text3); font-weight:500; }
+
+.fluegas-subnav{
+  display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;
+  padding:10px; background:var(--bg3); border:1px solid var(--border); border-radius:10px;
+}
+.fluegas-subbtn{
+  height:32px; padding:0 12px; border-radius:6px; border:1px solid var(--border2);
+  background:transparent; color:var(--text2); cursor:pointer; transition:all .15s;
+  font-size:12px;
+}
+.fluegas-subbtn:hover{ background:var(--bg4); color:var(--text); }
+.fluegas-subbtn.active{ background:var(--accent2); color:#fff; border-color:var(--accent2); }
+.fluegas-subpanel{ display:none; }
+.fluegas-subpanel.active{ display:block; animation:fadeInUp .25s ease; }
+
+.module-subnav{
+  display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;
+  padding:10px; background:var(--bg3); border:1px solid var(--border); border-radius:10px;
+}
+.module-subbtn{
+  height:32px; padding:0 12px; border-radius:6px; border:1px solid var(--border2);
+  background:transparent; color:var(--text2); cursor:pointer; transition:all .15s;
+  font-size:12px;
+}
+.module-subbtn:hover{ background:var(--bg4); color:var(--text); }
+.module-subbtn.active{ background:var(--accent2); color:#fff; border-color:var(--accent2); }
+.module-subpanel{ display:none; }
+.module-subpanel.active{ display:block; animation:fadeInUp .25s ease; }
+.kv-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
+.kv-item{ background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+.kv-label{ font-size:11px; color:var(--text3); margin-bottom:6px; }
+.kv-value{ font-size:13px; color:var(--text); line-height:1.7; }
+.helper-list{ font-size:12px; color:var(--text2); line-height:1.9; padding-left:18px; }
+.template-tip{ background:var(--bg3); border-left:3px solid var(--accent2); border-radius:8px; padding:12px 14px; color:var(--text2); font-size:12px; line-height:1.9; }
+.summary-table{ width:100%; border-collapse:collapse; }
+.summary-table th,.summary-table td{ border-bottom:1px solid var(--border); padding:8px 6px; font-size:12px; text-align:center; }
+.summary-table th{ color:var(--text3); font-weight:500; }
+.pill { display:inline-block; padding:2px 8px; border:1px solid var(--border2); border-radius:999px; font-size:11px; color:var(--text2);}
+.note-card { background: var(--bg3); border-left: 3px solid var(--accent2); }
+.template-section-title { font-size:14px; font-weight:600; margin-bottom:10px; color:var(--text); }
+.report-sheet{ background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:20px; }
+.report-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+.report-title{ font-size:22px; font-weight:700; color:var(--text); line-height:1.3; }
+.report-subtitle{ font-size:12px; color:var(--text2); margin-top:6px; line-height:1.8; }
+.report-badge{ display:inline-flex; align-items:center; padding:5px 10px; border-radius:999px; border:1px solid var(--border2); font-size:11px; color:var(--text2); }
+.report-meta{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin-bottom:16px; }
+.report-kpi{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:16px 0; }
+.report-kpi .result-box{ min-height:auto; }
+.report-signature{ display:flex; justify-content:space-between; gap:24px; margin-top:28px; padding-top:14px; border-top:1px dashed var(--border2); font-size:12px; color:var(--text2); }
+.report-signature div{ flex:1; }
+.report-actions{ margin-top:16px; }
+@media (max-width: 900px) {
+  .template-grid-two, .template-grid-three { grid-template-columns:1fr; }
+}
 </style>
 </head>
 <body>
 <div class="app">
-  <!-- 系统标题区域 -->
-  <div class="system-header">
-    <div class="container">
-      <div class="header-content">
-        <div class="title-main">检验检测计算模板系统</div>
-        <div class="title-desc">
+<!-- 系统标题区域 -->
+<div class="system-header">
+<div class="container">
+<div class="header-content">
+<div class="title-main">检验检测计算模板系统</div>
+<div class="title-desc">
           将计算模板升级为可复用、可录入、可判定、可扩展的业务系统。当前已接入「监测断面计算」模板，
           并支持统计判定、保存查询、导出与报告打印。
         </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="container">
-    <!-- ── 左侧模板中心 ── -->
-    
+</div>
+</div>
+</div>
+<!-- 移动端模板中心切换按钮 -->
+<button class="mobile-template-toggle" onclick="toggleMobileTemplateSidebar()">
+  📋 模板中心
+</button>
+<div class="container">
+<!-- ── 左侧模板中心 ── -->
 <aside class="template-sidebar">
-      <div class="template-header">
-        <h3>模板中心</h3>
-      </div>
-      <div class="template-list">
-        <div class="template-item active">
-          <div class="template-title">🧪 监测断面计算</div>
-          <div class="template-desc">已接入 · 在线计算</div>
-          <div class="template-info">
-            <div class="info-item">💨 流速相对方差 σᵣ</div>
-            <div class="info-item">📏 矩形排气筒/烟道当量直径 D</div>
-          </div>
-        </div>
-
-        <div class="template-item">
-          <div class="template-title">🌫️ 有组织废气计算表</div>
-          <div class="template-desc">已添加模板目录</div>
-          <div class="template-info">
-            <div class="info-item">含湿量 / 标干流量</div>
-            <div class="info-item">含氧量折算 / 颗粒物</div>
-          </div>
-        </div>
-
-        <div class="template-item">
-          <div class="template-title">📢 噪声验算公式</div>
-          <div class="template-desc">已添加模板目录</div>
-          <div class="template-info">
-            <div class="info-item">Leq 验算</div>
-            <div class="info-item">厂界/道路噪声</div>
-          </div>
-        </div>
-
-        <div class="template-item">
-          <div class="template-title">🛣️ G219国道噪声</div>
-          <div class="template-desc">已添加模板目录</div>
-          <div class="template-info">
-            <div class="info-item">道路交通噪声</div>
-            <div class="info-item">监测结果计算</div>
-          </div>
-        </div>
-
-        <div class="template-item">
-          <div class="template-title">💧 巴歇尔槽流量计算</div>
-          <div class="template-desc">已添加模板目录</div>
-          <div class="template-info">
-            <div class="info-item">巴歇尔槽流量</div>
-            <div class="info-item">流量换算</div>
-          </div>
-        </div>
-
-        <div class="template-item">
-          <div class="template-title">🌬️ 气象</div>
-          <div class="template-desc">已添加模板目录</div>
-          <div class="template-info">
-            <div class="info-item">气象条件记录</div>
-            <div class="info-item">适宜程度判定</div>
-          </div>
-        </div>
-
-        <div class="template-item">
-          <div class="template-title">⚗️ 阴阳离子平衡计算表</div>
-          <div class="template-desc">已添加模板目录</div>
-          <div class="template-info">
-            <div class="info-item">水质离子平衡</div>
-            <div class="info-item">误差计算</div>
-          </div>
-        </div>
-
-        <div class="template-item">
-          <div class="template-title">👃 臭气浓度关系表</div>
-          <div class="template-desc">已添加模板目录</div>
-          <div class="template-info">
-            <div class="info-item">臭气浓度换算</div>
-            <div class="info-item">关系查询</div>
-          </div>
-        </div>
-
-        <div class="template-item">
-          <div class="template-title">🏭 CEMS 72小时调试报告</div>
-          <div class="template-desc">已添加模板目录</div>
-          <div class="template-info">
-            <div class="info-item">调试报告编制</div>
-            <div class="info-item">在线监测模板</div>
-          </div>
-        </div>
-
-        <div class="template-item">
-          <div class="template-title">🧰 职业卫生计算模板</div>
-          <div class="template-desc">已添加模板目录</div>
-          <div class="template-info">
-            <div class="info-item">化学因素</div>
-            <div class="info-item">物理因素</div>
-          </div>
-        </div>
-
-        <div class="template-item">
-          <div class="template-title">🧪 厂区东北侧O₆</div>
-          <div class="template-desc">已添加模板目录</div>
-          <div class="template-info">
-            <div class="info-item">厂区环境监测</div>
-            <div class="info-item">现场数据计算</div>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-
-    <!-- ── 右侧内容区 ── -->
-    <div class="main">
-
-  <div class="main-content">
-  <!-- ── 页签导航 ── -->
-  <div class="tab-navigation">
-    <button class="tab-btn active" onclick="switchTab('data-entry')">📝 数据录入</button>
-    <button class="tab-btn" onclick="switchTab('statistics')">📊 统计结果</button>
-    <button class="tab-btn" onclick="switchTab('visualization')">📈 数据可视化</button>
-    <button class="tab-btn" onclick="switchTab('history')">🔍 保存查询</button>
+<div class="template-header">
+<h3>模板中心</h3>
+</div>
+<div class="template-list">
+<div class="template-item active" data-template="monitoring" onclick="selectTemplate('monitoring')">
+<div class="template-title">🧪 监测断面计算</div>
+<div class="template-desc">已接入 · 在线计算</div>
+<div class="template-info">
+<div class="info-item">💨 流速相对方差 σᵣ</div>
+<div class="info-item">📏 矩形排气筒/烟道当量直径 D</div>
+</div>
+</div>
+<div class="template-item" data-template="fluegas" onclick="selectTemplate('fluegas')">
+<div class="template-title">🌫️ 有组织废气计算表</div>
+<div class="template-desc">已添加模板目录</div>
+<div class="template-info">
+<div class="info-item">含湿量 / 标干流量</div>
+<div class="info-item">含氧量折算 / 颗粒物</div>
+</div>
+</div>
+<div class="template-item" data-template="noisecheck" onclick="selectTemplate('noisecheck')">
+<div class="template-title">📢 噪声验算公式</div>
+<div class="template-desc">已添加模板目录</div>
+<div class="template-info">
+<div class="info-item">Leq 验算</div>
+<div class="info-item">厂界/道路噪声</div>
+</div>
+</div>
+<div class="template-item" data-template="g219" onclick="selectTemplate('g219')">
+<div class="template-title">🛣️ G219国道噪声</div>
+<div class="template-desc">已添加模板目录</div>
+<div class="template-info">
+<div class="info-item">道路交通噪声</div>
+<div class="info-item">监测结果计算</div>
+</div>
+</div>
+<div class="template-item" data-template="parshall" onclick="selectTemplate('parshall')">
+<div class="template-title">💧 巴歇尔槽流量计算</div>
+<div class="template-desc">已添加模板目录</div>
+<div class="template-info">
+<div class="info-item">巴歇尔槽流量</div>
+<div class="info-item">流量换算</div>
+</div>
+</div>
+<div class="template-item" data-template="weather" onclick="selectTemplate('weather')">
+<div class="template-title">🌬️ 气象</div>
+<div class="template-desc">已添加模板目录</div>
+<div class="template-info">
+<div class="info-item">气象条件记录</div>
+<div class="info-item">适宜程度判定</div>
+</div>
+</div>
+<div class="template-item" data-template="ions" onclick="selectTemplate('ions')">
+<div class="template-title">⚗️ 阴阳离子平衡计算表</div>
+<div class="template-desc">已添加模板目录</div>
+<div class="template-info">
+<div class="info-item">水质离子平衡</div>
+<div class="info-item">误差计算</div>
+</div>
+</div>
+<div class="template-item" data-template="odor" onclick="selectTemplate('odor')">
+<div class="template-title">👃 臭气浓度关系表</div>
+<div class="template-desc">已添加模板目录</div>
+<div class="template-info">
+<div class="info-item">臭气浓度换算</div>
+<div class="info-item">关系查询</div>
+</div>
+</div>
+<div class="template-item" data-template="cems" onclick="selectTemplate('cems')">
+<div class="template-title">🏭 CEMS 72小时调试报告</div>
+<div class="template-desc">已添加模板目录</div>
+<div class="template-info">
+<div class="info-item">调试报告编制</div>
+<div class="info-item">在线监测模板</div>
+</div>
+</div>
+<div class="template-item" data-template="occupational" onclick="selectTemplate('occupational')">
+<div class="template-title">🧰 职业卫生计算模板</div>
+<div class="template-desc">已添加模板目录</div>
+<div class="template-info">
+<div class="info-item">化学因素</div>
+<div class="info-item">物理因素</div>
+</div>
+</div>
+<div class="template-item" data-template="o6" onclick="selectTemplate('o6')">
+<div class="template-title">🧪 厂区东北侧O₆</div>
+<div class="template-desc">已添加模板目录</div>
+<div class="template-info">
+<div class="info-item">厂区环境监测</div>
+<div class="info-item">现场数据计算</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- ── 右侧内容区 ── -->
+<div class="main">
+<div class="main-content">
+<!-- ── 页签导航 ── -->
+<div class="tab-navigation">
+<button class="tab-btn active" onclick="switchTab('data-entry')">📝 数据录入</button>
+<button class="tab-btn" onclick="switchTab('statistics')">📊 统计结果</button>
+<button class="tab-btn" onclick="switchTab('visualization')">📈 数据可视化</button>
+<button class="tab-btn" onclick="switchTab('history')">🔍 保存查询</button>
+</div>
+<!-- ── 页签内容区域 ── -->
+<div class="tab-content">
+<!-- 数据录入页签 -->
+<div class="tab-panel active" id="tab-data-entry"><div class="card note-card">
+<div class="card-title">
+<svg fill="none" height="14" viewbox="0 0 16 16" width="14"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"></circle><path d="M8 5.2v.1M8 7.1v3.7" stroke="currentColor" stroke-linecap="round" stroke-width="1.2"></path></svg>
+    📚 模板使用说明
   </div>
-
-  <!-- ── 页签内容区域 ── -->
-  <div class="tab-content">
-    <!-- 数据录入页签 -->
-    
-    <div class="tab-panel active" id="tab-data-entry">
-      <div class="card">
-        <div class="card-title">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M8 5.2v.1M8 7.1v3.7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-          📚 计算模板说明
-        </div>
-        <div style="font-size:12px;color:var(--text2);line-height:1.9">
-          已根据现有计算文件补充模板目录。当前页面已正式接入并可直接在线计算的模板为
-          <strong style="color:var(--text)">“监测断面计算”</strong>；
-          其他模板已加入模板中心，便于后续继续接入系统。
-        </div>
-      </div>
-
-      <div class="print-report-header">
-        <div style="font-size:22px;font-weight:700;margin-bottom:6px;">监测断面计算记录单</div>
-        <div style="font-size:12px;line-height:1.8;">用于打印归档的断面测点流速计算结果。打印时仅展示数据录入与统计结果页面。</div>
-      </div>
-      <div class="card">
-        <div class="card-title">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+<div style="font-size:12px;color:var(--text2);line-height:1.9">
+    左侧模板中心现已接入多个在线计算模板。<strong style="color:var(--text)">监测断面计算</strong>保留“数据录入 / 统计结果 / 数据可视化 / 保存查询”页签；
+    其余计算模板不再共用这组页签，切换模板后仅显示当前模板自己的录入与结果内容，避免监测断面数据在其他模板中出现。<br><strong style="color:var(--text)">当前版本已按你上传的官方 Excel 模板对齐关键计算口径：</strong>阴阳离子 Fe³⁺ 当量换算、臭气三点比较式 M 值按 18 次判定总人次口径处理。
+  </div>
+</div><div class="template-panel active" id="template-monitoring"><div class="print-report-header">
+<div style="font-size:22px;font-weight:700;margin-bottom:6px;">监测断面计算记录单</div>
+<div style="font-size:12px;line-height:1.8;">用于打印归档的断面测点流速计算结果。打印时仅展示数据录入与统计结果页面。</div>
+</div><div class="card">
+<div class="card-title">
+<svg fill="none" height="14" viewbox="0 0 16 16" width="14"><path d="M2 4h12M2 8h8M2 12h6" stroke="currentColor" stroke-linecap="round" stroke-width="1.4"></path></svg>
           ℹ️ 基本信息
         </div>
-        <div class="meta-row">
-          <div class="field"><label>样品类别</label><input id="m-cat" placeholder="如：有组织废气"></div>
-          <div class="field"><label>采样点位 / 断面编号</label><input id="m-site" placeholder="如：2#燃气轮机"></div>
-          <div class="field"><label>采样日期</label><input id="m-date" type="date"></div>
-          <div class="field"><label>检测人员</label><input id="m-person" placeholder="姓名"></div>
-          <div class="field"><label>审核人员</label><input id="m-reviewer" placeholder="姓名"></div>
-          <div class="field"><label>备注</label><input id="m-note" placeholder="可选"></div>
-        </div>
-      </div>
-
-      <div class="card dimension-card">
-        <div class="card-title">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 13.5h12M3.5 10.5V3.5M12.5 10.5V3.5M3.5 3.5h9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div class="meta-row">
+<div class="field"><label>样品类别</label><input id="m-cat" placeholder="如：有组织废气"/></div>
+<div class="field"><label>采样点位 / 断面编号</label><input id="m-site" placeholder="如：2#燃气轮机"/></div>
+<div class="field"><label>采样日期</label><input id="m-date" type="date"/></div>
+<div class="field"><label>检测人员</label><input id="m-person" placeholder="姓名"/></div>
+<div class="field"><label>审核人员</label><input id="m-reviewer" placeholder="姓名"/></div>
+<div class="field"><label>备注</label><input id="m-note" placeholder="可选"/></div>
+</div>
+</div><div class="card dimension-card">
+<div class="card-title">
+<svg fill="none" height="14" viewbox="0 0 16 16" width="14"><path d="M2 13.5h12M3.5 10.5V3.5M12.5 10.5V3.5M3.5 3.5h9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg>
           📐 烟道参数
         </div>
-        <div class="dimension-grid">
-          <div class="field"><label>矩形烟道长度 L (m)</label><input id="m-length" type="number" step="0.001" placeholder="如：2.5" oninput="calc()"></div>
-          <div class="field"><label>矩形烟道宽度 W (m)</label><input id="m-width" type="number" step="0.001" placeholder="如：1.8" oninput="calc()"></div>
-          <div class="field"><label>当量直径 D (m)</label><input id="m-diameter" type="number" step="0.001" placeholder="D=2×L×W/(L+W)​" oninput="calc()"></div>
-        </div>
-      </div>
-
-      <div class="card vel-wrap">
-        <div class="card-title">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M6 8h4M8 6v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+<div class="dimension-grid">
+<div class="field"><label>矩形烟道长度 L (m)</label><input id="m-length" oninput="calc()" placeholder="如：2.5" step="0.001" type="number"/></div>
+<div class="field"><label>矩形烟道宽度 W (m)</label><input id="m-width" oninput="calc()" placeholder="如：1.8" step="0.001" type="number"/></div>
+<div class="field"><label>当量直径 D (m)</label><input id="m-diameter" readonly="" step="0.001" type="number"/></div>
+</div>
+</div><div class="card vel-wrap">
+<div class="card-title">
+<svg fill="none" height="14" viewbox="0 0 16 16" width="14"><rect height="12" rx="2" stroke="currentColor" stroke-width="1.2" width="12" x="2" y="2"></rect><path d="M6 8h4M8 6v4" stroke="currentColor" stroke-linecap="round" stroke-width="1.2"></path></svg>
         💨 测点流速录入
       </div>
-      <div class="vel-split">
-        <div class="vel-left">
-          <table class="vel-table">
-            <thead>
-              <tr>
-                <th style="text-align:center">#</th>
-                <th>流速 vᵢ (m/s)</th>
-                <th>偏差 (vᵢ − v̄)</th>
-                <th>偏差² (vᵢ − v̄)²</th>
-                <th style="width:60px">操作</th>
-              </tr>
-            </thead>
-            <tbody id="vel-tbody"></tbody>
-          </table>
-          <div class="btn-row">
-            <button class="btn primary" onclick="addVelocityInput()">➕ 添加测点</button>
-            <button class="btn" onclick="loadExample()">📋 加载示例数据</button>
-            <button class="btn danger" onclick="clearVelocities()">🗑️ 清空测点</button>
-          </div>
-        </div>
-        <div class="import-inline">
-          <div class="import-inline-title">批量导入</div>
-          <div class="import-inline-desc">支持粘贴以空格、逗号、换行分隔的测点流速数据，导入后自动带入当前计算页。</div>
-          <textarea id="import-text" class="textarea-import" placeholder="示例：
+<div class="vel-split">
+<div class="vel-left">
+<table class="vel-table">
+<thead>
+<tr>
+<th style="text-align:center">#</th>
+<th>流速 vᵢ (m/s)</th>
+<th>偏差 (vᵢ − v̄)</th>
+<th>偏差² (vᵢ − v̄)²</th>
+<th style="width:60px">操作</th>
+</tr>
+</thead>
+<tbody id="vel-tbody"></tbody>
+</table>
+<div class="btn-row">
+<button class="btn primary" onclick="addVelocityInput()">➕ 添加测点</button>
+<button class="btn" onclick="loadExample()">📋 加载示例数据</button>
+<button class="btn danger" onclick="clearVelocities()">🗑️ 清空测点</button>
+</div>
+</div>
+<div class="import-inline">
+<div class="import-inline-title">批量导入</div>
+<div class="import-inline-desc">支持粘贴以空格、逗号、换行分隔的测点流速数据，导入后自动带入当前计算页。</div>
+<textarea class="textarea-import" id="import-text" placeholder="示例：
 15.78,15.8,18.1
 18.1 17.9 17.8"></textarea>
-          <div class="btn-row" style="justify-content:flex-start">
-            <button class="btn primary" onclick="doImport()">导入测点数据</button>
-          </div>
-        </div>
+<div class="btn-row" style="justify-content:flex-start">
+<button class="btn primary" onclick="doImport()">导入测点数据</button>
+</div>
+</div>
+</div>
+</div></div>
+<div class="template-panel" id="template-fluegas">
+<div class="card">
+<div class="card-title">🌫️ 有组织废气计算表</div>
+<div class="template-subtitle">已按“主模板 + 子页签”方式重构样板。当前已接入主计算、比对、漂移、水质在线等核心子表，可按子页签直接录入、计算与判定。</div>
+
+<div class="fluegas-subnav">
+<button class="fluegas-subbtn active" data-fluegas-tab="main" onclick="switchFlueGasTab('main')">主计算</button>
+<button class="fluegas-subbtn" data-fluegas-tab="dust" onclick="switchFlueGasTab('dust')">颗粒物/流速/温度比对</button>
+<button class="fluegas-subbtn" data-fluegas-tab="nox" onclick="switchFlueGasTab('nox')">氮氧化物比对</button>
+<button class="fluegas-subbtn" data-fluegas-tab="so2" onclick="switchFlueGasTab('so2')">二氧化硫比对</button>
+<button class="fluegas-subbtn" data-fluegas-tab="o2" onclick="switchFlueGasTab('o2')">含氧量比对</button>
+<button class="fluegas-subbtn" data-fluegas-tab="drift" onclick="switchFlueGasTab('drift')">示值误差/量程漂移</button>
+<button class="fluegas-subbtn" data-fluegas-tab="water" onclick="switchFlueGasTab('water')">水质在线比对</button>
+</div>
+
+<div class="fluegas-subpanel active" id="fluegas-tab-main">
+  <div class="template-grid-two">
+    <div>
+      <div class="template-section-title">基础参数</div>
+      <div class="meta-row">
+        <div class="field"><label>基准含氧量（%）</label><input id="fg-base-o2" oninput="calcFlueGas()" step="0.1" type="number" value="3.5"/></div>
+        <div class="field"><label>排气温度1（℃）</label><input id="fg-temp1" oninput="calcFlueGas()" step="0.1" type="number"/></div>
+        <div class="field"><label>排气温度2（℃）</label><input id="fg-temp2" oninput="calcFlueGas()" step="0.1" type="number"/></div>
+        <div class="field"><label>排气温度3（℃）</label><input id="fg-temp3" oninput="calcFlueGas()" step="0.1" type="number"/></div>
+        <div class="field"><label>含湿量1（%）</label><input id="fg-moist1" oninput="calcFlueGas()" step="0.1" type="number"/></div>
+        <div class="field"><label>含湿量2（%）</label><input id="fg-moist2" oninput="calcFlueGas()" step="0.1" type="number"/></div>
+        <div class="field"><label>含湿量3（%）</label><input id="fg-moist3" oninput="calcFlueGas()" step="0.1" type="number"/></div>
       </div>
-      </div>
+
+      <div class="template-section-title" style="margin-top:14px">三次实测</div>
+      <table class="simple-table">
+        <thead><tr><th>项目</th><th>第一次</th><th>第二次</th><th>第三次</th><th>平均</th></tr></thead>
+        <tbody>
+          <tr><td>排气含氧量（%）</td><td><input class="vi-input" id="fg-o2-1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2-2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2-3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2-avg">—</td></tr>
+          <tr><td>标干流量（m³/h）</td><td><input class="vi-input" id="fg-flow-1" oninput="calcFlueGas()" step="1" type="number"/></td><td><input class="vi-input" id="fg-flow-2" oninput="calcFlueGas()" step="1" type="number"/></td><td><input class="vi-input" id="fg-flow-3" oninput="calcFlueGas()" step="1" type="number"/></td><td id="fg-flow-avg">—</td></tr>
+          <tr><td>一氧化碳实测（mg/m³）</td><td><input class="vi-input" id="fg-co-1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-co-2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-co-3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-co-avg">—</td></tr>
+          <tr><td>颗粒物实测（mg/m³）</td><td><input class="vi-input" id="fg-pm-1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-pm-2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-pm-3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-pm-avg">—</td></tr>
+          <tr><td>二氧化硫实测（mg/m³）</td><td><input class="vi-input" id="fg-so2-1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2-2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2-3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2-avg">—</td></tr>
+          <tr><td>氮氧化物实测（mg/m³）</td><td><input class="vi-input" id="fg-nox-1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-nox-2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-nox-3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-nox-avg">—</td></tr>
+        </tbody>
+      </table>
     </div>
 
-    <!-- 统计结果页签 -->
-    <div class="tab-panel" id="tab-statistics">
-      <div class="card">
-        <div class="card-title">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 12 L5 8 L8 9 L11 5 L14 7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 14 h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-          📊 统计结果
-        </div>
-        <div class="limit-row" style="flex-wrap:wrap;justify-content:flex-start;gap:10px;">
-          <label>限值：</label>
-          <input id="limit" type="number" step="0.001" value="0.150">
-          <label style="margin-left:10px;">小数位数：</label>
-          <input id="decimal" type="number" step="1" min="0" value="6" style="width:90px;">
-          <button class="btn primary" onclick="saveSettings()">保存参数</button>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat">
-            <div class="stat-label">测点数 n</div>
-            <div class="stat-val" id="r-n">—</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">平均流速 v̄ (m/s)</div>
-            <div class="stat-val" id="r-vbar">—</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">样本标准差 s (m/s)</div>
-            <div class="stat-val" id="r-s">—</div>
-            <div class="stat-sub">s = √[Σ(vᵢ−v̄)²/(n−1)]</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">流速相对方差 σᵣ</div>
-            <div class="stat-val" id="r-sr">—</div>
-            <div class="stat-sub">σᵣ = √[Σ(vᵢ−v̄)²/((n−1)×v̄²)]</div>
-          </div>
-        </div>
-
-        <div class="verdict none" id="verdict">
-          <div class="verdict-label">判定结果</div>
-          <div class="verdict-main" id="verdict-text">请录入至少 2 个测点</div>
-        </div>
-
-        <div class="recheck">
-          <div class="recheck-title">复核验证</div>
-          <div class="rc-row"><span class="rc-key">Σ(vᵢ − v̄)²</span><span class="rc-val" id="rc-sum">—</span></div>
-          <div class="rc-row"><span class="rc-key">σᵣ（复核）</span><span class="rc-val" id="rc-sr">—</span></div>
-          <div class="rc-row"><span class="rc-key">差值</span><span class="rc-val" id="rc-diff">—</span></div>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn primary" onclick="saveRecord()">💾 保存记录</button>
-          <button class="btn success" onclick="printReport()">🖨️ 打印报告</button>
-          <button class="btn" onclick="exportCSV()">📄 导出 CSV</button>
-          <button class="btn" onclick="exportJSON()">📦 导出 JSON</button>
-        </div>
-        <div class="print-signature">
-          <div>检测人员签字：________________</div>
-          <div>审核人员签字：________________</div>
-          <div>日期：________________</div>
-        </div>
+    <div>
+      <div class="template-section-title">结果汇总</div>
+      <table class="simple-table">
+        <thead><tr><th>项目</th><th>平均实测</th><th>平均折算</th><th>排放速率（kg/h）</th></tr></thead>
+        <tbody>
+          <tr><td>一氧化碳</td><td id="fg-co-a1">—</td><td id="fg-co-a2">—</td><td id="fg-co-a3">—</td></tr>
+          <tr><td>颗粒物</td><td id="fg-pm-a1">—</td><td id="fg-pm-a2">—</td><td id="fg-pm-a3">—</td></tr>
+          <tr><td>二氧化硫</td><td id="fg-so2-a1">—</td><td id="fg-so2-a2">—</td><td id="fg-so2-a3">—</td></tr>
+          <tr><td>氮氧化物</td><td id="fg-nox-a1">—</td><td id="fg-nox-a2">—</td><td id="fg-nox-a3">—</td></tr>
+        </tbody>
+      </table>
+      <div class="template-grid-three" style="margin-top:14px">
+        <div class="result-box"><div class="result-label">平均含氧量</div><div class="result-value" id="fg-res-o2">—</div></div>
+        <div class="result-box"><div class="result-label">平均排气温度</div><div class="result-value" id="fg-res-temp">—</div></div>
+        <div class="result-box"><div class="result-label">平均含湿量</div><div class="result-value" id="fg-res-moist">—</div></div>
       </div>
-    </div>
-
-    <!-- 数据可视化页签 -->
-    <div class="tab-panel" id="tab-visualization">
-      <div class="chart-grid">
-        <div class="chart-wrap">
-          <div class="section-title">各测点流速分布（与平均值对比）</div>
-          <canvas id="chart-vel"></canvas>
-        </div>
-        <div class="chart-wrap">
-          <div class="section-title">偏差分布</div>
-          <canvas id="chart-dev"></canvas>
-        </div>
-      </div>
-      <div style="margin-top:16px;" class="chart-wrap">
-        <div class="section-title">历史 σᵣ 值趋势</div>
-        <canvas id="chart-trend" style="max-height:200px"></canvas>
-      </div>
-    </div>
-
-    <!-- 保存查询页签 -->
-    <div class="tab-panel" id="tab-history">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:8px;flex-wrap:wrap">
-        <div style="font-size:13px;color:var(--text2)" id="hist-count">共 0 条记录</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn" onclick="exportHistory()">导出历史记录</button>
-          <button class="btn danger" onclick="clearHistory()">清空保存的记录</button>
-        </div>
-      </div>
-      <div style="margin-bottom:16px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="opacity:0.6">
-            <circle cx="7" cy="7" r="4" stroke="currentColor" stroke-width="1.2"/>
-            <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-          </svg>
-          <input type="text" id="history-search" placeholder="按点位、日期、结果、编号搜索" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:13px">
-        </div>
-      </div>
-      <div class="history-list" id="history-list"></div>
-    </div>
+      <div class="helper-text" style="margin-top:12px">折算公式：C折 = (21-基准氧)/(21-实测氧) × C实；排放速率：R = C实 × Q / 1000000。</div>
     </div>
   </div>
 </div>
 
-<div class="toast-wrap" id="toasts"></div>
+<div class="fluegas-subpanel" id="fluegas-tab-dust">
+  <div class="template-grid-two">
+    <div>
+      <div class="template-section-title">颗粒物 / 流速 / 温度三次比对</div>
+      <div class="stats-setting-row">
+        <div class="stats-setting-item"><span class="stats-setting-label">颗粒物允许相对误差（%）</span><input id="fg-dust-pm-limit" oninput="calcFlueGas()" step="0.1" type="number" value="15"/></div>
+        <div class="stats-setting-item"><span class="stats-setting-label">流速允许相对误差（%）</span><input id="fg-dust-flow-limit" oninput="calcFlueGas()" step="0.1" type="number" value="10"/></div>
+        <div class="stats-setting-item"><span class="stats-setting-label">温度允许绝对误差（℃）</span><input id="fg-dust-temp-limit" oninput="calcFlueGas()" step="0.1" type="number" value="3"/></div>
+      </div>
+      <table class="simple-table">
+        <thead><tr><th>项目</th><th>参比1</th><th>CEMS1</th><th>参比2</th><th>CEMS2</th><th>参比3</th><th>CEMS3</th><th>平均参比</th><th>平均CEMS</th></tr></thead>
+        <tbody>
+          <tr><td>颗粒物（mg/m³）</td><td><input class="vi-input" id="fg-dust-pm-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-pm-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-pm-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-pm-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-pm-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-pm-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-dust-pm-ravg">—</td><td id="fg-dust-pm-cavg">—</td></tr>
+          <tr><td>流速（m/s）</td><td><input class="vi-input" id="fg-dust-flow-r1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-dust-flow-c1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-dust-flow-r2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-dust-flow-c2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-dust-flow-r3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-dust-flow-c3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-dust-flow-ravg">—</td><td id="fg-dust-flow-cavg">—</td></tr>
+          <tr><td>温度（℃）</td><td><input class="vi-input" id="fg-dust-temp-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-temp-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-temp-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-temp-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-temp-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-temp-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-dust-temp-ravg">—</td><td id="fg-dust-temp-cavg">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="template-section-title">比对结果</div>
+      <table class="simple-table">
+        <thead><tr><th>项目</th><th>平均偏差</th><th>相对误差</th><th>限值</th><th>判定</th></tr></thead>
+        <tbody>
+          <tr><td>颗粒物</td><td id="fg-dust-pm-abs">—</td><td id="fg-dust-pm-rel">—</td><td id="fg-dust-pm-th">—</td><td id="fg-dust-pm-judge">—</td></tr>
+          <tr><td>流速</td><td id="fg-dust-flow-abs">—</td><td id="fg-dust-flow-rel">—</td><td id="fg-dust-flow-th">—</td><td id="fg-dust-flow-judge">—</td></tr>
+          <tr><td>温度</td><td id="fg-dust-temp-abs">—</td><td id="fg-dust-temp-rel">—</td><td id="fg-dust-temp-th">—</td><td id="fg-dust-temp-judge">—</td></tr>
+        </tbody>
+      </table>
+      <div class="result-box" style="margin-top:12px"><div class="result-label">综合提示</div><div class="result-value" id="fg-dust-summary" style="font-size:14px">—</div></div>
+    </div>
+  </div>
+</div>
 
+<div class="fluegas-subpanel" id="fluegas-tab-nox">
+  <div class="template-grid-two">
+    <div>
+      <div class="template-section-title">氮氧化物三次比对</div>
+      <div class="stats-setting-row">
+        <div class="stats-setting-item"><span class="stats-setting-label">允许相对误差（%）</span><input id="fg-noxcmp-limit" oninput="calcFlueGas()" step="0.1" type="number" value="15"/></div>
+      </div>
+      <table class="simple-table">
+        <thead><tr><th>轮次</th><th>参比值（mg/m³）</th><th>CEMS值（mg/m³）</th><th>偏差</th></tr></thead>
+        <tbody>
+          <tr><td>第一次</td><td><input class="vi-input" id="fg-noxcmp-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d1">—</td></tr>
+          <tr><td>第二次</td><td><input class="vi-input" id="fg-noxcmp-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d2">—</td></tr>
+          <tr><td>第三次</td><td><input class="vi-input" id="fg-noxcmp-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d3">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="template-grid-two">
+        <div class="result-box"><div class="result-label">平均参比</div><div class="result-value" id="fg-noxcmp-ravg">—</div></div>
+        <div class="result-box"><div class="result-label">平均在线</div><div class="result-value" id="fg-noxcmp-cavg">—</div></div>
+        <div class="result-box"><div class="result-label">平均偏差</div><div class="result-value" id="fg-noxcmp-abs">—</div></div>
+        <div class="result-box"><div class="result-label">相对误差</div><div class="result-value" id="fg-noxcmp-rel">—</div></div>
+      </div>
+      <div class="result-box" style="margin-top:12px"><div class="result-label">判定</div><div class="result-value" id="fg-noxcmp-judge">—</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="fluegas-subpanel" id="fluegas-tab-so2">
+  <div class="template-grid-two">
+    <div>
+      <div class="template-section-title">二氧化硫三次比对</div>
+      <div class="stats-setting-row">
+        <div class="stats-setting-item"><span class="stats-setting-label">允许相对误差（%）</span><input id="fg-so2cmp-limit" oninput="calcFlueGas()" step="0.1" type="number" value="15"/></div>
+      </div>
+      <table class="simple-table">
+        <thead><tr><th>轮次</th><th>参比值（mg/m³）</th><th>CEMS值（mg/m³）</th><th>偏差</th></tr></thead>
+        <tbody>
+          <tr><td>第一次</td><td><input class="vi-input" id="fg-so2cmp-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d1">—</td></tr>
+          <tr><td>第二次</td><td><input class="vi-input" id="fg-so2cmp-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d2">—</td></tr>
+          <tr><td>第三次</td><td><input class="vi-input" id="fg-so2cmp-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d3">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="template-grid-two">
+        <div class="result-box"><div class="result-label">平均参比</div><div class="result-value" id="fg-so2cmp-ravg">—</div></div>
+        <div class="result-box"><div class="result-label">平均在线</div><div class="result-value" id="fg-so2cmp-cavg">—</div></div>
+        <div class="result-box"><div class="result-label">平均偏差</div><div class="result-value" id="fg-so2cmp-abs">—</div></div>
+        <div class="result-box"><div class="result-label">相对误差</div><div class="result-value" id="fg-so2cmp-rel">—</div></div>
+      </div>
+      <div class="result-box" style="margin-top:12px"><div class="result-label">判定</div><div class="result-value" id="fg-so2cmp-judge">—</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="fluegas-subpanel" id="fluegas-tab-o2">
+  <div class="template-grid-two">
+    <div>
+      <div class="template-section-title">含氧量三次比对</div>
+      <div class="stats-setting-row">
+        <div class="stats-setting-item"><span class="stats-setting-label">允许绝对误差（%）</span><input id="fg-o2cmp-limit" oninput="calcFlueGas()" step="0.1" type="number" value="1"/></div>
+      </div>
+      <table class="simple-table">
+        <thead><tr><th>轮次</th><th>参比值（%）</th><th>CEMS值（%）</th><th>偏差</th></tr></thead>
+        <tbody>
+          <tr><td>第一次</td><td><input class="vi-input" id="fg-o2cmp-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d1">—</td></tr>
+          <tr><td>第二次</td><td><input class="vi-input" id="fg-o2cmp-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d2">—</td></tr>
+          <tr><td>第三次</td><td><input class="vi-input" id="fg-o2cmp-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d3">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="template-grid-two">
+        <div class="result-box"><div class="result-label">平均参比</div><div class="result-value" id="fg-o2cmp-ravg">—</div></div>
+        <div class="result-box"><div class="result-label">平均在线</div><div class="result-value" id="fg-o2cmp-cavg">—</div></div>
+        <div class="result-box"><div class="result-label">平均偏差</div><div class="result-value" id="fg-o2cmp-abs">—</div></div>
+        <div class="result-box"><div class="result-label">相对误差</div><div class="result-value" id="fg-o2cmp-rel">—</div></div>
+      </div>
+      <div class="result-box" style="margin-top:12px"><div class="result-label">判定</div><div class="result-value" id="fg-o2cmp-judge">—</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="fluegas-subpanel" id="fluegas-tab-drift">
+  <div class="template-grid-two">
+    <div>
+      <div class="template-section-title">示值误差 / 量程漂移</div>
+      <div class="meta-row">
+        <div class="field"><label>量程（mg/m³）</label><input id="fg-drift-range" oninput="calcFlueGas()" step="0.1" type="number" value="200"/></div>
+        <div class="field"><label>允许零点漂移（%）</label><input id="fg-drift-zero-limit" oninput="calcFlueGas()" step="0.1" type="number" value="2.5"/></div>
+        <div class="field"><label>允许量程漂移（%）</label><input id="fg-drift-span-limit" oninput="calcFlueGas()" step="0.1" type="number" value="2.5"/></div>
+        <div class="field"><label>允许示值误差（%）</label><input id="fg-drift-ind-limit" oninput="calcFlueGas()" step="0.1" type="number" value="5"/></div>
+        <div class="field"><label>示值参比值</label><input id="fg-drift-ind-ref" oninput="calcFlueGas()" step="0.1" type="number"/></div>
+        <div class="field"><label>示值在线值</label><input id="fg-drift-ind-cems" oninput="calcFlueGas()" step="0.1" type="number"/></div>
+      </div>
+      <table class="simple-table" style="margin-top:12px">
+        <thead><tr><th>项目</th><th>第1天</th><th>第2天</th><th>第3天</th><th>最大绝对误差</th></tr></thead>
+        <tbody>
+          <tr><td>零点漂移</td><td><input class="vi-input" id="fg-drift-z1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-drift-z2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-drift-z3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-zmax">—</td></tr>
+          <tr><td>量程漂移</td><td><input class="vi-input" id="fg-drift-s1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-drift-s2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-drift-s3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-smax">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <table class="simple-table">
+        <thead><tr><th>项目</th><th>结果</th><th>限值</th><th>判定</th></tr></thead>
+        <tbody>
+          <tr><td>零点漂移</td><td id="fg-drift-zpct">—</td><td id="fg-drift-zth">—</td><td id="fg-drift-zjudge">—</td></tr>
+          <tr><td>量程漂移</td><td id="fg-drift-spct">—</td><td id="fg-drift-sth">—</td><td id="fg-drift-sjudge">—</td></tr>
+          <tr><td>示值误差</td><td id="fg-drift-inderr">—</td><td id="fg-drift-indth">—</td><td id="fg-drift-indjudge">—</td></tr>
+        </tbody>
+      </table>
+      <div class="result-box" style="margin-top:12px"><div class="result-label">综合提示</div><div class="result-value" id="fg-drift-summary" style="font-size:14px">—</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="fluegas-subpanel" id="fluegas-tab-water">
+  <div class="template-grid-two">
+    <div>
+      <div class="template-section-title">水质在线比对</div>
+      <div class="helper-text" style="margin-bottom:12px">这里先按 COD、氨氮、总磷三类常见指标接入，后续可继续扩展为项目自定义版本。</div>
+      <table class="simple-table">
+        <thead><tr><th>指标</th><th>参比均值</th><th>在线均值</th><th>允许相对误差（%）</th></tr></thead>
+        <tbody>
+          <tr><td>COD（mg/L）</td><td><input class="vi-input" id="fg-water-cod-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-water-cod-cems" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-water-cod-limit" oninput="calcFlueGas()" step="0.1" type="number" value="15"/></td></tr>
+          <tr><td>氨氮（mg/L）</td><td><input class="vi-input" id="fg-water-nh3-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-water-nh3-cems" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-water-nh3-limit" oninput="calcFlueGas()" step="0.1" type="number" value="15"/></td></tr>
+          <tr><td>总磷（mg/L）</td><td><input class="vi-input" id="fg-water-tp-ref" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-tp-cems" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-tp-limit" oninput="calcFlueGas()" step="0.1" type="number" value="20"/></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <table class="simple-table">
+        <thead><tr><th>指标</th><th>偏差</th><th>相对误差</th><th>判定</th></tr></thead>
+        <tbody>
+          <tr><td>COD</td><td id="fg-water-cod-abs">—</td><td id="fg-water-cod-rel">—</td><td id="fg-water-cod-judge">—</td></tr>
+          <tr><td>氨氮</td><td id="fg-water-nh3-abs">—</td><td id="fg-water-nh3-rel">—</td><td id="fg-water-nh3-judge">—</td></tr>
+          <tr><td>总磷</td><td id="fg-water-tp-abs">—</td><td id="fg-water-tp-rel">—</td><td id="fg-water-tp-judge">—</td></tr>
+        </tbody>
+      </table>
+      <div class="result-box" style="margin-top:12px"><div class="result-label">综合提示</div><div class="result-value" id="fg-water-summary" style="font-size:14px">—</div></div>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+</div><div class="template-panel" id="template-noisecheck">
+<div class="card">
+<div class="card-title">📢 噪声验算公式</div>
+<div class="template-subtitle">按模板关系：SEL = Leq + 10 × log10(T/1s)。已拆成“数据录入 + 验算结果”两段，便于后续继续扩展空白子表。</div>
+<div class="module-subnav">
+<button class="module-subbtn active" data-group="noisecheck" data-tab="entry" onclick="switchTemplateSubTab('noisecheck','entry')">数据录入</button>
+<button class="module-subbtn" data-group="noisecheck" data-tab="result" onclick="switchTemplateSubTab('noisecheck','result')">验算结果</button>
+</div>
+<div class="module-subpanel active" data-group="noisecheck" data-tab="entry">
+  <div class="meta-row">
+    <div class="field"><label>监测时长（秒）</label><input id="nc-sec" oninput="calcNoiseCheck(); calcNoiseCheckReverse()" step="1" type="number" value="600"/></div>
+    <div class="field"><label>Leq（dB）</label><input id="nc-leq" oninput="calcNoiseCheck()" step="0.1" type="number"/></div>
+    <div class="field"><label>SEL（dB）</label><input id="nc-sel" oninput="calcNoiseCheckReverse()" step="0.1" type="number"/></div>
+    <div class="field"><label>监测时间（min）</label><input id="nc-min" readonly="" step="0.01" type="number"/></div>
+  </div>
+  <div class="template-tip" style="margin-top:14px">当前保留单事件噪声最核心的 Leq / SEL 双向换算；后续如果原模板还有补充表，可继续接到同一模板下，不需要再新开独立模板。</div>
+</div>
+<div class="module-subpanel" data-group="noisecheck" data-tab="result">
+  <div class="template-grid-three">
+    <div class="result-box"><div class="result-label">计算 SEL</div><div class="result-value" id="nc-sel-out">—</div></div>
+    <div class="result-box"><div class="result-label">反算 Leq</div><div class="result-value" id="nc-leq-out">—</div></div>
+    <div class="result-box"><div class="result-label">时长系数 10logT</div><div class="result-value" id="nc-logt">—</div></div>
+  </div>
+  <div class="template-tip" style="margin-top:14px">公式说明：监测时长越长，SEL 相对于 Leq 的修正值越大；结果页可直接作为后续报告引用区。</div>
+</div>
+</div>
+</div><div class="template-panel" id="template-g219">
+<div class="card">
+<div class="card-title">🛣️ G219国道噪声</div>
+<div class="template-subtitle">已拆成“数据录入 / 背景修正 / 结果汇总”三段，更符合道路交通噪声模板的实际工作流。</div>
+<div class="module-subnav">
+<button class="module-subbtn active" data-group="g219" data-tab="entry" onclick="switchTemplateSubTab('g219','entry')">数据录入</button>
+<button class="module-subbtn" data-group="g219" data-tab="correction" onclick="switchTemplateSubTab('g219','correction')">背景修正</button>
+<button class="module-subbtn" data-group="g219" data-tab="summary" onclick="switchTemplateSubTab('g219','summary')">结果汇总</button>
+</div>
+<div class="module-subpanel active" data-group="g219" data-tab="entry">
+  <div class="meta-row">
+    <div class="field"><label>点位名称</label><input id="g219-site" placeholder="如：K0+400路东侧" oninput="calcG219()"/></div>
+    <div class="field"><label>时段</label><select id="g219-period" onchange="calcG219()"><option>昼间</option><option>夜间</option></select></div>
+    <div class="field"><label>测得 Laeq（dB）</label><input id="g219-meas" oninput="calcG219()" step="0.1" type="number"/></div>
+    <div class="field"><label>背景 Laeq（dB）</label><input id="g219-bg" oninput="calcG219()" step="0.1" type="number"/></div>
+    <div class="field"><label>Lmax（dB）</label><input id="g219-lmax" oninput="calcG219()" step="0.1" type="number"/></div>
+    <div class="field"><label>大车数</label><input id="g219-truck" oninput="calcG219()" step="1" type="number" value="0"/></div>
+  </div>
+  <div class="template-tip" style="margin-top:14px">后续若需继续对接 L10 / L50 / L90 或车型细分统计，可以直接扩充本页，不影响后面的修正与汇总页。</div>
+</div>
+<div class="module-subpanel" data-group="g219" data-tab="correction">
+  <div class="template-grid-three">
+    <div class="result-box"><div class="result-label">扣背景后 Laeq</div><div class="result-value" id="g219-corr">—</div></div>
+    <div class="result-box"><div class="result-label">差值 ΔL</div><div class="result-value" id="g219-diff">—</div></div>
+    <div class="result-box"><div class="result-label">修正提示</div><div class="result-value" id="g219-note" style="font-size:14px">—</div></div>
+  </div>
+  <div class="template-tip" style="margin-top:14px">背景修正逻辑：当测量值与背景值差值较小，结果代表性会明显下降，应在报告中做方法说明。</div>
+</div>
+<div class="module-subpanel" data-group="g219" data-tab="summary">
+  <div class="kv-grid">
+    <div class="kv-item"><div class="kv-label">点位 / 时段</div><div class="kv-value" id="g219-sum-site">—</div></div>
+    <div class="kv-item"><div class="kv-label">Lmax</div><div class="kv-value" id="g219-sum-lmax">—</div></div>
+    <div class="kv-item"><div class="kv-label">大车数</div><div class="kv-value" id="g219-sum-truck">—</div></div>
+    <div class="kv-item"><div class="kv-label">汇总结论</div><div class="kv-value" id="g219-sum-note">—</div></div>
+  </div>
+</div>
+</div>
+</div><div class="template-panel" id="template-parshall">
+<div class="card">
+<div class="card-title">💧 巴歇尔槽流量计算</div>
+<div class="template-subtitle">已拆成“参数录入 / 流量计算 / 槽型对照表”三段，符合原 Excel 的参数表 + 计算表结构。</div>
+<div class="module-subnav">
+<button class="module-subbtn active" data-group="parshall" data-tab="entry" onclick="switchTemplateSubTab('parshall','entry')">参数录入</button>
+<button class="module-subbtn" data-group="parshall" data-tab="calc" onclick="switchTemplateSubTab('parshall','calc')">流量计算</button>
+<button class="module-subbtn" data-group="parshall" data-tab="lookup" onclick="switchTemplateSubTab('parshall','lookup')">槽型对照表</button>
+</div>
+<div class="module-subpanel active" data-group="parshall" data-tab="entry">
+  <div class="meta-row">
+    <div class="field"><label>槽型</label><select id="parshall-type" onchange="calcParshall()"></select></div>
+    <div class="field"><label>水位 h（m）</label><input id="parshall-h" oninput="calcParshall()" step="0.001" type="number"/></div>
+    <div class="field"><label>临界淹没度</label><input id="parshall-sub" readonly=""/></div>
+    <div class="field"><label>公式</label><input id="parshall-formula" readonly=""/></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="parshall" data-tab="calc">
+  <div class="template-grid-three">
+    <div class="result-box"><div class="result-label">流量 Q（L/s）</div><div class="result-value" id="parshall-q">—</div></div>
+    <div class="result-box"><div class="result-label">适用水位范围</div><div class="result-value" id="parshall-range" style="font-size:14px">—</div></div>
+    <div class="result-box"><div class="result-label">适用流量范围</div><div class="result-value" id="parshall-qrange" style="font-size:14px">—</div></div>
+  </div>
+  <div class="template-tip" style="margin-top:14px">当前采用 Q = C × h^n 直接计算。后续若原表还有更复杂的工况判断，也可继续叠加在本页下方。</div>
+</div>
+<div class="module-subpanel" data-group="parshall" data-tab="lookup">
+  <table class="summary-table">
+    <thead><tr><th>序号</th><th>喉道宽度 b(m)</th><th>C</th><th>n</th><th>水位范围 h(m)</th><th>流量范围 Q(L/s)</th><th>临界淹没度</th></tr></thead>
+    <tbody id="parshall-lookup-body"></tbody>
+  </table>
+</div>
+</div>
+</div><div class="template-panel" id="template-weather">
+<div class="card">
+<div class="card-title">🌬️ 气象</div>
+<div class="template-subtitle">已按“现场录入 / 稳定度计算 / 打印附页”三段重构，方便录入、查看和打印分离。</div>
+<div class="module-subnav">
+<button class="module-subbtn active" data-group="weather" data-tab="entry" onclick="switchTemplateSubTab('weather','entry')">现场录入</button>
+<button class="module-subbtn" data-group="weather" data-tab="calc" onclick="switchTemplateSubTab('weather','calc')">稳定度计算</button>
+<button class="module-subbtn" data-group="weather" data-tab="print" onclick="switchTemplateSubTab('weather','print')">打印附页</button>
+</div>
+<div class="module-subpanel active" data-group="weather" data-tab="entry">
+  <div class="meta-row">
+    <div class="field"><label>采样日期</label><input id="w-date" oninput="calcWeather()" type="date"/></div>
+    <div class="field"><label>观测时间</label><input id="w-time" oninput="calcWeather()" type="time"/></div>
+    <div class="field"><label>纬度 φ（°）</label><input id="w-lat" oninput="calcWeather()" step="0.0001" type="number" value="45"/></div>
+    <div class="field"><label>经度 λ（°）</label><input id="w-lon" oninput="calcWeather()" step="0.0001" type="number" value="85"/></div>
+    <div class="field"><label>总云</label><input id="w-cloud-total" max="10" min="0" oninput="calcWeather()" step="1" type="number" value="7"/></div>
+    <div class="field"><label>低云</label><input id="w-cloud-low" max="10" min="0" oninput="calcWeather()" step="1" type="number" value="1"/></div>
+    <div class="field"><label>测得风速 Ua（m/s）</label><input id="w-ua" oninput="calcWeather()" step="0.1" type="number" value="2.2"/></div>
+    <div class="field"><label>测风高度 a（m）</label><input id="w-a" oninput="calcWeather()" step="0.1" type="number" value="2"/></div>
+    <div class="field"><label>下垫面</label><select id="w-area" onchange="calcWeather()"><option value="城市">城市</option><option selected="" value="农村">农村</option></select></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="weather" data-tab="calc">
+  <div class="template-grid-three">
+    <div class="result-box"><div class="result-label">太阳高度角</div><div class="result-value" id="w-h0">—</div></div>
+    <div class="result-box"><div class="result-label">10m风速</div><div class="result-value" id="w-u10">—</div></div>
+    <div class="result-box"><div class="result-label">稳定度等级</div><div class="result-value" id="w-stab">—</div></div>
+  </div>
+  <div class="result-box" style="margin-top:12px">
+    <div class="result-label">综合适宜类别</div>
+    <div class="result-value" id="w-suit">—</div>
+    <div class="helper-text" id="w-comment" style="margin-top:8px"></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="weather" data-tab="print">
+  <div class="kv-grid">
+    <div class="kv-item"><div class="kv-label">观测信息</div><div class="kv-value" id="w-print-meta">—</div></div>
+    <div class="kv-item"><div class="kv-label">核心结果</div><div class="kv-value" id="w-print-result">—</div></div>
+    <div class="kv-item"><div class="kv-label">适宜性说明</div><div class="kv-value" id="w-print-comment">—</div></div>
+  </div>
+</div>
+</div>
+</div><div class="template-panel" id="template-ions">
+<div class="card">
+<div class="card-title">⚗️ 阴阳离子平衡计算表</div>
+<div class="template-subtitle">已拆成“数据录入 / 计算结果 / 结果判定”三段，和原始计算表的使用习惯更接近。</div>
+<div class="module-subnav">
+<button class="module-subbtn active" data-group="ions" data-tab="entry" onclick="switchTemplateSubTab('ions','entry')">数据录入</button>
+<button class="module-subbtn" data-group="ions" data-tab="result" onclick="switchTemplateSubTab('ions','result')">计算结果</button>
+<button class="module-subbtn" data-group="ions" data-tab="judge" onclick="switchTemplateSubTab('ions','judge')">结果判定</button>
+</div>
+<div class="module-subpanel active" data-group="ions" data-tab="entry">
+  <div class="template-section-title">阳离子（mg/L）</div>
+  <div class="meta-row">
+    <div class="field"><label>Na+</label><input id="ion-na" oninput="calcIons()" step="0.01" type="number"/></div>
+    <div class="field"><label>K+</label><input id="ion-k" oninput="calcIons()" step="0.01" type="number"/></div>
+    <div class="field"><label>Ca²+</label><input id="ion-ca" oninput="calcIons()" step="0.01" type="number"/></div>
+    <div class="field"><label>Mg²+</label><input id="ion-mg" oninput="calcIons()" step="0.01" type="number"/></div>
+    <div class="field"><label>NH₄+</label><input id="ion-nh4" oninput="calcIons()" step="0.01" type="number"/></div>
+    <div class="field"><label>Fe³+</label><input id="ion-fe" oninput="calcIons()" step="0.01" type="number"/></div>
+    <div class="field"><label>Mn²+</label><input id="ion-mn" oninput="calcIons()" step="0.01" type="number"/></div>
+  </div>
+  <div class="template-section-title" style="margin-top:14px">阴离子（mg/L）</div>
+  <div class="meta-row">
+    <div class="field"><label>SO₄²-</label><input id="ion-so4" oninput="calcIons()" step="0.01" type="number"/></div>
+    <div class="field"><label>Cl-</label><input id="ion-cl" oninput="calcIons()" step="0.01" type="number"/></div>
+    <div class="field"><label>HCO₃-</label><input id="ion-hco3" oninput="calcIons()" step="0.01" type="number"/></div>
+    <div class="field"><label>CO₃²-</label><input id="ion-co3" oninput="calcIons()" step="0.01" type="number"/></div>
+    <div class="field"><label>SiO₃²-</label><input id="ion-sio3" oninput="calcIons()" step="0.01" type="number"/></div>
+    <div class="field"><label>NO₃-</label><input id="ion-no3" oninput="calcIons()" step="0.01" type="number"/></div>
+    <div class="field"><label>F-</label><input id="ion-f" oninput="calcIons()" step="0.01" type="number"/></div>
+  </div>
+  <div class="meta-row" style="margin-top:14px">
+    <div class="field"><label>总硬度测定值（mg/L）</label><input id="ion-hardness" oninput="calcIons()" step="0.01" type="number"/></div>
+    <div class="field"><label>溶解性总固体测定值（mg/L）</label><input id="ion-tds" oninput="calcIons()" step="0.01" type="number"/></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="ions" data-tab="result">
+  <div class="template-grid-three">
+    <div class="result-box"><div class="result-label">阳离子总和（mmol/L）</div><div class="result-value" id="ion-cat">—</div></div>
+    <div class="result-box"><div class="result-label">阴离子总和（mmol/L）</div><div class="result-value" id="ion-an">—</div></div>
+    <div class="result-box"><div class="result-label">平衡误差（%）</div><div class="result-value" id="ion-balance">—</div></div>
+  </div>
+  <div class="template-grid-two" style="margin-top:12px">
+    <div class="result-box"><div class="result-label">总硬度计算值（mg/L）</div><div class="result-value" id="ion-hard-calc">—</div></div>
+    <div class="result-box"><div class="result-label">总硬度误差（%）</div><div class="result-value" id="ion-hard-err">—</div></div>
+  </div>
+  <div class="template-grid-two" style="margin-top:12px">
+    <div class="result-box"><div class="result-label">TDS计算值（mg/L）</div><div class="result-value" id="ion-tds-calc">—</div></div>
+    <div class="result-box"><div class="result-label">TDS误差（%）</div><div class="result-value" id="ion-tds-err">—</div></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="ions" data-tab="judge">
+  <div class="kv-grid">
+    <div class="kv-item"><div class="kv-label">离子平衡判定</div><div class="kv-value" id="ion-judge-balance">—</div></div>
+    <div class="kv-item"><div class="kv-label">总硬度判定</div><div class="kv-value" id="ion-judge-hard">—</div></div>
+    <div class="kv-item"><div class="kv-label">TDS判定</div><div class="kv-value" id="ion-judge-tds">—</div></div>
+    <div class="kv-item"><div class="kv-label">综合建议</div><div class="kv-value" id="ion-judge-overall">—</div></div>
+  </div>
+</div>
+</div>
+</div><div class="template-panel" id="template-odor">
+<div class="card">
+<div class="card-title">👃 臭气浓度关系表</div>
+<div class="template-subtitle">已拆成“数据录入 / 浓度换算结果”两段，保留多物质换算与臭袋法结果联动。</div>
+<div class="module-subnav">
+<button class="module-subbtn active" data-group="odor" data-tab="entry" onclick="switchTemplateSubTab('odor','entry')">数据录入</button>
+<button class="module-subbtn" data-group="odor" data-tab="result" onclick="switchTemplateSubTab('odor','result')">浓度换算结果</button>
+</div>
+<div class="module-subpanel active" data-group="odor" data-tab="entry">
+  <div class="template-grid-two">
+    <div>
+      <div class="template-section-title">物质换算</div>
+      <table class="simple-table" id="odor-table">
+      <thead><tr><th>物质</th><th>分子量</th><th>浓度 mg/m³</th><th>阈值 ppm</th><th>ppm</th><th>稀释倍数</th></tr></thead>
+      <tbody>
+      <tr><td><input class="vi-input" value="氨"/></td><td><input class="vi-input" oninput="calcOdor()" value="17"/></td><td><input class="vi-input" oninput="calcOdor()"/></td><td><input class="vi-input" oninput="calcOdor()" value="1.5"/></td><td class="od-ppm">—</td><td class="od-dil">—</td></tr>
+      <tr><td><input class="vi-input" value="甲硫醇"/></td><td><input class="vi-input" oninput="calcOdor()" value="48"/></td><td><input class="vi-input" oninput="calcOdor()"/></td><td><input class="vi-input" oninput="calcOdor()"/></td><td class="od-ppm">—</td><td class="od-dil">—</td></tr>
+      <tr><td><input class="vi-input" value="二甲二硫"/></td><td><input class="vi-input" oninput="calcOdor()" value="94"/></td><td><input class="vi-input" oninput="calcOdor()"/></td><td><input class="vi-input" oninput="calcOdor()"/></td><td class="od-ppm">—</td><td class="od-dil">—</td></tr>
+      <tr><td><input class="vi-input" value="硫化氢"/></td><td><input class="vi-input" oninput="calcOdor()" value="34"/></td><td><input class="vi-input" oninput="calcOdor()"/></td><td><input class="vi-input" oninput="calcOdor()"/></td><td class="od-ppm">—</td><td class="od-dil">—</td></tr>
+      <tr><td><input class="vi-input" value="二硫化碳"/></td><td><input class="vi-input" oninput="calcOdor()" value="74"/></td><td><input class="vi-input" oninput="calcOdor()"/></td><td><input class="vi-input" oninput="calcOdor()"/></td><td class="od-ppm">—</td><td class="od-dil">—</td></tr>
+      <tr><td><input class="vi-input" value="三甲胺"/></td><td><input class="vi-input" oninput="calcOdor()" value="59"/></td><td><input class="vi-input" oninput="calcOdor()"/></td><td><input class="vi-input" oninput="calcOdor()"/></td><td class="od-ppm">—</td><td class="od-dil">—</td></tr>
+      </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="template-section-title">臭袋法正解率值</div>
+      <div class="meta-row">
+        <div class="field"><label>10倍 a正确总人次（18次判定）</label><input id="o6-a10" oninput="calcO6()" step="1" type="number" value="3"/></div>
+        <div class="field"><label>10倍 b不明总人次（18次判定）</label><input id="o6-b10" oninput="calcO6()" step="1" type="number" value="7"/></div>
+        <div class="field"><label>100倍 a正确总人次（18次判定）</label><input id="o6-a100" oninput="calcO6()" step="1" type="number"/></div>
+        <div class="field"><label>100倍 b不明总人次（18次判定）</label><input id="o6-b100" oninput="calcO6()" step="1" type="number"/></div>
+        <div class="field"><label>1000倍 a正确总人次（18次判定）</label><input id="o6-a1000" oninput="calcO6()" step="1" type="number"/></div>
+        <div class="field"><label>1000倍 b不明总人次（18次判定）</label><input id="o6-b1000" oninput="calcO6()" step="1" type="number"/></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="odor" data-tab="result">
+  <div class="template-grid-three">
+    <div class="result-box"><div class="result-label">M1</div><div class="result-value" id="o6-m1">—</div></div>
+    <div class="result-box"><div class="result-label">M2</div><div class="result-value" id="o6-m2">—</div></div>
+    <div class="result-box"><div class="result-label">M3</div><div class="result-value" id="o6-m3">—</div></div>
+  </div>
+  <div class="result-box" style="margin-top:12px"><div class="result-label">臭气浓度</div><div class="result-value" id="o6-odor">—</div></div>
+  <div class="template-tip" style="margin-top:14px">多物质换算表与臭袋法结果共存于同一模板下，后续可以继续增加结果导出或报告区。</div>
+</div>
+</div>
+</div><div class="template-panel" id="template-cems">
+<div class="card">
+<div class="card-title">🏭 CEMS 72小时调试报告</div>
+<div class="template-subtitle">已按“分组式子页签”重构样板，不再把复杂模板平铺成单页。当前优先接入了封面、技术要求、汇总、漂移、示值误差、准确度评估、速度场系数、参比准确度，并新增正式报告预览。</div>
+<div class="module-subnav">
+<button class="module-subbtn active" data-group="cems" data-tab="cover" onclick="switchTemplateSubTab('cems','cover')">封面信息</button>
+<button class="module-subbtn" data-group="cems" data-tab="tech" onclick="switchTemplateSubTab('cems','tech')">技术要求</button>
+<button class="module-subbtn" data-group="cems" data-tab="summary" onclick="switchTemplateSubTab('cems','summary')">汇总表</button>
+<button class="module-subbtn" data-group="cems" data-tab="drift" onclick="switchTemplateSubTab('cems','drift')">漂移检测</button>
+<button class="module-subbtn" data-group="cems" data-tab="indication" onclick="switchTemplateSubTab('cems','indication')">示值误差</button>
+<button class="module-subbtn" data-group="cems" data-tab="accuracy" onclick="switchTemplateSubTab('cems','accuracy')">准确度评估</button>
+<button class="module-subbtn" data-group="cems" data-tab="kfactor" onclick="switchTemplateSubTab('cems','kfactor')">速度场系数</button>
+<button class="module-subbtn" data-group="cems" data-tab="refacc" onclick="switchTemplateSubTab('cems','refacc')">参比准确度</button>
+<button class="module-subbtn" data-group="cems" data-tab="report" onclick="switchTemplateSubTab('cems','report'); refreshCemsReport();">正式报告</button>
+</div>
+<div class="module-subpanel active" data-group="cems" data-tab="cover">
+  <div class="meta-row">
+    <div class="field"><label>企业名称</label><input id="cems-company" oninput="refreshCemsReport()" placeholder="如：某某热电厂"/></div>
+    <div class="field"><label>排口名称</label><input id="cems-port" oninput="refreshCemsReport()" placeholder="如：1#锅炉排口"/></div>
+    <div class="field"><label>调试开始日期</label><input id="cems-start" oninput="refreshCemsReport()" type="date"/></div>
+    <div class="field"><label>调试结束日期</label><input id="cems-end" oninput="refreshCemsReport()" type="date"/></div>
+    <div class="field"><label>检测单位</label><input id="cems-org" oninput="refreshCemsReport()" placeholder="检测机构名称"/></div>
+    <div class="field"><label>编制人</label><input id="cems-author" oninput="refreshCemsReport()" placeholder="姓名"/></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="cems" data-tab="tech">
+  <div class="kv-grid">
+    <div class="kv-item"><div class="kv-label">零点漂移参考</div><div class="kv-value">通常按量程百分比控制，系统中保留为可扩展判定项。</div></div>
+    <div class="kv-item"><div class="kv-label">量程漂移参考</div><div class="kv-value">适合结合 72 小时调试报告中的各日漂移最大值统一判定。</div></div>
+    <div class="kv-item"><div class="kv-label">速度场系数参考</div><div class="kv-value">依据 3 天 Kvi 日平均及 RSD 综合评价。</div></div>
+    <div class="kv-item"><div class="kv-label">参比准确度参考</div><div class="kv-value">颗粒物、流速、温度、湿度可分项列示，后续可继续补标准限值。</div></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="cems" data-tab="summary">
+  <div class="kv-grid">
+    <div class="kv-item"><div class="kv-label">零点漂移</div><div class="kv-value" id="cems-summary-zero">—</div></div>
+    <div class="kv-item"><div class="kv-label">量程漂移</div><div class="kv-value" id="cems-summary-span">—</div></div>
+    <div class="kv-item"><div class="kv-label">速度场系数</div><div class="kv-value" id="cems-summary-k">—</div></div>
+    <div class="kv-item"><div class="kv-label">参比准确度</div><div class="kv-value" id="cems-summary-ref">—</div></div>
+    <div class="kv-item"><div class="kv-label">示值误差</div><div class="kv-value" id="cems-summary-ie">—</div></div>
+    <div class="kv-item"><div class="kv-label">综合说明</div><div class="kv-value" id="cems-summary-note">—</div></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="cems" data-tab="drift">
+  <div class="template-section-title">漂移检测明细</div>
+  <div class="helper-text" style="margin-bottom:8px">按项目分别录入量程、3天零点漂移与量程漂移，系统自动给出各项目最大偏差百分比和判定。</div>
+  <table class="simple-table" id="cems-drift-detail">
+    <thead>
+      <tr>
+        <th>项目</th><th>量程</th><th>ΔZ1</th><th>ΔZ2</th><th>ΔZ3</th><th>ΔS1</th><th>ΔS2</th><th>ΔS3</th><th>零点%</th><th>量程%</th><th>限值%</th><th>判定</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>颗粒物</td>
+        <td><input class="vi-input" id="cemsd-pm-range" oninput="calcCems()" step="0.1" type="number" value="30"/></td>
+        <td><input class="vi-input" id="cemsd-pm-z1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-pm-z2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-pm-z3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-pm-s1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-pm-s2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-pm-s3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td id="cemsd-pm-zpct">—</td><td id="cemsd-pm-spct">—</td>
+        <td><input class="vi-input" id="cemsd-pm-limit" oninput="calcCems()" step="0.1" type="number" value="2.5"/></td>
+        <td id="cemsd-pm-judge">—</td>
+      </tr>
+      <tr>
+        <td>O₂</td>
+        <td><input class="vi-input" id="cemsd-o2-range" oninput="calcCems()" step="0.1" type="number" value="25"/></td>
+        <td><input class="vi-input" id="cemsd-o2-z1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-o2-z2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-o2-z3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-o2-s1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-o2-s2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-o2-s3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td id="cemsd-o2-zpct">—</td><td id="cemsd-o2-spct">—</td>
+        <td><input class="vi-input" id="cemsd-o2-limit" oninput="calcCems()" step="0.1" type="number" value="2.5"/></td>
+        <td id="cemsd-o2-judge">—</td>
+      </tr>
+      <tr>
+        <td>SO₂</td>
+        <td><input class="vi-input" id="cemsd-so2-range" oninput="calcCems()" step="0.1" type="number" value="200"/></td>
+        <td><input class="vi-input" id="cemsd-so2-z1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-so2-z2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-so2-z3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-so2-s1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-so2-s2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-so2-s3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td id="cemsd-so2-zpct">—</td><td id="cemsd-so2-spct">—</td>
+        <td><input class="vi-input" id="cemsd-so2-limit" oninput="calcCems()" step="0.1" type="number" value="2.5"/></td>
+        <td id="cemsd-so2-judge">—</td>
+      </tr>
+      <tr>
+        <td>NOx</td>
+        <td><input class="vi-input" id="cemsd-nox-range" oninput="calcCems()" step="0.1" type="number" value="200"/></td>
+        <td><input class="vi-input" id="cemsd-nox-z1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-nox-z2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-nox-z3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-nox-s1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-nox-s2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsd-nox-s3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td id="cemsd-nox-zpct">—</td><td id="cemsd-nox-spct">—</td>
+        <td><input class="vi-input" id="cemsd-nox-limit" oninput="calcCems()" step="0.1" type="number" value="2.5"/></td>
+        <td id="cemsd-nox-judge">—</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="template-grid-three" style="margin-top:12px">
+    <div class="result-box"><div class="result-label">已评项目数</div><div class="result-value" id="cemsd-valid">—</div></div>
+    <div class="result-box"><div class="result-label">合格项目数</div><div class="result-value" id="cemsd-pass">—</div></div>
+    <div class="result-box"><div class="result-label">最大漂移%</div><div class="result-value" id="cemsd-max">—</div></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="cems" data-tab="indication">
+  <div class="template-section-title">示值误差明细</div>
+  <div class="helper-text" style="margin-bottom:8px">每个项目录入 3 组参比值与在线值，系统自动计算平均偏差、相对误差与判定。</div>
+  <table class="simple-table" id="cems-indication-detail">
+    <thead>
+      <tr>
+        <th>项目</th><th>参比1</th><th>在线1</th><th>参比2</th><th>在线2</th><th>参比3</th><th>在线3</th><th>平均偏差</th><th>相对误差%</th><th>限值%</th><th>判定</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>O₂</td>
+        <td><input class="vi-input" id="cemsi-o2-r1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-o2-c1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-o2-r2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-o2-c2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-o2-r3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-o2-c3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td id="cemsi-o2-avgdiff">—</td><td id="cemsi-o2-rel">—</td>
+        <td><input class="vi-input" id="cemsi-o2-limit" oninput="calcCems()" step="0.1" type="number" value="5"/></td>
+        <td id="cemsi-o2-judge">—</td>
+      </tr>
+      <tr>
+        <td>SO₂</td>
+        <td><input class="vi-input" id="cemsi-so2-r1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-so2-c1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-so2-r2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-so2-c2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-so2-r3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-so2-c3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td id="cemsi-so2-avgdiff">—</td><td id="cemsi-so2-rel">—</td>
+        <td><input class="vi-input" id="cemsi-so2-limit" oninput="calcCems()" step="0.1" type="number" value="5"/></td>
+        <td id="cemsi-so2-judge">—</td>
+      </tr>
+      <tr>
+        <td>NO</td>
+        <td><input class="vi-input" id="cemsi-no-r1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-no-c1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-no-r2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-no-c2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-no-r3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsi-no-c3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td id="cemsi-no-avgdiff">—</td><td id="cemsi-no-rel">—</td>
+        <td><input class="vi-input" id="cemsi-no-limit" oninput="calcCems()" step="0.1" type="number" value="5"/></td>
+        <td id="cemsi-no-judge">—</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="template-grid-three" style="margin-top:12px">
+    <div class="result-box"><div class="result-label">已评项目数</div><div class="result-value" id="cemsi-valid">—</div></div>
+    <div class="result-box"><div class="result-label">合格项目数</div><div class="result-value" id="cemsi-pass">—</div></div>
+    <div class="result-box"><div class="result-label">最大相对误差%</div><div class="result-value" id="cemsi-maxrel">—</div></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="cems" data-tab="accuracy">
+  <div class="kv-grid">
+    <div class="kv-item"><div class="kv-label">漂移检测概览</div><div class="kv-value" id="cems-acc-drift">—</div></div>
+    <div class="kv-item"><div class="kv-label">示值误差概览</div><div class="kv-value" id="cems-acc-indication">—</div></div>
+    <div class="kv-item"><div class="kv-label">速度场系数概览</div><div class="kv-value" id="cems-acc-k">—</div></div>
+    <div class="kv-item"><div class="kv-label">整体建议</div><div class="kv-value" id="cems-acc-overall">—</div></div>
+  </div>
+  <div class="template-section-title" style="margin-top:18px">准确度评估明细</div>
+  <div class="helper-text" style="margin-bottom:8px">可对应原模板中的氧 / SO₂ / NOx 准确度分项。每个项目录入 3 组参比值与在线值，系统自动输出平均偏差、最大相对误差和判定。</div>
+  <table class="simple-table" id="cems-accuracy-detail">
+    <thead>
+      <tr>
+        <th>项目</th><th>参比1</th><th>在线1</th><th>参比2</th><th>在线2</th><th>参比3</th><th>在线3</th><th>平均偏差</th><th>最大相对误差%</th><th>限值%</th><th>判定</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>氧准确度</td>
+        <td><input class="vi-input" id="cemsa-o2-r1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-o2-c1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-o2-r2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-o2-c2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-o2-r3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-o2-c3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td id="cemsa-o2-avgdiff">—</td><td id="cemsa-o2-maxrel">—</td>
+        <td><input class="vi-input" id="cemsa-o2-limit" oninput="calcCems()" step="0.1" type="number" value="5"/></td>
+        <td id="cemsa-o2-judge">—</td>
+      </tr>
+      <tr>
+        <td>SO₂准确度</td>
+        <td><input class="vi-input" id="cemsa-so2-r1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-so2-c1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-so2-r2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-so2-c2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-so2-r3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-so2-c3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td id="cemsa-so2-avgdiff">—</td><td id="cemsa-so2-maxrel">—</td>
+        <td><input class="vi-input" id="cemsa-so2-limit" oninput="calcCems()" step="0.1" type="number" value="5"/></td>
+        <td id="cemsa-so2-judge">—</td>
+      </tr>
+      <tr>
+        <td>NOx准确度</td>
+        <td><input class="vi-input" id="cemsa-nox-r1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-nox-c1" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-nox-r2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-nox-c2" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-nox-r3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td><input class="vi-input" id="cemsa-nox-c3" oninput="calcCems()" step="0.01" type="number"/></td>
+        <td id="cemsa-nox-avgdiff">—</td><td id="cemsa-nox-maxrel">—</td>
+        <td><input class="vi-input" id="cemsa-nox-limit" oninput="calcCems()" step="0.1" type="number" value="5"/></td>
+        <td id="cemsa-nox-judge">—</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="template-grid-three" style="margin-top:12px">
+    <div class="result-box"><div class="result-label">已评项目数</div><div class="result-value" id="cemsa-valid">—</div></div>
+    <div class="result-box"><div class="result-label">合格项目数</div><div class="result-value" id="cemsa-pass">—</div></div>
+    <div class="result-box"><div class="result-label">最大相对误差%</div><div class="result-value" id="cemsa-maxrel-all">—</div></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="cems" data-tab="kfactor">
+  <div class="template-section-title">速度场系数</div>
+  <div class="helper-text" style="margin-bottom:8px">每行输入 5 组参比方法 / CEMS 同期流速（m/s），自动计算场系数日平均值及相对标准偏差。</div>
+  <table class="simple-table" id="cems-k-table">
+    <thead><tr><th>日期</th><th>参比1-5</th><th>CEMS1-5</th><th>Kvi日平均</th><th>RSD%</th></tr></thead>
+    <tbody>
+    <tr><td>第1天</td><td><input class="vi-input" id="k-r1" oninput="calcCems()" placeholder="3.4,3.6,3.2,3.5,3.7"/></td><td><input class="vi-input" id="k-c1" oninput="calcCems()" placeholder="3.5,3.5,3.4,3.4,3.4"/></td><td id="k-avg1">—</td><td id="k-rsd1">—</td></tr>
+    <tr><td>第2天</td><td><input class="vi-input" id="k-r2" oninput="calcCems()"/></td><td><input class="vi-input" id="k-c2" oninput="calcCems()"/></td><td id="k-avg2">—</td><td id="k-rsd2">—</td></tr>
+    <tr><td>第3天</td><td><input class="vi-input" id="k-r3" oninput="calcCems()"/></td><td><input class="vi-input" id="k-c3" oninput="calcCems()"/></td><td id="k-avg3">—</td><td id="k-rsd3">—</td></tr>
+    </tbody>
+  </table>
+  <div class="meta-row" style="margin-top:12px">
+    <div class="field"><label>RSD限值（%）</label><input id="k-rsd-limit" oninput="calcCems()" step="0.1" type="number" value="5"/></div>
+  </div>
+  <div class="template-grid-three" style="margin-top:12px">
+    <div class="result-box"><div class="result-label">速度场系数平均值</div><div class="result-value" id="k-overall">—</div></div>
+    <div class="result-box"><div class="result-label">标准差</div><div class="result-value" id="k-std">—</div></div>
+    <div class="result-box"><div class="result-label">RSD（%）</div><div class="result-value" id="k-overall-rsd">—</div></div>
+    <div class="result-box"><div class="result-label">判定</div><div class="result-value" id="k-judge">—</div></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="cems" data-tab="refacc">
+  <div class="template-section-title">参比准确度</div>
+  <div class="meta-row">
+    <div class="field"><label>参比颗粒物均值（mg/m³）</label><input id="acc-ref-pm" oninput="calcCems()" step="0.01" type="number"/></div>
+    <div class="field"><label>CEMS颗粒物均值（mg/m³）</label><input id="acc-cems-pm" oninput="calcCems()" step="0.01" type="number"/></div>
+    <div class="field"><label>颗粒物绝对误差限值</label><input id="acc-pm-limit" oninput="calcCems()" step="0.1" type="number" value="2"/></div>
+    <div class="field"><label>参比流速均值（m/s）</label><input id="acc-ref-v" oninput="calcCems()" step="0.01" type="number"/></div>
+    <div class="field"><label>CEMS流速均值（m/s）</label><input id="acc-cems-v" oninput="calcCems()" step="0.01" type="number"/></div>
+    <div class="field"><label>流速相对误差限值（%）</label><input id="acc-v-limit" oninput="calcCems()" step="0.1" type="number" value="10"/></div>
+    <div class="field"><label>参比温度均值（℃）</label><input id="acc-ref-t" oninput="calcCems()" step="0.01" type="number"/></div>
+    <div class="field"><label>CEMS温度均值（℃）</label><input id="acc-cems-t" oninput="calcCems()" step="0.01" type="number"/></div>
+    <div class="field"><label>温度绝对误差限值（℃）</label><input id="acc-t-limit" oninput="calcCems()" step="0.1" type="number" value="3"/></div>
+    <div class="field"><label>参比湿度均值（%）</label><input id="acc-ref-h" oninput="calcCems()" step="0.01" type="number"/></div>
+    <div class="field"><label>CEMS湿度均值（%）</label><input id="acc-cems-h" oninput="calcCems()" step="0.01" type="number"/></div>
+    <div class="field"><label>湿度绝对误差限值（%）</label><input id="acc-h-limit" oninput="calcCems()" step="0.1" type="number" value="5"/></div>
+  </div>
+  <div class="template-grid-two" style="margin-top:12px">
+    <div class="result-box"><div class="result-label">颗粒物绝对误差（mg/m³）</div><div class="result-value" id="acc-pm-err">—</div><div class="stat-sub" id="acc-pm-judge">—</div></div>
+    <div class="result-box"><div class="result-label">流速相对误差（%）</div><div class="result-value" id="acc-v-err">—</div><div class="stat-sub" id="acc-v-judge">—</div></div>
+    <div class="result-box"><div class="result-label">温度绝对误差（℃）</div><div class="result-value" id="acc-t-err">—</div><div class="stat-sub" id="acc-t-judge">—</div></div>
+    <div class="result-box"><div class="result-label">湿度绝对误差（%）</div><div class="result-value" id="acc-h-err">—</div><div class="stat-sub" id="acc-h-judge">—</div></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="cems" data-tab="report">
+  <div class="report-sheet">
+    <div class="report-head">
+      <div>
+        <div class="report-title">CEMS 72小时调试报告预览</div>
+        <div class="report-subtitle">系统将根据各子表的当前计算结果自动汇总关键指标、判定结论与报告摘要，可直接打印归档或导出结构化数据。</div>
+      </div>
+      <div class="report-badge" id="cemsr-badge">待完善</div>
+    </div>
+
+    <div class="report-meta">
+      <div class="kv-item"><div class="kv-label">企业名称</div><div class="kv-value" id="cemsr-company">—</div></div>
+      <div class="kv-item"><div class="kv-label">排口名称</div><div class="kv-value" id="cemsr-port">—</div></div>
+      <div class="kv-item"><div class="kv-label">调试周期</div><div class="kv-value" id="cemsr-period">—</div></div>
+      <div class="kv-item"><div class="kv-label">检测单位</div><div class="kv-value" id="cemsr-org">—</div></div>
+      <div class="kv-item"><div class="kv-label">编制人</div><div class="kv-value" id="cemsr-author">—</div></div>
+      <div class="kv-item"><div class="kv-label">报告日期</div><div class="kv-value" id="cemsr-date">—</div></div>
+    </div>
+
+    <table class="summary-table">
+      <thead><tr><th>模块</th><th>关键结果</th><th>判定</th><th>备注</th></tr></thead>
+      <tbody>
+        <tr><td>漂移检测</td><td id="cemsr-drift-key">—</td><td id="cemsr-drift-status">—</td><td id="cemsr-drift-note">—</td></tr>
+        <tr><td>示值误差</td><td id="cemsr-ind-key">—</td><td id="cemsr-ind-status">—</td><td id="cemsr-ind-note">—</td></tr>
+        <tr><td>准确度评估</td><td id="cemsr-acc-key">—</td><td id="cemsr-acc-status">—</td><td id="cemsr-acc-note">—</td></tr>
+        <tr><td>速度场系数</td><td id="cemsr-k-key">—</td><td id="cemsr-k-status">—</td><td id="cemsr-k-note">—</td></tr>
+        <tr><td>参比准确度</td><td id="cemsr-ref-key">—</td><td id="cemsr-ref-status">—</td><td id="cemsr-ref-note">—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="report-kpi">
+      <div class="result-box"><div class="result-label">已评模块数</div><div class="result-value" id="cemsr-active">—</div></div>
+      <div class="result-box"><div class="result-label">通过模块数</div><div class="result-value" id="cemsr-pass">—</div></div>
+      <div class="result-box"><div class="result-label">综合结论</div><div class="result-value" id="cemsr-conclusion" style="font-size:14px">—</div></div>
+    </div>
+
+    <div class="kv-item"><div class="kv-label">报告摘要</div><div class="kv-value" id="cemsr-summary">—</div></div>
+
+    <div class="btn-row report-actions">
+      <button class="btn primary" onclick="refreshCemsReport()">刷新报告</button>
+      <button class="btn" onclick="exportCemsCSV()">导出 CEMS CSV</button>
+      <button class="btn" onclick="exportCemsJSON()">导出 CEMS JSON</button>
+      <button class="btn success" onclick="printCemsReport()">打印正式报告</button>
+    </div>
+
+    <div class="report-signature">
+      <div>编制：________________</div>
+      <div>审核：________________</div>
+      <div>日期：________________</div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div><div class="template-panel" id="template-occupational">
+<div class="card">
+<div class="card-title">🧰 职业卫生计算模板</div>
+<div class="template-subtitle">已拆成“化学因素 / 物理因素”两个主业务页，避免两个专业方向挤在一个屏幕里。</div>
+<div class="module-subnav">
+<button class="module-subbtn active" data-group="occupational" data-tab="chem" onclick="switchTemplateSubTab('occupational','chem')">化学因素</button>
+<button class="module-subbtn" data-group="occupational" data-tab="physical" onclick="switchTemplateSubTab('occupational','physical')">物理因素</button>
+</div>
+<div class="module-subpanel active" data-group="occupational" data-tab="chem">
+  <div class="meta-row">
+    <div class="field"><label>接触时间1（h）</label><input id="occ-chem-t1" oninput="calcOccupational()" step="0.1" type="number" value="2"/></div>
+    <div class="field"><label>接触时间2（h）</label><input id="occ-chem-t2" oninput="calcOccupational()" step="0.1" type="number"/></div>
+    <div class="field"><label>PC-STEL</label><input id="occ-chem-stel" oninput="calcOccupational()" step="0.1" type="number" value="600"/></div>
+    <div class="field"><label>PC-TWA</label><input id="occ-chem-twa-limit" oninput="calcOccupational()" step="0.1" type="number" value="300"/></div>
+    <div class="field"><label>浓度组1（5个，逗号分隔）</label><input id="occ-chem-c1" oninput="calcOccupational()" value="1.19,2.6"/></div>
+    <div class="field"><label>浓度组2（可选）</label><input id="occ-chem-c2" oninput="calcOccupational()"/></div>
+  </div>
+  <div class="template-grid-two" style="margin-top:12px">
+    <div class="result-box"><div class="result-label">CPE / PC-STEL判定</div><div class="result-value" id="occ-cste">—</div></div>
+    <div class="result-box"><div class="result-label">CTWA / PC-TWA判定</div><div class="result-value" id="occ-ctwa">—</div></div>
+    <div class="result-box"><div class="result-label">3×PC-TWA / 5×PC-TWA</div><div class="result-value" id="occ-peak-limit">—</div></div>
+    <div class="result-box"><div class="result-label">峰接触判定</div><div class="result-value" id="occ-peak-judge">—</div></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="occupational" data-tab="physical">
+  <div class="meta-row">
+    <div class="field"><label>接触时间（h/d）</label><input id="occ-noise-time" oninput="calcOccupational()" step="0.1" type="number" value="4"/></div>
+    <div class="field"><label>每周工作天数</label><input id="occ-noise-days" oninput="calcOccupational()" step="0.1" type="number" value="5"/></div>
+    <div class="field"><label>职业接触限值</label><input id="occ-noise-limit" oninput="calcOccupational()" step="0.1" type="number" value="85"/></div>
+    <div class="field"><label>三次测量值（dB）</label><input id="occ-noise-v" oninput="calcOccupational()" value="69.7,70.5,72.7"/></div>
+  </div>
+  <div class="template-grid-two" style="margin-top:12px">
+    <div class="result-box"><div class="result-label">LAeq,Te</div><div class="result-value" id="occ-laeq">—</div></div>
+    <div class="result-box"><div class="result-label">LEX,8h / LEX,w</div><div class="result-value" id="occ-lex">—</div></div>
+  </div>
+</div>
+</div>
+</div><div class="template-panel" id="template-o6">
+<div class="card">
+<div class="card-title">🧪 厂区东北侧O₆</div>
+<div class="template-subtitle">已拆成“数据录入 / 报告预览 / 结果换算”三段，分段浓度表继续保留为系统内部逻辑，不直接暴露给用户。</div>
+<div class="module-subnav">
+<button class="module-subbtn active" data-group="o6panel" data-tab="entry" onclick="switchTemplateSubTab('o6panel','entry')">数据录入</button>
+<button class="module-subbtn" data-group="o6panel" data-tab="report" onclick="switchTemplateSubTab('o6panel','report')">报告预览</button>
+<button class="module-subbtn" data-group="o6panel" data-tab="result" onclick="switchTemplateSubTab('o6panel','result')">结果换算</button>
+</div>
+<div class="module-subpanel active" data-group="o6panel" data-tab="entry">
+  <div class="meta-row">
+    <div class="field"><label>10倍 a正确总人次（18次判定）</label><input id="o6p-a10" oninput="calcO6Panel()" step="1" type="number" value="3"/></div>
+    <div class="field"><label>10倍 b不明总人次（18次判定）</label><input id="o6p-b10" oninput="calcO6Panel()" step="1" type="number" value="7"/></div>
+    <div class="field"><label>100倍 a正确总人次（18次判定）</label><input id="o6p-a100" oninput="calcO6Panel()" step="1" type="number"/></div>
+    <div class="field"><label>100倍 b不明总人次（18次判定）</label><input id="o6p-b100" oninput="calcO6Panel()" step="1" type="number"/></div>
+    <div class="field"><label>1000倍 a正确总人次（18次判定）</label><input id="o6p-a1000" oninput="calcO6Panel()" step="1" type="number"/></div>
+    <div class="field"><label>1000倍 b不明总人次（18次判定）</label><input id="o6p-b1000" oninput="calcO6Panel()" step="1" type="number"/></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="o6panel" data-tab="report">
+  <div class="kv-grid">
+    <div class="kv-item"><div class="kv-label">报告描述</div><div class="kv-value" id="o6p-report">—</div></div>
+    <div class="kv-item"><div class="kv-label">换算区间</div><div class="kv-value" id="o6p-range">—</div></div>
+    <div class="kv-item"><div class="kv-label">记录建议</div><div class="kv-value" id="o6p-advice">—</div></div>
+  </div>
+</div>
+<div class="module-subpanel" data-group="o6panel" data-tab="result">
+  <div class="template-grid-three" style="margin-top:12px">
+    <div class="result-box"><div class="result-label">M1</div><div class="result-value" id="o6p-m1">—</div></div>
+    <div class="result-box"><div class="result-label">M2</div><div class="result-value" id="o6p-m2">—</div></div>
+    <div class="result-box"><div class="result-label">M3</div><div class="result-value" id="o6p-m3">—</div></div>
+  </div>
+  <div class="result-box" style="margin-top:12px"><div class="result-label">臭气浓度</div><div class="result-value" id="o6p-odor">—</div></div>
+</div>
+</div>
+</div><!-- 统计结果页签 -->
+<div class="tab-panel" id="tab-statistics">
+<div class="card">
+<div class="card-title">
+<svg fill="none" height="14" viewbox="0 0 16 16" width="14"><path d="M2 12 L5 8 L8 9 L11 5 L14 7" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path><path d="M2 14 h12" stroke="currentColor" stroke-linecap="round" stroke-width="1.2"></path></svg>
+          📊 统计结果
+        </div>
+<div class="limit-row" style="flex-wrap:wrap;justify-content:flex-start;gap:10px;">
+<label>限值：</label>
+<input id="limit" step="0.001" type="number" value="0.150"/>
+<label style="margin-left:10px;">小数位数：</label>
+<input id="decimal" min="0" step="1" style="width:90px;" type="number" value="6"/>
+<button class="btn primary" onclick="saveSettings()">保存参数</button>
+</div>
+<div class="stats-grid">
+<div class="stat">
+<div class="stat-label">测点数 n</div>
+<div class="stat-val" id="r-n">—</div>
+</div>
+<div class="stat">
+<div class="stat-label">平均流速 v̄ (m/s)</div>
+<div class="stat-val" id="r-vbar">—</div>
+</div>
+<div class="stat">
+<div class="stat-label">样本标准差 s (m/s)</div>
+<div class="stat-val" id="r-s">—</div>
+<div class="stat-sub">s = √[Σ(vᵢ−v̄)²/(n−1)]</div>
+</div>
+<div class="stat">
+<div class="stat-label">流速相对方差 σᵣ</div>
+<div class="stat-val" id="r-sr">—</div>
+<div class="stat-sub">σᵣ = √[Σ(vᵢ−v̄)²/((n−1)×v̄²)]</div>
+</div>
+</div>
+<div class="verdict none" id="verdict">
+<div class="verdict-label">判定结果</div>
+<div class="verdict-main" id="verdict-text">请录入至少 2 个测点</div>
+</div>
+<div class="recheck">
+<div class="recheck-title">复核验证</div>
+<div class="rc-row"><span class="rc-key">Σ(vᵢ − v̄)²</span><span class="rc-val" id="rc-sum">—</span></div>
+<div class="rc-row"><span class="rc-key">σᵣ（复核）</span><span class="rc-val" id="rc-sr">—</span></div>
+<div class="rc-row"><span class="rc-key">差值</span><span class="rc-val" id="rc-diff">—</span></div>
+</div>
+<div class="btn-row">
+<button class="btn primary" onclick="saveRecord()">💾 保存记录</button>
+<button class="btn success" onclick="printReport()">🖨️ 打印报告</button>
+<button class="btn" onclick="exportCSV()">📄 导出 CSV</button>
+<button class="btn" onclick="exportJSON()">📦 导出 JSON</button>
+</div>
+<div class="print-signature">
+<div>检测人员签字：________________</div>
+<div>审核人员签字：________________</div>
+<div>日期：________________</div>
+</div>
+</div>
+</div>
+<!-- 数据可视化页签 -->
+<div class="tab-panel" id="tab-visualization">
+<div class="chart-grid">
+<div class="chart-wrap">
+<div class="section-title">各测点流速分布（与平均值对比）</div>
+<canvas id="chart-vel"></canvas>
+</div>
+<div class="chart-wrap">
+<div class="section-title">偏差分布</div>
+<canvas id="chart-dev"></canvas>
+</div>
+</div>
+<div class="chart-wrap" style="margin-top:16px;">
+<div class="section-title">历史 σᵣ 值趋势</div>
+<canvas id="chart-trend" style="max-height:200px"></canvas>
+</div>
+</div>
+<!-- 保存查询页签 -->
+<div class="tab-panel" id="tab-history">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:8px;flex-wrap:wrap">
+<div id="hist-count" style="font-size:13px;color:var(--text2)">共 0 条记录</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn" onclick="exportHistory()">导出历史记录</button>
+<button class="btn danger" onclick="clearHistory()">清空保存的记录</button>
+</div>
+</div>
+<div style="margin-bottom:16px">
+<div style="display:flex;align-items:center;gap:8px">
+<svg fill="none" height="16" style="opacity:0.6" viewbox="0 0 16 16" width="16">
+<circle cx="7" cy="7" r="4" stroke="currentColor" stroke-width="1.2"></circle>
+<path d="M11 11L14 14" stroke="currentColor" stroke-linecap="round" stroke-width="1.2"></path>
+</svg>
+<input id="history-search" placeholder="按点位、日期、结果、编号搜索" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:13px" type="text"/>
+</div>
+</div>
+<div class="history-list" id="history-list"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="toast-wrap" id="toasts"></div>
 <script>
 const EXAMPLE = [15.78,15.8,18.1,18.1,17.9,17.8,17.9,16.5,16.1,15.0];
 let cfg = { limit: 0.150, decimal: 6 };
 let velInputs = [];
 let chartVel = null, chartDev = null, chartTrend = null;
+const currentTemplateState = { id: 'monitoring' };
 
 (function init(){
+  // 初始化时需要先有 currentTemplateState，避免模板切换脚本报错
   loadCfg();
   buildTable(10);
   bindEvents();
   renderHistory();
-  document.getElementById('m-date').valueAsDate = new Date();
+  const dateEl = document.getElementById('m-date');
+  if (dateEl) dateEl.valueAsDate = new Date();
   calc();
+  selectTemplate('monitoring');
 })();
 
 function bindEvents(){
@@ -1821,18 +2974,754 @@ function toast(msg, type = ''){
 }
 
 // ── Tabs ──
-function switchTab(tabId) {
-  const tabButtons = document.querySelectorAll('.tab-btn');
-  tabButtons.forEach(btn => btn.classList.remove('active'));
+function switchTab(tabId, force = false) {
+  if (!force && currentTemplateState.id !== 'monitoring' && tabId !== 'data-entry') {
+    return;
+  }
 
-  const tabPanels = document.querySelectorAll('.tab-panel');
-  tabPanels.forEach(panel => panel.classList.remove('active'));
+  const allowed = ['data-entry', 'statistics', 'visualization', 'history'];
+  const finalTab = allowed.includes(tabId) ? tabId : 'data-entry';
 
-  const activeBtn = document.querySelector(`[onclick="switchTab('${tabId}')"]`);
-  const activePanel = document.getElementById(`tab-${tabId}`);
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+
+  const activeBtn = document.querySelector(`.tab-btn[onclick="switchTab('${finalTab}')"]`);
+  const activePanel = document.getElementById(`tab-${finalTab}`);
   if (activeBtn) activeBtn.classList.add('active');
   if (activePanel) activePanel.classList.add('active');
 }
+
+window.switchTab = switchTab;
+
+const PARSHALL_DATA = [
+  {id:1,b:0.025,c:60.4,n:1.55,hmin:0.015,hmax:0.21,qmin:0.09,qmax:5.4,sub:0.5},
+  {id:2,b:0.051,c:120.7,n:1.55,hmin:0.015,hmax:0.24,qmin:0.18,qmax:13.2,sub:0.5},
+  {id:3,b:0.076,c:177.1,n:1.55,hmin:0.03,hmax:0.33,qmin:0.77,qmax:32.1,sub:0.5},
+  {id:4,b:0.152,c:381.2,n:1.58,hmin:0.03,hmax:0.45,qmin:1.5,qmax:111,sub:0.6},
+  {id:5,b:0.228,c:535.4,n:1.53,hmin:0.03,hmax:0.60,qmin:2.5,qmax:251,sub:0.6},
+  {id:6,b:0.25,c:561,n:1.513,hmin:0.03,hmax:0.60,qmin:3,qmax:250,sub:0.6},
+  {id:7,b:0.30,c:679,n:1.521,hmin:0.03,hmax:0.75,qmin:3.5,qmax:400,sub:0.6},
+  {id:8,b:0.45,c:1038,n:1.537,hmin:0.03,hmax:0.75,qmin:4.5,qmax:630,sub:0.6},
+  {id:9,b:0.60,c:1403,n:1.548,hmin:0.05,hmax:0.75,qmin:12.5,qmax:850,sub:0.6},
+  {id:10,b:0.75,c:1772,n:1.557,hmin:0.06,hmax:0.75,qmin:25,qmax:1100,sub:0.6},
+  {id:11,b:0.90,c:2147,n:1.565,hmin:0.06,hmax:0.75,qmin:30,qmax:1250,sub:0.6},
+  {id:12,b:1.00,c:2397,n:1.569,hmin:0.06,hmax:0.80,qmin:30,qmax:1500,sub:0.7},
+  {id:13,b:1.20,c:2904,n:1.577,hmin:0.06,hmax:0.80,qmin:35,qmax:2000,sub:0.7},
+  {id:14,b:1.50,c:3668,n:1.586,hmin:0.06,hmax:0.80,qmin:45,qmax:2500,sub:0.7},
+  {id:15,b:1.80,c:4440,n:1.593,hmin:0.08,hmax:0.80,qmin:80,qmax:3000,sub:0.7},
+  {id:16,b:2.10,c:5222,n:1.599,hmin:0.08,hmax:0.80,qmin:95,qmax:3600,sub:0.7},
+  {id:17,b:2.40,c:6004,n:1.605,hmin:0.08,hmax:0.80,qmin:100,qmax:4000,sub:0.7},
+  {id:18,b:3.05,c:7463,n:1.6,hmin:0.09,hmax:1.07,qmin:160,qmax:8280,sub:0.8},
+  {id:19,b:3.66,c:8859,n:1.6,hmin:0.09,hmax:1.37,qmin:190,qmax:14680,sub:0.8},
+  {id:20,b:4.57,c:10960,n:1.6,hmin:0.09,hmax:1.67,qmin:230,qmax:25040,sub:0.8},
+  {id:21,b:6.10,c:14450,n:1.6,hmin:0.09,hmax:1.83,qmin:310,qmax:37970,sub:0.8},
+  {id:22,b:7.62,c:17940,n:1.6,hmin:0.09,hmax:1.83,qmin:380,qmax:47160,sub:0.8},
+  {id:23,b:9.14,c:21440,n:1.6,hmin:0.09,hmax:1.83,qmin:460,qmax:56330,sub:0.8},
+  {id:24,b:12.19,c:28430,n:1.6,hmin:0.09,hmax:1.83,qmin:600,qmax:74700,sub:0.8},
+  {id:25,b:15.24,c:35410,n:1.6,hmin:0.09,hmax:1.83,qmin:750,qmax:93040,sub:0.8}
+];
+function num(id){ const el=document.getElementById(id); if(!el) return NaN; const v=parseFloat(el.value); return isNaN(v)?NaN:v; }
+function setv(id,val,dp=4,suffix=''){ const el=document.getElementById(id); if(!el) return; el.textContent=(val===null||val===undefined||Number.isNaN(val))?'—':`${Number(val).toFixed(dp)}${suffix}`; }
+function setPlain(id,val){ const el=document.getElementById(id); if(el) el.textContent = val; }
+function formatNum(val, dp=2, suffix=''){ return (val===null||val===undefined||Number.isNaN(val)) ? '—' : `${Number(val).toFixed(dp)}${suffix}`; }
+function avg(arr){ const v=arr.filter(x=>!Number.isNaN(x)); return v.length? v.reduce((a,b)=>a+b,0)/v.length : NaN; }
+function energyAvg(arr){ const v=arr.filter(x=>!Number.isNaN(x)); if(!v.length) return NaN; return 10*Math.log10(v.reduce((a,b)=>a+Math.pow(10,0.1*b),0)/v.length); }
+function stdev(arr){ const v=arr.filter(x=>!Number.isNaN(x)); if(v.length<2) return NaN; const m=avg(v); return Math.sqrt(v.reduce((a,b)=>a+(b-m)*(b-m),0)/(v.length-1)); }
+function parseNums(text){ return String(text||'').split(/[\s,，;；\n]+/).map(s=>parseFloat(s)).filter(v=>!isNaN(v)); }
+
+function selectTemplate(id){
+  currentTemplateState.id = id || 'monitoring';
+
+  document.querySelectorAll('.template-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.template === currentTemplateState.id);
+  });
+
+  document.querySelectorAll('.template-panel').forEach(panel => {
+    panel.classList.toggle('active', panel.id === `template-${currentTemplateState.id}`);
+  });
+
+  const tabNav = document.querySelector('.tab-navigation');
+  const noteCard = document.querySelector('#tab-data-entry .note-card');
+
+  if(currentTemplateState.id === 'monitoring'){
+    if(tabNav) tabNav.classList.remove('template-hidden');
+    if(noteCard) noteCard.style.display = '';
+    const tabDataEntry = document.getElementById('tab-data-entry');
+    const tabStatistics = document.getElementById('tab-statistics');
+    const tabVisualization = document.getElementById('tab-visualization');
+    const tabHistory = document.getElementById('tab-history');
+    if(tabDataEntry && tabStatistics && tabVisualization && tabHistory){
+      if(!tabDataEntry.classList.contains('active') &&
+         !tabStatistics.classList.contains('active') &&
+         !tabVisualization.classList.contains('active') &&
+         !tabHistory.classList.contains('active')) {
+        switchTab('data-entry');
+      }
+    }
+  } else {
+    switchTab('data-entry', true);
+    if(tabNav) tabNav.classList.add('template-hidden');
+    if(noteCard) noteCard.style.display = 'none';
+  }
+}
+
+
+function switchFlueGasTab(tab){
+  const finalTab = tab || 'main';
+  document.querySelectorAll('.fluegas-subbtn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.fluegasTab === finalTab);
+  });
+  document.querySelectorAll('.fluegas-subpanel').forEach(panel => {
+    panel.classList.toggle('active', panel.id === `fluegas-tab-${finalTab}`);
+  });
+}
+window.switchFlueGasTab = switchFlueGasTab;
+
+function switchTemplateSubTab(group, tab){
+  const finalTab = tab || 'entry';
+  document.querySelectorAll(`.module-subbtn[data-group="${group}"]`).forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === finalTab);
+  });
+  document.querySelectorAll(`.module-subpanel[data-group="${group}"]`).forEach(panel => {
+    panel.classList.toggle('active', panel.dataset.tab === finalTab);
+  });
+}
+window.switchTemplateSubTab = switchTemplateSubTab;
+
+window.selectTemplate = selectTemplate;
+
+// 移动端模板中心切换函数
+function toggleMobileTemplateSidebar() {
+  const sidebar = document.querySelector('.template-sidebar');
+  if (sidebar) {
+    sidebar.classList.toggle('mobile-active');
+  }
+}
+
+window.toggleMobileTemplateSidebar = toggleMobileTemplateSidebar;
+
+function fluegasJudge(value, limit, mode='rel'){
+  if(Number.isNaN(value) || Number.isNaN(limit)) return '—';
+  const pass = Math.abs(value) <= limit;
+  return pass ? '合格' : '不合格';
+}
+function fluegasCompare(prefix, limitId, mode='rel', dp=2, unit=''){
+  const refs = [num(`${prefix}-r1`), num(`${prefix}-r2`), num(`${prefix}-r3`)];
+  const cems = [num(`${prefix}-c1`), num(`${prefix}-c2`), num(`${prefix}-c3`)];
+  refs.forEach((v,i)=> setPlain(`${prefix}-d${i+1}`, (!Number.isNaN(v) && !Number.isNaN(cems[i])) ? formatNum(cems[i]-v, dp, unit) : '—'));
+  const refAvg = avg(refs), cemsAvg = avg(cems);
+  const absErr = (!Number.isNaN(refAvg) && !Number.isNaN(cemsAvg)) ? cemsAvg - refAvg : NaN;
+  const relErr = (!Number.isNaN(absErr) && !Number.isNaN(refAvg) && refAvg !== 0) ? absErr / refAvg * 100 : NaN;
+  const limit = num(limitId);
+  const metric = mode === 'abs' ? absErr : relErr;
+  setPlain(`${prefix}-ravg`, formatNum(refAvg, dp, unit));
+  setPlain(`${prefix}-cavg`, formatNum(cemsAvg, dp, unit));
+  setPlain(`${prefix}-abs`, formatNum(absErr, dp, unit));
+  setPlain(`${prefix}-rel`, formatNum(relErr, 2, '%'));
+  setPlain(`${prefix}-judge`, fluegasJudge(metric, limit, mode));
+  return { refAvg, cemsAvg, absErr, relErr, limit, judge: fluegasJudge(metric, limit, mode) };
+}
+function fluegasDual(refId, cemsId, limitId, absId, relId, judgeId, dp=2, unit=''){
+  const ref = num(refId), cems = num(cemsId), limit = num(limitId);
+  const absErr = (!Number.isNaN(ref) && !Number.isNaN(cems)) ? cems - ref : NaN;
+  const relErr = (!Number.isNaN(absErr) && !Number.isNaN(ref) && ref !== 0) ? absErr / ref * 100 : NaN;
+  setPlain(absId, formatNum(absErr, dp, unit));
+  setPlain(relId, formatNum(relErr, 2, '%'));
+  setPlain(judgeId, fluegasJudge(relErr, limit, 'rel'));
+  return { absErr, relErr, judge: fluegasJudge(relErr, limit, 'rel') };
+}
+function calcFlueGas(){
+  const base = num('fg-base-o2');
+  const o2 = [num('fg-o2-1'),num('fg-o2-2'),num('fg-o2-3')];
+  const flow = [num('fg-flow-1'),num('fg-flow-2'),num('fg-flow-3')];
+  const temp = [num('fg-temp1'),num('fg-temp2'),num('fg-temp3')];
+  const moist = [num('fg-moist1'),num('fg-moist2'),num('fg-moist3')];
+  const o2Avg = avg(o2), flowAvg = avg(flow), tempAvg = avg(temp), moistAvg = avg(moist);
+  setv('fg-o2-avg', o2Avg, 3); setv('fg-flow-avg', flowAvg, 1);
+  setv('fg-res-o2', o2Avg, 3, '%'); setv('fg-res-temp', tempAvg, 1, '℃'); setv('fg-res-moist', moistAvg, 1, '%');
+  ['co','pm','so2','nox'].forEach(k=>{
+    const vals=[num(`fg-${k}-1`),num(`fg-${k}-2`),num(`fg-${k}-3`)];
+    const a=avg(vals);
+    setv(`fg-${k}-avg`, a, 3);
+    const converted = vals.map((v,i)=> (!Number.isNaN(v)&&!Number.isNaN(base)&&!Number.isNaN(o2[i])&& (21-o2[i])!==0) ? ((21-base)/(21-o2[i]))*v : NaN);
+    const rates = vals.map((v,i)=> (!Number.isNaN(v)&&!Number.isNaN(flow[i])) ? v*flow[i]/1000000 : NaN);
+    setv(`fg-${k}-a1`, a, 3);
+    setv(`fg-${k}-a2`, avg(converted), 3);
+    setv(`fg-${k}-a3`, avg(rates), 4);
+  });
+
+  const dustPm = fluegasCompare('fg-dust-pm', 'fg-dust-pm-limit', 'rel', 2);
+  const dustFlow = fluegasCompare('fg-dust-flow', 'fg-dust-flow-limit', 'rel', 2);
+  const dustTemp = fluegasCompare('fg-dust-temp', 'fg-dust-temp-limit', 'abs', 2);
+  setPlain('fg-dust-pm-th', formatNum(num('fg-dust-pm-limit'), 1, '%'));
+  setPlain('fg-dust-flow-th', formatNum(num('fg-dust-flow-limit'), 1, '%'));
+  setPlain('fg-dust-temp-th', formatNum(num('fg-dust-temp-limit'), 1, '℃'));
+  const tempJudge = fluegasJudge(dustTemp.absErr, num('fg-dust-temp-limit'), 'abs');
+  setPlain('fg-dust-temp-judge', tempJudge);
+  const dustPass = [dustPm.judge, dustFlow.judge, tempJudge].every(v => v === '合格');
+  setPlain('fg-dust-summary', [dustPm.judge,dustFlow.judge,tempJudge].includes('—') ? '请补全三类比对数据。' : `颗粒物/流速/温度比对${dustPass ? '全部合格' : '存在超限项'}`);
+
+  const noxCmp = fluegasCompare('fg-noxcmp', 'fg-noxcmp-limit', 'rel', 2);
+  setPlain('fg-noxcmp-judge', noxCmp.judge === '—' ? '—' : `${noxCmp.judge}（限值 ${formatNum(noxCmp.limit,1,'%')}）`);
+  const so2Cmp = fluegasCompare('fg-so2cmp', 'fg-so2cmp-limit', 'rel', 2);
+  setPlain('fg-so2cmp-judge', so2Cmp.judge === '—' ? '—' : `${so2Cmp.judge}（限值 ${formatNum(so2Cmp.limit,1,'%')}）`);
+  const o2Cmp = fluegasCompare('fg-o2cmp', 'fg-o2cmp-limit', 'abs', 2);
+  const o2Judge = fluegasJudge(o2Cmp.absErr, num('fg-o2cmp-limit'), 'abs');
+  setPlain('fg-o2cmp-judge', o2Judge === '—' ? '—' : `${o2Judge}（限值 ${formatNum(num('fg-o2cmp-limit'),1,'%')}）`);
+
+  const range = num('fg-drift-range');
+  const zVals = [num('fg-drift-z1'), num('fg-drift-z2'), num('fg-drift-z3')].filter(v=>!Number.isNaN(v));
+  const sVals = [num('fg-drift-s1'), num('fg-drift-s2'), num('fg-drift-s3')].filter(v=>!Number.isNaN(v));
+  const zMax = zVals.length ? zVals.reduce((a,b)=>Math.abs(a)>=Math.abs(b)?a:b) : NaN;
+  const sMax = sVals.length ? sVals.reduce((a,b)=>Math.abs(a)>=Math.abs(b)?a:b) : NaN;
+  const zPct = (!Number.isNaN(zMax) && !Number.isNaN(range) && range !== 0) ? zMax / range * 100 : NaN;
+  const sPct = (!Number.isNaN(sMax) && !Number.isNaN(range) && range !== 0) ? sMax / range * 100 : NaN;
+  const indRef = num('fg-drift-ind-ref'), indCems = num('fg-drift-ind-cems');
+  const indAbs = (!Number.isNaN(indRef) && !Number.isNaN(indCems)) ? indCems - indRef : NaN;
+  const indRel = (!Number.isNaN(indAbs) && !Number.isNaN(indRef) && indRef !== 0) ? indAbs / indRef * 100 : NaN;
+  setPlain('fg-drift-zmax', formatNum(zMax, 3));
+  setPlain('fg-drift-smax', formatNum(sMax, 3));
+  setPlain('fg-drift-zpct', formatNum(zPct, 2, '%'));
+  setPlain('fg-drift-spct', formatNum(sPct, 2, '%'));
+  setPlain('fg-drift-zth', formatNum(num('fg-drift-zero-limit'), 1, '%'));
+  setPlain('fg-drift-sth', formatNum(num('fg-drift-span-limit'), 1, '%'));
+  setPlain('fg-drift-inderr', formatNum(indRel, 2, '%'));
+  setPlain('fg-drift-indth', formatNum(num('fg-drift-ind-limit'), 1, '%'));
+  const zJudge = fluegasJudge(zPct, num('fg-drift-zero-limit'), 'rel');
+  const sJudge = fluegasJudge(sPct, num('fg-drift-span-limit'), 'rel');
+  const iJudge = fluegasJudge(indRel, num('fg-drift-ind-limit'), 'rel');
+  setPlain('fg-drift-zjudge', zJudge); setPlain('fg-drift-sjudge', sJudge); setPlain('fg-drift-indjudge', iJudge);
+  setPlain('fg-drift-summary', [zJudge,sJudge,iJudge].includes('—') ? '请补全漂移与示值误差数据。' : ([zJudge,sJudge,iJudge].every(v=>v==='合格') ? '漂移和示值误差均在允许范围内。' : '存在至少一项超出允许范围。'));
+
+  const waterItems = [
+    ['cod','COD'], ['nh3','氨氮'], ['tp','总磷']
+  ];
+  const waterJudges = [];
+  waterItems.forEach(([key,label])=>{
+    const result = fluegasDual(`fg-water-${key}-ref`, `fg-water-${key}-cems`, `fg-water-${key}-limit`, `fg-water-${key}-abs`, `fg-water-${key}-rel`, `fg-water-${key}-judge`, 2);
+    waterJudges.push(result.judge);
+  });
+  setPlain('fg-water-summary', waterJudges.includes('—') ? '请补充在线水质比对数据。' : (waterJudges.every(v=>v==='合格') ? '水质在线比对全部合格。' : '水质在线比对存在超限项。'));
+}
+function calcNoiseCheck(){
+  const sec = num('nc-sec'), leq = num('nc-leq');
+  document.getElementById('nc-min').value = (!Number.isNaN(sec)&&sec>0)?(sec/60).toFixed(2):'';
+  const logt = (!Number.isNaN(sec)&&sec>0)?10*Math.log10(sec):NaN;
+  const sel = (!Number.isNaN(logt)&&!Number.isNaN(leq)) ? leq + logt : NaN;
+  setv('nc-logt', logt, 3); setv('nc-sel-out', sel, 3);
+  calcNoiseCheckReverse();
+}
+function calcNoiseCheckReverse(){
+  const sec = num('nc-sec'), sel = num('nc-sel');
+  const logt = (!Number.isNaN(sec)&&sec>0)?10*Math.log10(sec):NaN;
+  const leq = (!Number.isNaN(logt)&&!Number.isNaN(sel)) ? sel - logt : NaN;
+  setv('nc-leq-out', leq, 3);
+}
+function calcG219(){
+  const meas=num('g219-meas'), bg=num('g219-bg'), lmax=num('g219-lmax'), truck=num('g219-truck');
+  const site=(document.getElementById('g219-site')?.value || '（未填写点位）');
+  const period=(document.getElementById('g219-period')?.value || '—');
+  let corr=NaN, note='—', diff=NaN;
+  if(!Number.isNaN(meas) && !Number.isNaN(bg)){
+    diff = meas - bg;
+    if (meas>bg){
+      const energy = Math.pow(10,0.1*meas) - Math.pow(10,0.1*bg);
+      corr = energy>0 ? 10*Math.log10(energy) : NaN;
+    }
+    note = diff < 3 ? '差值<3 dB，谨慎采用' : diff < 10 ? '可扣背景，建议备注' : '背景影响较小';
+  }
+  setv('g219-corr', corr, 3); setv('g219-diff', diff, 2, ' dB');
+  const noteEl=document.getElementById('g219-note'); if(noteEl) noteEl.textContent=note;
+  setPlain('g219-sum-site', `${site} · ${period}`);
+  setPlain('g219-sum-lmax', formatNum(lmax, 1, ' dB'));
+  setPlain('g219-sum-truck', Number.isNaN(truck) ? '—' : `${truck} 辆`);
+  const corrText = Number.isNaN(corr) ? '未形成有效扣背景值' : `扣背景后 ${corr.toFixed(2)} dB`;
+  setPlain('g219-sum-note', `${corrText}；${note}`);
+}
+function initParshall(){
+  const sel = document.getElementById('parshall-type');
+  if(!sel || sel.options.length) return;
+  PARSHALL_DATA.forEach(p=>{
+    const opt=document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = `序号${p.id} · 喉道宽度 ${p.b} m`;
+    sel.appendChild(opt);
+  });
+  sel.value = '1';
+}
+function calcParshall(){
+  initParshall();
+  renderParshallLookup();
+  const p = PARSHALL_DATA.find(x=>String(x.id)===document.getElementById('parshall-type').value);
+  if(!p) return;
+  document.getElementById('parshall-sub').value = `${(p.sub*100).toFixed(0)}%`;
+  document.getElementById('parshall-formula').value = `Q=${p.c}×h^${p.n}`;
+  document.getElementById('parshall-range').textContent = `${p.hmin} ~ ${p.hmax} m`;
+  document.getElementById('parshall-qrange').textContent = `${p.qmin} ~ ${p.qmax} L/s`;
+  const h = num('parshall-h');
+  const q = (!Number.isNaN(h)&&h>0) ? p.c*Math.pow(h,p.n) : NaN;
+  setv('parshall-q', q, 2);
+}
+function getWindBin(u){
+  if(Number.isNaN(u)) return null;
+  if(u < 2) return 0;
+  if(u < 3) return 2;
+  if(u < 5) return 3;
+  if(u < 6) return 5;
+  return 6;
+}
+function calcWeather(){
+  const dateStr = document.getElementById('w-date').value;
+  const timeStr = document.getElementById('w-time').value;
+  const lat = num('w-lat'), lon = num('w-lon');
+  const total = num('w-cloud-total'), low = num('w-cloud-low');
+  const ua = num('w-ua'), a = num('w-a');
+  if(!dateStr || !timeStr || Number.isNaN(lat) || Number.isNaN(lon)) return;
+  const d = new Date(`${dateStr}T${timeStr}:00`);
+  const yearStart = new Date(d.getFullYear(),0,1);
+  const dn = Math.floor((d - yearStart) / 86400000);
+  const t = d.getHours() + d.getMinutes()/60 + d.getSeconds()/3600;
+  const Q0 = 2*Math.PI*dn/365;
+  const delta = (0.006918-0.399912*Math.cos(Q0)+0.0702578*Math.sin(Q0)-0.006758*Math.cos(2*Q0)+0.000907*Math.sin(2*Q0)-0.002697*Math.cos(3*Q0)+0.00148*Math.sin(3*Q0)) * 180/Math.PI;
+  let h0 = Math.asin(Math.sin(lat*Math.PI/180)*Math.sin(delta*Math.PI/180)+Math.cos(lat*Math.PI/180)*Math.cos(delta*Math.PI/180)*Math.cos((15*t+lon-300)*Math.PI/180))*180/Math.PI;
+  if (h0 < 0) h0 = 0;
+  let cloudIndex = NaN;
+  if (total >= low) {
+    if(total<=4 && low<=4) cloudIndex=1;
+    else if(total>=5 && total<=7 && low<=4) cloudIndex=2;
+    else if(total>=8 && low<=4) cloudIndex=3;
+    else if(total>=5 && total<=7 && low>=5 && low<=7) cloudIndex=4;
+    else if(total>=8 && low>=8) cloudIndex=5;
+  }
+  const solarCol = h0<=0?0:(h0<=15?1:h0<=35?2:h0<=65?3:4);
+  const radMap={1:[-2,-1,1,2,3],2:[-1,0,1,2,3],3:[-1,0,0,1,1],4:[0,0,0,0,1],5:[0,0,0,0,0]};
+  const rad = radMap[cloudIndex]?.[solarCol] ?? 0;
+  const stabGrid = {
+    0:{'-2':'F','-1':'E','0':'D','1':'B','2':'B','3':'A'},
+    2:{'-2':'F','-1':'E','0':'D','1':'C','2':'B','3':'B'},
+    3:{'-2':'E','-1':'D','0':'D','1':'C','2':'C','3':'B'},
+    5:{'-2':'D','-1':'D','0':'D','1':'D','2':'D','3':'C'},
+    6:{'-2':'D','-1':'D','0':'D','1':'D','2':'D','3':'D'}
+  };
+  const area = document.getElementById('w-area').value;
+  const nMap = {城市:{A:0.1,B:0.15,C:0.2,D:0.25,E:0.3,F:0.3}, 农村:{A:0.07,B:0.07,C:0.1,D:0.15,E:0.25,F:0.25}};
+  const windBin = getWindBin(ua);
+  let grade = stabGrid[windBin]?.[String(rad)] || 'D';
+  const n = nMap[area][grade];
+  const u10 = (!Number.isNaN(ua)&&!Number.isNaN(a)&&a>0) ? ua*Math.pow(10/a,n) : NaN;
+  const windBin2 = Number.isNaN(u10) ? windBin : getWindBin(u10);
+  grade = stabGrid[windBin2]?.[String(rad)] || grade;
+  const suitMap = {A:'d',B:'d',C:'c',D:'b',E:'a',F:'a'};
+  const comments = {
+    a:'不利于污染物的扩散和稀释，适宜于进行无组织排放监测',
+    b:'较不利于污染物的扩散和稀释，较适宜于进行无组织排放监测',
+    c:'有利于污染物的扩散和稀释，较不适宜于进行无组织排放监测',
+    d:'很有利于污染物的扩散和稀释，不适宜于进行无组织排放监测'
+  };
+  setv('w-h0', h0, 2, '°'); setv('w-u10', u10, 2, 'm/s');
+  const stabEl=document.getElementById('w-stab'); if(stabEl) stabEl.textContent = grade;
+  const suit = suitMap[grade] || '—';
+  const suitEl=document.getElementById('w-suit'); if(suitEl) suitEl.textContent = suit;
+  const com=document.getElementById('w-comment'); if(com) com.textContent = comments[suit] || '';
+  setPlain('w-print-meta', `${dateStr} ${timeStr} · 纬度${lat.toFixed(4)}° · 经度${lon.toFixed(4)}° · ${area}`);
+  setPlain('w-print-result', `太阳高度角 ${formatNum(h0,2,'°')}；10m风速 ${formatNum(u10,2,'m/s')}；稳定度 ${grade}；适宜类别 ${suit}`);
+  setPlain('w-print-comment', comments[suit] || '—');
+}
+function calcIons(){
+  const v = id=>{ const n=num(id); return Number.isNaN(n)?0:n; };
+  const cat = v('ion-na')/23 + v('ion-k')/39 + v('ion-ca')/20 + v('ion-mg')/12 + v('ion-nh4')/18 + v('ion-fe')/18.7 + v('ion-mn')/27.5;
+  const an = v('ion-so4')/48 + v('ion-cl')/35.5 + v('ion-hco3')/61 + v('ion-co3')/30 + v('ion-sio3')/38 + v('ion-no3')/62 + v('ion-f')/19;
+  const balance = (cat+an)!==0 ? (an-cat)/(an+cat)*100 : NaN;
+  const hardCalc = (v('ion-ca')/20 + v('ion-mg')/12 + v('ion-fe')/18.6 + v('ion-mn')/27.5)*50;
+  const hard = num('ion-hardness');
+  const hardErr = (!Number.isNaN(hard)&&hard!==0) ? (hardCalc/hard-1)*100 : NaN;
+  const tdsCalc = v('ion-na')+v('ion-k')+v('ion-ca')+v('ion-mg')+v('ion-fe')+v('ion-mn')+v('ion-so4')+v('ion-cl')+v('ion-no3')+v('ion-hco3')*60/122;
+  const tds = num('ion-tds');
+  const tdsErr = (!Number.isNaN(tds)&&tds!==0) ? (tdsCalc/tds-1)*100 : NaN;
+  setv('ion-cat',cat,3); setv('ion-an',an,3); setv('ion-balance',balance,2,'%');
+  setv('ion-hard-calc',hardCalc,2); setv('ion-hard-err',hardErr,2,'%');
+  setv('ion-tds-calc',tdsCalc,2); setv('ion-tds-err',tdsErr,2,'%');
+  const balanceJudge = Number.isNaN(balance) ? '—' : (Math.abs(balance)<=5 ? '平衡误差较好' : Math.abs(balance)<=10 ? '平衡误差可接受' : '平衡误差偏大，建议复核');
+  const hardJudge = Number.isNaN(hardErr) ? '—' : (Math.abs(hardErr)<=10 ? '总硬度误差可接受' : '总硬度误差偏大');
+  const tdsJudge = Number.isNaN(tdsErr) ? '—' : (Math.abs(tdsErr)<=10 ? 'TDS误差可接受' : 'TDS误差偏大');
+  setPlain('ion-judge-balance', balanceJudge);
+  setPlain('ion-judge-hard', hardJudge);
+  setPlain('ion-judge-tds', tdsJudge);
+  const overall = [balanceJudge, hardJudge, tdsJudge].includes('—') ? '请补全数据后再综合判断' : ([balanceJudge, hardJudge, tdsJudge].some(t => t.includes('偏大')) ? '建议复核部分项目或检查录入数据' : '整体结果稳定，可用于报告整理');
+  setPlain('ion-judge-overall', overall);
+}
+function calcOdor(){
+  document.querySelectorAll('#odor-table tbody tr').forEach(tr=>{
+    const tds = tr.querySelectorAll('td');
+    const mw = parseFloat(tds[1].querySelector('input').value);
+    const mg = parseFloat(tds[2].querySelector('input').value);
+    const th = parseFloat(tds[3].querySelector('input').value);
+    const ppm = (!isNaN(mw)&&!isNaN(mg)&&mw!==0) ? mg*22.4/mw : NaN;
+    const dil = (!isNaN(ppm)&&!isNaN(th)&&th!==0) ? ppm/th : NaN;
+    tds[4].textContent = isNaN(ppm)?'—':ppm.toFixed(4);
+    tds[5].textContent = isNaN(dil)?'—':dil.toFixed(2);
+  });
+  calcO6();
+}
+function calcO6(){
+  const M = (a,b)=> ((Number.isNaN(a)?0:a) + (Number.isNaN(b)?0:b)*(1/3)) / 18;
+  const a10=num('o6-a10'), b10=num('o6-b10');
+  const a100=num('o6-a100'), b100=num('o6-b100');
+  const a1000=num('o6-a1000'), b1000=num('o6-b1000');
+  const m1=M(a10,b10), m2=M(a100,b100), m3=M(a1000,b1000);
+  setv('o6-m1',m1,4); setv('o6-m2',m2,4); setv('o6-m3',m3,4);
+  let odor='—';
+  if(!Number.isNaN(m1)){
+    if(m1 < 0.58) odor='<10';
+    else if(Math.abs(m1-0.58) < 1e-9) odor='10';
+    else if(Number.isNaN(m2) || m2 < 0.58){
+      if(Math.abs(m1-m2) > 1e-9){
+        odor = Math.trunc(10 * Math.pow(10, (m1-0.58)/(m1-m2)));
+      }
+    } else if(!Number.isNaN(m3)) {
+      if(Math.abs(m2-m3) > 1e-9){
+        odor = Math.trunc(100 * Math.pow(10, (m2-0.58)/(m2-m3) * Math.log10(1000/100)));
+      }
+    }
+  }
+  const el=document.getElementById('o6-odor'); if(el) el.textContent = odor;
+}
+function cemsJudgeMetric(value, limit){
+  if(Number.isNaN(value) || Number.isNaN(limit)) return '—';
+  return Math.abs(value) <= limit ? '合格' : '不合格';
+}
+function cemsJudgePair(v1, v2, limit){
+  if(Number.isNaN(limit) || (Number.isNaN(v1) && Number.isNaN(v2))) return '—';
+  const ok1 = Number.isNaN(v1) ? true : Math.abs(v1) <= limit;
+  const ok2 = Number.isNaN(v2) ? true : Math.abs(v2) <= limit;
+  return (ok1 && ok2) ? '合格' : '不合格';
+}
+function cemsParseRatio(text){
+  const m = String(text || '').match(/(\d+)\/(\d+)/);
+  return m ? {pass: parseInt(m[1],10), total: parseInt(m[2],10)} : null;
+}
+function cemsStatusFromRatio(text){
+  const ratio = cemsParseRatio(text);
+  if(!ratio || !ratio.total) return '—';
+  return ratio.pass === ratio.total ? '合格' : '需复核';
+}
+function cemsStatusFromRefJudges(){
+  const values = ['acc-pm-judge','acc-v-judge','acc-t-judge','acc-h-judge'].map(id => document.getElementById(id)?.textContent || '—');
+  const active = values.filter(v => v !== '—');
+  if(!active.length) return '—';
+  return active.every(v => v === '合格') ? '合格' : '需复核';
+}
+function collectCemsSnapshot(){
+  const today = new Date();
+  const driftRatio = document.getElementById('cemsd-pass')?.textContent || '—';
+  const indRatio = document.getElementById('cemsi-pass')?.textContent || '—';
+  const accRatio = document.getElementById('cemsa-pass')?.textContent || '—';
+  const driftStatus = cemsStatusFromRatio(driftRatio);
+  const indStatus = cemsStatusFromRatio(indRatio);
+  const accStatus = cemsStatusFromRatio(accRatio);
+  const kStatus = document.getElementById('k-judge')?.textContent || '—';
+  const refStatus = cemsStatusFromRefJudges();
+  const modules = [
+    {name:'漂移检测', key: document.getElementById('cems-summary-zero')?.textContent || '—', status: driftStatus, note: document.getElementById('cems-summary-span')?.textContent || '—'},
+    {name:'示值误差', key: document.getElementById('cems-summary-ie')?.textContent || '—', status: indStatus, note: document.getElementById('cemsi-maxrel')?.textContent ? `最大相对误差 ${document.getElementById('cemsi-maxrel').textContent}` : '—'},
+    {name:'准确度评估', key: document.getElementById('cems-acc-overall')?.textContent || '—', status: accStatus, note: document.getElementById('cemsa-maxrel-all')?.textContent ? `最大相对误差 ${document.getElementById('cemsa-maxrel-all').textContent}` : '—'},
+    {name:'速度场系数', key: document.getElementById('cems-summary-k')?.textContent || '—', status: kStatus, note: document.getElementById('k-overall-rsd')?.textContent ? `RSD ${document.getElementById('k-overall-rsd').textContent}` : '—'},
+    {name:'参比准确度', key: document.getElementById('cems-summary-ref')?.textContent || '—', status: refStatus, note: document.getElementById('acc-pm-judge')?.textContent ? `颗粒物${document.getElementById('acc-pm-judge').textContent} / 流速${document.getElementById('acc-v-judge').textContent}` : '—'}
+  ];
+  const activeModules = modules.filter(m => m.status !== '—');
+  const passModules = activeModules.filter(m => m.status === '合格');
+  let conclusion = '请先录入主要检测数据';
+  if(activeModules.length){
+    conclusion = passModules.length === activeModules.length ? '建议通过当前调试阶段评估' : '建议对异常模块复核后再出正式报告';
+  }
+  return {
+    meta: {
+      company: document.getElementById('cems-company')?.value || '—',
+      port: document.getElementById('cems-port')?.value || '—',
+      start: document.getElementById('cems-start')?.value || '—',
+      end: document.getElementById('cems-end')?.value || '—',
+      org: document.getElementById('cems-org')?.value || '—',
+      author: document.getElementById('cems-author')?.value || '—',
+      reportDate: `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`
+    },
+    modules,
+    activeModules: activeModules.length,
+    passModules: passModules.length,
+    conclusion,
+    summary: document.getElementById('cems-summary-note')?.textContent || '—'
+  };
+}
+function refreshCemsReport(){
+  const s = collectCemsSnapshot();
+  setPlain('cemsr-company', s.meta.company);
+  setPlain('cemsr-port', s.meta.port);
+  setPlain('cemsr-period', `${s.meta.start} ~ ${s.meta.end}`);
+  setPlain('cemsr-org', s.meta.org);
+  setPlain('cemsr-author', s.meta.author);
+  setPlain('cemsr-date', s.meta.reportDate);
+  setPlain('cemsr-active', String(s.activeModules));
+  setPlain('cemsr-pass', `${s.passModules}/${s.activeModules || 0}`);
+  setPlain('cemsr-conclusion', s.conclusion);
+  setPlain('cemsr-summary', s.summary);
+  const badge = document.getElementById('cemsr-badge');
+  if(badge) badge.textContent = s.activeModules ? (s.passModules === s.activeModules ? '当前可出正式报告' : '存在待复核模块') : '待完善';
+  const map = {'漂移检测':'drift','示值误差':'ind','准确度评估':'acc','速度场系数':'k','参比准确度':'ref'};
+  s.modules.forEach(m => {
+    const prefix = map[m.name];
+    if(!prefix) return;
+    setPlain(`cemsr-${prefix}-key`, m.key);
+    setPlain(`cemsr-${prefix}-status`, m.status);
+    setPlain(`cemsr-${prefix}-note`, m.note);
+  });
+  return s;
+}
+function exportCemsJSON(){
+  const data = refreshCemsReport();
+  download(`CEMS调试报告_${ts()}.json`, JSON.stringify(data, null, 2), 'application/json');
+  toast('CEMS JSON 已导出', 'ok');
+}
+function exportCemsCSV(){
+  const s = refreshCemsReport();
+  const lines = [
+    'CEMS 72小时调试报告汇总',
+    `企业名称,${s.meta.company}`,
+    `排口名称,${s.meta.port}`,
+    `调试周期,${s.meta.start} ~ ${s.meta.end}`,
+    `检测单位,${s.meta.org}`,
+    `编制人,${s.meta.author}`,
+    `报告日期,${s.meta.reportDate}`,
+    '',
+    '模块,关键结果,判定,备注',
+    ...s.modules.map(m => `${m.name},${String(m.key).replace(/,/g,'，')},${m.status},${String(m.note).replace(/,/g,'，')}`),
+    '',
+    `已评模块数,${s.activeModules}`,
+    `通过模块数,${s.passModules}`,
+    `综合结论,${s.conclusion}`,
+    `报告摘要,${String(s.summary).replace(/,/g,'，')}`
+  ];
+  download(`CEMS调试报告_${ts()}.csv`, lines.join('\n'), 'text/csv');
+  toast('CEMS CSV 已导出', 'ok');
+}
+function printCemsReport(){
+  refreshCemsReport();
+  selectTemplate('cems');
+  switchTab('data-entry', true);
+  switchTemplateSubTab('cems','report');
+  document.body.classList.add('print-cems');
+  setTimeout(() => window.print(), 80);
+}
+window.addEventListener('afterprint', () => document.body.classList.remove('print-cems'));
+function calcCems(){
+  const driftRows = [['pm','颗粒物'],['o2','O₂'],['so2','SO₂'],['nox','NOx']];
+  const driftResults = [];
+  driftRows.forEach(([key,label])=>{
+    const range = num(`cemsd-${key}-range`);
+    const z = [num(`cemsd-${key}-z1`), num(`cemsd-${key}-z2`), num(`cemsd-${key}-z3`)].filter(v=>!Number.isNaN(v));
+    const s = [num(`cemsd-${key}-s1`), num(`cemsd-${key}-s2`), num(`cemsd-${key}-s3`)].filter(v=>!Number.isNaN(v));
+    const zmax = z.length ? z.reduce((a,b)=>Math.abs(a)>=Math.abs(b)?a:b) : NaN;
+    const smax = s.length ? s.reduce((a,b)=>Math.abs(a)>=Math.abs(b)?a:b) : NaN;
+    const zpct = (!Number.isNaN(zmax) && !Number.isNaN(range) && range !== 0) ? zmax / range * 100 : NaN;
+    const spct = (!Number.isNaN(smax) && !Number.isNaN(range) && range !== 0) ? smax / range * 100 : NaN;
+    const limit = num(`cemsd-${key}-limit`);
+    const judge = cemsJudgePair(zpct, spct, limit);
+    setPlain(`cemsd-${key}-zpct`, formatNum(zpct,2,'%'));
+    setPlain(`cemsd-${key}-spct`, formatNum(spct,2,'%'));
+    setPlain(`cemsd-${key}-judge`, judge);
+    driftResults.push({label, zpct, spct, judge});
+  });
+  const driftValid = driftResults.filter(r => r.judge !== '—');
+  const driftPass = driftValid.filter(r => r.judge === '合格');
+  const driftMax = driftValid.length ? Math.max(...driftValid.flatMap(r => [Math.abs(r.zpct||0), Math.abs(r.spct||0)])) : NaN;
+  setPlain('cemsd-valid', driftValid.length ? String(driftValid.length) : '—');
+  setPlain('cemsd-pass', driftValid.length ? `${driftPass.length}/${driftValid.length}` : '—');
+  setPlain('cemsd-max', formatNum(driftMax,2,'%'));
+
+  const indicationRows = [['o2','O₂'],['so2','SO₂'],['no','NO']];
+  const indicationResults = [];
+  indicationRows.forEach(([key,label])=>{
+    const refs = [num(`cemsi-${key}-r1`), num(`cemsi-${key}-r2`), num(`cemsi-${key}-r3`)];
+    const cems = [num(`cemsi-${key}-c1`), num(`cemsi-${key}-c2`), num(`cemsi-${key}-c3`)];
+    const diffs = refs.map((ref,i)=> (!Number.isNaN(ref) && !Number.isNaN(cems[i])) ? cems[i]-ref : NaN).filter(v=>!Number.isNaN(v));
+    const refAvg = avg(refs);
+    const avgDiff = avg(diffs);
+    const rel = (!Number.isNaN(avgDiff) && !Number.isNaN(refAvg) && refAvg !== 0) ? avgDiff / refAvg * 100 : NaN;
+    const limit = num(`cemsi-${key}-limit`);
+    const judge = cemsJudgeMetric(rel, limit);
+    setPlain(`cemsi-${key}-avgdiff`, formatNum(avgDiff,3));
+    setPlain(`cemsi-${key}-rel`, formatNum(rel,2,'%'));
+    setPlain(`cemsi-${key}-judge`, judge);
+    indicationResults.push({label, rel, avgDiff, judge});
+  });
+  const indValid = indicationResults.filter(r => r.judge !== '—');
+  const indPass = indValid.filter(r => r.judge === '合格');
+  const indMaxRel = indValid.length ? Math.max(...indValid.map(r => Math.abs(r.rel||0))) : NaN;
+  setPlain('cemsi-valid', indValid.length ? String(indValid.length) : '—');
+  setPlain('cemsi-pass', indValid.length ? `${indPass.length}/${indValid.length}` : '—');
+  setPlain('cemsi-maxrel', formatNum(indMaxRel,2,'%'));
+
+  const accRows = [['o2','氧准确度'],['so2','SO₂准确度'],['nox','NOx准确度']];
+  const accuracyResults = [];
+  accRows.forEach(([key,label])=>{
+    const refs = [num(`cemsa-${key}-r1`), num(`cemsa-${key}-r2`), num(`cemsa-${key}-r3`)];
+    const cems = [num(`cemsa-${key}-c1`), num(`cemsa-${key}-c2`), num(`cemsa-${key}-c3`)];
+    const diffs = refs.map((ref,i)=> (!Number.isNaN(ref) && !Number.isNaN(cems[i])) ? cems[i]-ref : NaN).filter(v=>!Number.isNaN(v));
+    const rels = refs.map((ref,i)=> (!Number.isNaN(ref) && !Number.isNaN(cems[i]) && ref !== 0) ? (cems[i]-ref)/ref*100 : NaN).filter(v=>!Number.isNaN(v));
+    const avgDiff = avg(diffs);
+    const maxRel = rels.length ? Math.max(...rels.map(v=>Math.abs(v))) : NaN;
+    const limit = num(`cemsa-${key}-limit`);
+    const judge = cemsJudgeMetric(maxRel, limit);
+    setPlain(`cemsa-${key}-avgdiff`, formatNum(avgDiff,3));
+    setPlain(`cemsa-${key}-maxrel`, formatNum(maxRel,2,'%'));
+    setPlain(`cemsa-${key}-judge`, judge);
+    accuracyResults.push({label, avgDiff, maxRel, judge});
+  });
+  const accValid = accuracyResults.filter(r => r.judge !== '—');
+  const accPass = accValid.filter(r => r.judge === '合格');
+  const accMaxRel = accValid.length ? Math.max(...accValid.map(r => Math.abs(r.maxRel||0))) : NaN;
+  setPlain('cemsa-valid', accValid.length ? String(accValid.length) : '—');
+  setPlain('cemsa-pass', accValid.length ? `${accPass.length}/${accValid.length}` : '—');
+  setPlain('cemsa-maxrel-all', formatNum(accMaxRel,2,'%'));
+
+  const daily=[];
+  [1,2,3].forEach(i=>{
+    const ref=parseNums(document.getElementById(`k-r${i}`).value);
+    const cms=parseNums(document.getElementById(`k-c${i}`).value);
+    const len=Math.min(ref.length,cms.length);
+    const ks=[];
+    for(let j=0;j<len;j++) if(cms[j]!==0) ks.push(ref[j]/cms[j]);
+    const a=avg(ks), sd=stdev(ks), rsd=(!Number.isNaN(a)&&a!==0&&!Number.isNaN(sd))?sd*100/a:NaN;
+    if(!Number.isNaN(a)) daily.push(a);
+    setv(`k-avg${i}`,a,4); setv(`k-rsd${i}`,rsd,2,'%');
+  });
+  const overall=avg(daily), osd=stdev(daily), orsd=(!Number.isNaN(overall)&&overall!==0&&!Number.isNaN(osd))?osd*100/overall:NaN;
+  setv('k-overall',overall,4); setv('k-std',osd,4); setv('k-overall-rsd',orsd,2,'%');
+  const kJudge = cemsJudgeMetric(orsd, num('k-rsd-limit'));
+  setPlain('k-judge', kJudge);
+
+  const refPm=num('acc-ref-pm'), cemsPm=num('acc-cems-pm'), refV=num('acc-ref-v'), cemsV=num('acc-cems-v'),
+        refT=num('acc-ref-t'), cemsT=num('acc-cems-t'), refH=num('acc-ref-h'), cemsH=num('acc-cems-h');
+  const pmErr = (!Number.isNaN(refPm)&&!Number.isNaN(cemsPm))?cemsPm-refPm:NaN;
+  const vErr = (!Number.isNaN(refV)&&refV!==0&&!Number.isNaN(cemsV))?(cemsV-refV)/refV*100:NaN;
+  const tErr = (!Number.isNaN(refT)&&!Number.isNaN(cemsT))?cemsT-refT:NaN;
+  const hErr = (!Number.isNaN(refH)&&!Number.isNaN(cemsH))?cemsH-refH:NaN;
+  setv('acc-pm-err',pmErr,3);
+  setv('acc-v-err',vErr,2,'%');
+  setv('acc-t-err',tErr,2);
+  setv('acc-h-err',hErr,2);
+  const refJudges = {
+    pm: cemsJudgeMetric(pmErr, num('acc-pm-limit')),
+    v: cemsJudgeMetric(vErr, num('acc-v-limit')),
+    t: cemsJudgeMetric(tErr, num('acc-t-limit')),
+    h: cemsJudgeMetric(hErr, num('acc-h-limit'))
+  };
+  setPlain('acc-pm-judge', refJudges.pm);
+  setPlain('acc-v-judge', refJudges.v);
+  setPlain('acc-t-judge', refJudges.t);
+  setPlain('acc-h-judge', refJudges.h);
+
+  const summaryZero = driftValid.length ? `最大 ${formatNum(driftMax,2,'%')} · ${driftPass.length}/${driftValid.length} 合格` : '—';
+  const summarySpan = driftValid.length ? driftResults.filter(r => !Number.isNaN(r.spct)).map(r => `${r.label} ${formatNum(r.spct,2,'%')}`).join('；') : '—';
+  const summaryInd = indValid.length ? `${indPass.length}/${indValid.length} 合格 · 最大 ${formatNum(indMaxRel,2,'%')}` : '—';
+  const summaryRef = `颗粒物 ${formatNum(pmErr,3)} (${refJudges.pm})；流速 ${formatNum(vErr,2,'%')} (${refJudges.v})；温度 ${formatNum(tErr,2)} (${refJudges.t})；湿度 ${formatNum(hErr,2)} (${refJudges.h})`;
+
+  setPlain('cems-summary-zero', summaryZero);
+  setPlain('cems-summary-span', summarySpan);
+  setPlain('cems-summary-k', `${formatNum(overall,4)} / RSD ${formatNum(orsd,2,'%')} / ${kJudge}`);
+  setPlain('cems-summary-ref', summaryRef);
+  setPlain('cems-summary-ie', summaryInd);
+
+  const passCount = [
+    driftValid.length && driftPass.length === driftValid.length,
+    indValid.length && indPass.length === indValid.length,
+    accValid.length && accPass.length === accValid.length,
+    kJudge === '合格',
+    Object.values(refJudges).some(v=>v!=='—') && Object.values(refJudges).every(v=>v==='合格')
+  ].filter(Boolean).length;
+  const activeModules = [
+    driftValid.length>0,
+    indValid.length>0,
+    accValid.length>0,
+    kJudge !== '—',
+    Object.values(refJudges).some(v=>v!=='—')
+  ].filter(Boolean).length;
+  const noteParts = [];
+  if(driftValid.length) noteParts.push(`漂移 ${driftPass.length}/${driftValid.length} 合格`);
+  if(indValid.length) noteParts.push(`示值 ${indPass.length}/${indValid.length} 合格`);
+  if(accValid.length) noteParts.push(`准确度 ${accPass.length}/${accValid.length} 合格`);
+  if(kJudge !== '—') noteParts.push(`速度场 ${kJudge}`);
+  if(Object.values(refJudges).some(v=>v!=='—')) noteParts.push(`参比准确度 ${Object.values(refJudges).every(v=>v==='合格') ? '合格' : '需复核'}`);
+  setPlain('cems-summary-note', noteParts.length ? noteParts.join('；') : '请继续补充检测数据');
+
+  setPlain('cems-acc-drift', driftValid.length ? `${driftPass.length}/${driftValid.length} 项合格；最大漂移 ${formatNum(driftMax,2,'%')}` : '—');
+  setPlain('cems-acc-indication', indValid.length ? `${indPass.length}/${indValid.length} 项合格；最大相对误差 ${formatNum(indMaxRel,2,'%')}` : '—');
+  setPlain('cems-acc-k', kJudge === '—' ? '—' : `K=${formatNum(overall,4)}；RSD=${formatNum(orsd,2,'%')}；${kJudge}`);
+  setPlain('cems-acc-overall', activeModules ? `当前已完成 ${activeModules} 个模块评估，其中 ${passCount} 个模块整体通过。` : '请先录入主要检测数据。');
+  refreshCemsReport();
+}
+
+function calcOccupational(){
+  const t1=num('occ-chem-t1'), t2=num('occ-chem-t2'), stel=num('occ-chem-stel'), twaLimit=num('occ-chem-twa-limit');
+  const c1=parseNums(document.getElementById('occ-chem-c1').value), c2=parseNums(document.getElementById('occ-chem-c2').value);
+  const avg1 = avg(c1), avg2 = avg(c2);
+  const validChem = c1.concat(c2).filter(v=>!isNaN(v));
+  const cpe = validChem.length ? Math.max(...validChem) : NaN;
+  const ctwa = (((!Number.isNaN(avg1) ? avg1 : 0) * (!Number.isNaN(t1) ? t1 : 0)) + (((!Number.isNaN(avg2) ? avg2 : 0) * (!Number.isNaN(t2) ? t2 : 0)))) / 8;
+  const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(stel)) ? (cpe < stel ? '符合' : '不符合') : '—';
+  const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(twaLimit)) ? (ctwa < twaLimit ? '符合' : '不符合') : '—';
+  const threeTwa = !Number.isNaN(twaLimit) ? twaLimit * 3 : NaN;
+  const fiveTwa = !Number.isNaN(twaLimit) ? twaLimit * 5 : NaN;
+  const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa) && !Number.isNaN(fiveTwa))
+    ? ((cpe < threeTwa && cpe < fiveTwa) ? '符合' : '不符合')
+    : '—';
+
+  document.getElementById('occ-cste').textContent = `${!Number.isNaN(cpe)?cpe.toFixed(2):'—'} / ${stelJudge}`;
+  document.getElementById('occ-ctwa').textContent = `${!Number.isNaN(ctwa)?ctwa.toFixed(2):'—'} / ${twaJudge}`;
+  const peakLimitEl = document.getElementById('occ-peak-limit');
+  if(peakLimitEl) peakLimitEl.textContent = `${!Number.isNaN(threeTwa)?threeTwa.toFixed(2):'—'} / ${!Number.isNaN(fiveTwa)?fiveTwa.toFixed(2):'—'}`;
+  const peakJudgeEl = document.getElementById('occ-peak-judge');
+  if(peakJudgeEl) peakJudgeEl.textContent = peakJudge;
+
+  const hours=num('occ-noise-time'), days=num('occ-noise-days'), limit=num('occ-noise-limit');
+  const vals=parseNums(document.getElementById('occ-noise-v').value);
+  const laeq=energyAvg(vals);
+  const lex8=(!Number.isNaN(laeq)&&!Number.isNaN(hours)&&hours>0) ? 10*Math.log10(hours/8)+laeq : NaN;
+  const lexw=(!Number.isNaN(lex8)&&!Number.isNaN(days)&&days>0) ? 10*Math.log10((Math.pow(10,0.1*lex8))*days/5) : NaN;
+  setv('occ-laeq',laeq,2);
+  const noiseJudgeMetric = !Number.isNaN(days) && days !== 5 ? lexw : lex8;
+  const noiseJudge = (!Number.isNaN(limit)&&!Number.isNaN(noiseJudgeMetric)) ? (noiseJudgeMetric < limit ? '符合' : '不符合') : '';
+  const lexText = `${!Number.isNaN(lex8)?lex8.toFixed(2):'—'} / ${!Number.isNaN(lexw)?lexw.toFixed(2):'—'}${noiseJudge?` · ${noiseJudge}`:''}`;
+  document.getElementById('occ-lex').textContent = lexText;
+}
+function calcO6Panel(){
+  const M = (a,b)=> ((Number.isNaN(a)?0:a) + (Number.isNaN(b)?0:b)*(1/3)) / 18;
+  const a10=num('o6p-a10'), b10=num('o6p-b10'), a100=num('o6p-a100'), b100=num('o6p-b100'), a1000=num('o6p-a1000'), b1000=num('o6p-b1000');
+  const m1=M(a10,b10), m2=M(a100,b100), m3=M(a1000,b1000);
+  setv('o6p-m1',m1,4); setv('o6p-m2',m2,4); setv('o6p-m3',m3,4);
+  let odor='—', range='—';
+  if(!Number.isNaN(m1)){
+    if(m1 < 0.58) { odor='<10'; range='<10'; }
+    else if(Math.abs(m1-0.58)<1e-9) { odor='10'; range='10'; }
+    else if(Number.isNaN(m2) || m2 < 0.58) { odor = Math.trunc(10 * Math.pow(10, (m1-0.58)/(m1-m2))); range='10-100'; }
+    else if(!Number.isNaN(m3)) { odor = Math.trunc(100 * Math.pow(10, (m2-0.58)/(m2-m3) * Math.log10(10))); range='100-1000或更高'; }
+  }
+  document.getElementById('o6p-odor').textContent = odor;
+  setPlain('o6p-range', `当前自动落入：${range}`);
+  setPlain('o6p-report', `M1=${formatNum(m1,4)}，M2=${formatNum(m2,4)}，M3=${formatNum(m3,4)}，臭气浓度=${odor}`);
+  setPlain('o6p-advice', odor==='—' ? '请补充更多分段数据后再生成记录。' : '系统已自动按浓度区间调用结果逻辑，无需再人工进入各区间工作表。');
+}
+function renderParshallLookup(){
+  const body = document.getElementById('parshall-lookup-body');
+  if(!body) return;
+  body.innerHTML = PARSHALL_DATA.map(p => `<tr><td>${p.id}</td><td>${p.b}</td><td>${p.c}</td><td>${p.n}</td><td>${p.hmin} ~ ${p.hmax}</td><td>${p.qmin} ~ ${p.qmax}</td><td>${(p.sub*100).toFixed(0)}%</td></tr>`).join('');
+}
+
+(function initExtraTemplates(){
+  initParshall();
+  const now = new Date();
+  const d = document.getElementById('w-date'); if(d && !d.value) d.value = now.toISOString().slice(0,10);
+  const t = document.getElementById('w-time'); if(t && !t.value) t.value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  calcFlueGas(); calcNoiseCheck(); calcNoiseCheckReverse(); calcG219(); calcParshall(); calcWeather(); calcIons(); calcOdor(); calcCems(); calcOccupational(); calcO6Panel(); refreshCemsReport();
+})();
 </script>
-</body>
+</div></div></body>
 </html>
