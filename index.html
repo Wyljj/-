@@ -9,6 +9,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root {
+  --fg-project-w: 220px;
+  --fg-sub-w: 56px;
+  --fg-data-w: 80px;
+  --fg-avg-w: 80px;
   --bg: #0d1117;
   --bg2: #161b22;
   --bg3: #21262d;
@@ -32,6 +36,7 @@
   --sans: 'Noto Sans SC', sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
+div { font-size: 13px; font-weight: bold; }
 html { font-size: 14px; }
 body {
   font-family: var(--sans);
@@ -436,20 +441,23 @@ body {
 
 /* ── Velocity table ── */
 .vel-wrap {
-  overflow: hidden;
+  overflow: auto;
 }
 
 .vel-split {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
 }
 
-@media (min-width: 1200px) {
-  .vel-split {
-    grid-template-columns: minmax(0, 1fr) 360px;
-  }
+/* 始终保持垂直布局，确保批量导入在下方 */
+.vel-left {
+  width: 100%;
+}
+
+.import-inline {
+  width: 100%;
 }
 
 /* 确保批量导入区域不会与表格重叠 */
@@ -461,7 +469,7 @@ body {
 }
 
 .vel-left {
-  min-width: 100%;
+  min-width: 0;
   overflow: visible;
 }
 
@@ -544,6 +552,7 @@ body {
   background: var(--bg3);
   border-color: var(--border);
 }
+
 .dev-cell, .dev2-cell {
   font-family: var(--mono);
   font-size: 11px;
@@ -1036,9 +1045,174 @@ body {
 .result-label { font-size:11px; color:var(--text3); margin-bottom:6px; }
 .result-value { font-family: var(--mono); font-size:18px; color:var(--text); }
 .helper-text { font-size:11px; color:var(--text3); line-height:1.7; }
-.simple-table { width:100%; border-collapse: collapse; }
-.simple-table th, .simple-table td { border-bottom:1px solid var(--border); padding:8px 6px; text-align:center; font-size:12px; }
-.simple-table th { color:var(--text3); font-weight:500; }
+.simple-table { width:auto; border-collapse: collapse; table-layout: fixed; min-width: 100%; }
+#fg-measurement-table { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+#fg-measurement-table col.fg-col-project { width: var(--fg-project-w); }
+#fg-measurement-table col.fg-col-sub { width: var(--fg-sub-w); }
+#fg-measurement-table col.fg-col-measure { width: var(--fg-data-w); }
+#fg-measurement-table col.fg-col-avg { width: var(--fg-avg-w); }
+#fg-measurement-table th,
+#fg-measurement-table td {
+  background: var(--bg2);
+  background-clip: padding-box;
+  padding: 4px 2px;
+  box-sizing: border-box;
+  text-align: center;
+}
+#fg-measurement-table .fg-sticky-double,
+#fg-measurement-table .fg-sticky-project,
+#fg-measurement-table .fg-sticky-sub {
+  position: sticky;
+  background: var(--bg2);
+}
+#fg-measurement-table .fg-sticky-double {
+  left: 0;
+  z-index: 4;
+  min-width: calc(var(--fg-project-w) + var(--fg-sub-w)) !important;
+  max-width: calc(var(--fg-project-w) + var(--fg-sub-w)) !important;
+  width: calc(var(--fg-project-w) + var(--fg-sub-w)) !important;
+  box-shadow: 2px 0 0 var(--border);
+}
+#fg-measurement-table .fg-sticky-project {
+  left: 0;
+  z-index: 4;
+  min-width: var(--fg-project-w) !important;
+  max-width: var(--fg-project-w) !important;
+  width: var(--fg-project-w) !important;
+}
+#fg-measurement-table .fg-sticky-sub {
+  left: var(--fg-project-w);
+  z-index: 5;
+  min-width: var(--fg-sub-w) !important;
+  max-width: var(--fg-sub-w) !important;
+  width: var(--fg-sub-w) !important;
+  box-shadow: 2px 0 0 var(--border);
+}
+#fg-measurement-table thead .fg-sticky-double,
+#fg-measurement-table thead .fg-sticky-project,
+#fg-measurement-table thead .fg-sticky-sub {
+  z-index: 8;
+  background: var(--bg2);
+}
+#fg-measurement-table td.fg-sticky-double,
+#fg-measurement-table th.fg-sticky-double,
+#fg-measurement-table td.fg-sticky-project,
+#fg-measurement-table th.fg-sticky-project {
+  text-align: center;
+  white-space: normal;
+  word-break: break-word;
+}
+#fg-measurement-table td.fg-sticky-sub,
+#fg-measurement-table th.fg-sticky-sub {
+  font-size: 12px !important;
+  text-align: center;
+  white-space: nowrap;
+  word-break: keep-all;
+}
+#fg-measurement-table thead th:not(.fg-sticky-double):not(.fg-sticky-project):not(.fg-sticky-sub),
+#fg-measurement-table tbody td:not(.fg-sticky-double):not(.fg-sticky-project):not(.fg-sticky-sub) {
+  min-width: var(--fg-data-w);
+  max-width: var(--fg-data-w);
+  width: var(--fg-data-w);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+#fg-measurement-table thead th:last-child,
+#fg-measurement-table tbody td:last-child {
+  min-width: var(--fg-avg-w);
+  max-width: var(--fg-avg-w);
+  width: var(--fg-avg-w);
+  font-size: 12px;
+}
+#fg-measurement-table .vi-input,
+#fluegas-tab-dust .vi-input {
+  width: calc(var(--fg-data-w) - 6px);
+  min-width: calc(var(--fg-data-w) - 6px);
+  max-width: calc(var(--fg-data-w) - 6px);
+  height: 20px;
+  padding: 0 2px;
+  font-size: 12px;
+}
+
+/* Comparison results font size */
+#fluegas-tab-dust .simple-table th,
+#fluegas-tab-dust .simple-table td,
+#fluegas-tab-dust .result-box .result-value {
+  font-size: 13px;
+}
+
+/* Set font size for specific average cells */
+td#fg-dust-flow-ravg,
+td#fg-dust-pm-ravg,
+td#fg-dust-temp-ravg,
+td#fg-dust-moist-ravg,
+td#fg-dust-pm-cavg,
+td#fg-dust-flow-cavg,
+td#fg-dust-temp-cavg,
+td#fg-dust-moist-cavg {
+  font-size: 13px !important;
+}
+
+/* Enhanced specificity for the 5 specific elements */
+#fluegas-tab-dust table.simple-table td#fg-dust-flow-cavg,
+#fluegas-tab-dust table.simple-table td#fg-dust-pm-cavg,
+#fluegas-tab-dust table.simple-table td#fg-dust-moist-ravg,
+#fluegas-tab-dust table.simple-table td#fg-dust-temp-ravg,
+#fluegas-tab-dust table.simple-table td#fg-dust-flow-ravg,
+#fluegas-tab-dust table.simple-table td#fg-dust-temp-cavg {
+  font-size: 13px !important;
+}
+
+/* Set font size for average row */
+#fluegas-tab-dust .simple-table tbody tr:nth-child(4) td {
+  font-size: 13px !important;
+}
+
+/* Specific styles for header cells */
+#fluegas-tab-dust table.simple-table:first-child thead tr:first-child th:nth-child(3) {
+  background-color: rgba(59, 130, 246, 0.15); /* 15% opacity for reference method header */
+  color: white;
+}
+
+#fluegas-tab-dust table.simple-table:first-child thead tr:first-child th:nth-child(4) {
+  background-color: rgba(34, 197, 94, 0.15); /* 15% opacity for CEMS method header */
+}
+
+/* Narrower columns for comparison results table */
+#fluegas-tab-dust table.simple-table:not(:first-child) td:first-child {
+  width: 120px !important; /* Narrower width for 项目 column */
+  white-space: normal;
+  word-break: break-word;
+}
+
+#fluegas-tab-dust table.simple-table:not(:first-child) td:nth-child(2) {
+  width: 80px !important; /* Narrower width for 误差类型 column */
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+.fg-sticky-wrap {
+  position: relative;
+  overflow-x: auto !important;
+  width: 100%;
+  max-width: 100%;
+}
+
+.simple-table-container {
+  position: relative;
+  overflow-x: auto !important;
+  width: 100%;
+  max-width: 100%;
+}
+.fg-sticky-wrap::-webkit-scrollbar-track { background: transparent; }
+
+.simple-table th, .simple-table td { border-bottom:1px solid var(--border); padding:6px 4px; text-align:center; font-size:13px; font-weight: bold; white-space: nowrap; }
+table.simple-table:not(#fg-measurement-table) td:first-child { text-align:center; white-space: normal; word-break: break-word; width: 220px !important; flex-shrink: 0; }
+table.simple-table:not(#fg-measurement-table) td:nth-child(2) { width: 56px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; white-space: nowrap; word-break: keep-all; }
+table.simple-table:not(#fg-measurement-table) td:nth-child(n+3):not(:last-child) { width: 30px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; }
+table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !important; font-size: 13px !important; font-weight: bold; }
+
 
 .fluegas-subnav{
   display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;
@@ -1217,7 +1391,7 @@ body {
 <div class="tab-navigation">
 <button class="tab-btn active" onclick="switchTab('data-entry')">📝 数据录入</button>
 <button class="tab-btn" onclick="switchTab('statistics')">📊 统计结果</button>
-<button class="tab-btn" onclick="switchTab('visualization')">📈 数据可视化</button>
+
 <button class="tab-btn" onclick="switchTab('history')">🔍 保存查询</button>
 </div>
 <!-- ── 页签内容区域 ── -->
@@ -1301,7 +1475,7 @@ body {
 <div class="template-subtitle">已按“主模板 + 子页签”方式重构样板。当前已接入主计算、比对、漂移、水质在线等核心子表，可按子页签直接录入、计算与判定。</div>
 
 <div class="fluegas-subnav">
-<button class="fluegas-subbtn active" data-fluegas-tab="main" onclick="switchFlueGasTab('main')">主计算</button>
+<button class="fluegas-subbtn active" data-fluegas-tab="main" onclick="switchFlueGasTab('main')">有组织废气</button>
 <button class="fluegas-subbtn" data-fluegas-tab="dust" onclick="switchFlueGasTab('dust')">颗粒物/流速/温度比对</button>
 <button class="fluegas-subbtn" data-fluegas-tab="nox" onclick="switchFlueGasTab('nox')">氮氧化物比对</button>
 <button class="fluegas-subbtn" data-fluegas-tab="so2" onclick="switchFlueGasTab('so2')">二氧化硫比对</button>
@@ -1311,84 +1485,313 @@ body {
 </div>
 
 <div class="fluegas-subpanel active" id="fluegas-tab-main">
-  <div class="template-grid-two">
-    <div>
-      <div class="template-section-title">基础参数</div>
-      <div class="meta-row">
-        <div class="field"><label>基准含氧量（%）</label><input id="fg-base-o2" oninput="calcFlueGas()" step="0.1" type="number" value="3.5"/></div>
-        <div class="field"><label>排气温度1（℃）</label><input id="fg-temp1" oninput="calcFlueGas()" step="0.1" type="number"/></div>
-        <div class="field"><label>排气温度2（℃）</label><input id="fg-temp2" oninput="calcFlueGas()" step="0.1" type="number"/></div>
-        <div class="field"><label>排气温度3（℃）</label><input id="fg-temp3" oninput="calcFlueGas()" step="0.1" type="number"/></div>
-        <div class="field"><label>含湿量1（%）</label><input id="fg-moist1" oninput="calcFlueGas()" step="0.1" type="number"/></div>
-        <div class="field"><label>含湿量2（%）</label><input id="fg-moist2" oninput="calcFlueGas()" step="0.1" type="number"/></div>
-        <div class="field"><label>含湿量3（%）</label><input id="fg-moist3" oninput="calcFlueGas()" step="0.1" type="number"/></div>
-      </div>
-
-      <div class="template-section-title" style="margin-top:14px">三次实测</div>
-      <table class="simple-table">
-        <thead><tr><th>项目</th><th>第一次</th><th>第二次</th><th>第三次</th><th>平均</th></tr></thead>
-        <tbody>
-          <tr><td>排气含氧量（%）</td><td><input class="vi-input" id="fg-o2-1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2-2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2-3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2-avg">—</td></tr>
-          <tr><td>标干流量（m³/h）</td><td><input class="vi-input" id="fg-flow-1" oninput="calcFlueGas()" step="1" type="number"/></td><td><input class="vi-input" id="fg-flow-2" oninput="calcFlueGas()" step="1" type="number"/></td><td><input class="vi-input" id="fg-flow-3" oninput="calcFlueGas()" step="1" type="number"/></td><td id="fg-flow-avg">—</td></tr>
-          <tr><td>一氧化碳实测（mg/m³）</td><td><input class="vi-input" id="fg-co-1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-co-2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-co-3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-co-avg">—</td></tr>
-          <tr><td>颗粒物实测（mg/m³）</td><td><input class="vi-input" id="fg-pm-1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-pm-2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-pm-3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-pm-avg">—</td></tr>
-          <tr><td>二氧化硫实测（mg/m³）</td><td><input class="vi-input" id="fg-so2-1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2-2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2-3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2-avg">—</td></tr>
-          <tr><td>氮氧化物实测（mg/m³）</td><td><input class="vi-input" id="fg-nox-1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-nox-2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-nox-3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-nox-avg">—</td></tr>
-        </tbody>
-      </table>
+  <div>
+    <div class="template-section-title">基础参数</div>
+    <div class="meta-row">
+      <div class="field"><label>基准含氧量（%）</label><input id="fg-base-o2" oninput="calcFlueGas()" step="0.1" type="number" value="3.5"/></div>
     </div>
 
-    <div>
-      <div class="template-section-title">结果汇总</div>
-      <table class="simple-table">
-        <thead><tr><th>项目</th><th>平均实测</th><th>平均折算</th><th>排放速率（kg/h）</th></tr></thead>
-        <tbody>
-          <tr><td>一氧化碳</td><td id="fg-co-a1">—</td><td id="fg-co-a2">—</td><td id="fg-co-a3">—</td></tr>
-          <tr><td>颗粒物</td><td id="fg-pm-a1">—</td><td id="fg-pm-a2">—</td><td id="fg-pm-a3">—</td></tr>
-          <tr><td>二氧化硫</td><td id="fg-so2-a1">—</td><td id="fg-so2-a2">—</td><td id="fg-so2-a3">—</td></tr>
-          <tr><td>氮氧化物</td><td id="fg-nox-a1">—</td><td id="fg-nox-a2">—</td><td id="fg-nox-a3">—</td></tr>
-        </tbody>
-      </table>
-      <div class="template-grid-three" style="margin-top:14px">
-        <div class="result-box"><div class="result-label">平均含氧量</div><div class="result-value" id="fg-res-o2">—</div></div>
-        <div class="result-box"><div class="result-label">平均排气温度</div><div class="result-value" id="fg-res-temp">—</div></div>
-        <div class="result-box"><div class="result-label">平均含湿量</div><div class="result-value" id="fg-res-moist">—</div></div>
-      </div>
-      <div class="helper-text" style="margin-top:12px">折算公式：C折 = (21-基准氧)/(21-实测氧) × C实；排放速率：R = C实 × Q / 1000000。</div>
+    <div class="template-section-title" style="margin-top:14px">实测数据</div>
+    <div class="simple-table-container fg-sticky-wrap">
+    <table class="simple-table" id="fg-measurement-table">
+      <colgroup id="fg-measurement-colgroup">
+        <col class="fg-col-project"/>
+        <col class="fg-col-sub"/>
+        <col class="fg-col-measure"/>
+        <col class="fg-col-measure"/>
+        <col class="fg-col-measure"/>
+        <col class="fg-col-avg"/>
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="fg-sticky-double" colspan="2">项目</th>
+          <th>第一次</th>
+          <th>第二次</th>
+          <th>第三次</th>
+          <th>平均</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-row-type="o2">
+          <td class="fg-sticky-double" colspan="2">排气含氧量（%）</td>
+          <td><input class="vi-input" id="fg-o2-1" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-o2-2" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-o2-3" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td id="fg-o2-avg">—</td>
+        </tr>
+        <tr data-row-type="temp">
+          <td class="fg-sticky-double" colspan="2">排气温度（℃）</td>
+          <td><input class="vi-input" id="fg-temp-1" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-temp-2" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-temp-3" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td id="fg-temp-avg">—</td>
+        </tr>
+        <tr data-row-type="moist">
+          <td class="fg-sticky-double" colspan="2">排气含湿量（%）</td>
+          <td><input class="vi-input" id="fg-moist-1" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-moist-2" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-moist-3" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td id="fg-moist-avg">—</td>
+        </tr>
+        <tr data-row-type="flow">
+          <td class="fg-sticky-double" colspan="2">排气标干流量（m³/h）</td>
+          <td><input class="vi-input" id="fg-flow-1" oninput="calcFlueGas()" step="1" type="number"/></td>
+          <td><input class="vi-input" id="fg-flow-2" oninput="calcFlueGas()" step="1" type="number"/></td>
+          <td><input class="vi-input" id="fg-flow-3" oninput="calcFlueGas()" step="1" type="number"/></td>
+          <td id="fg-flow-avg">—</td>
+        </tr>
+        <tr data-row-type="pm-vol">
+          <td class="fg-sticky-double" colspan="2">颗粒物标干采样体积(L)</td>
+          <td><input class="vi-input" id="fg-pm-vol-1" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-pm-vol-2" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-pm-vol-3" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td id="fg-pm-vol-avg">—</td>
+        </tr>
+        <tr data-row-type="co-measured">
+          <td class="fg-sticky-project" rowspan="2">排气中一氧化碳排放浓度（mg/m³）</td>
+          <td class="fg-sticky-sub">实测值</td>
+          <td><input class="vi-input" id="fg-co-1" oninput="calcFlueGas()" step="0.01" type="number"/></td>
+          <td><input class="vi-input" id="fg-co-2" oninput="calcFlueGas()" step="0.01" type="number"/></td>
+          <td><input class="vi-input" id="fg-co-3" oninput="calcFlueGas()" step="0.01" type="number"/></td>
+          <td id="fg-co-avg">—</td>
+        </tr>
+        <tr data-row-type="co-conv">
+          <td class="fg-sticky-sub">折算值</td>
+          <td id="fg-co-conv-1">—</td>
+          <td id="fg-co-conv-2">—</td>
+          <td id="fg-co-conv-3">—</td>
+          <td id="fg-co-conv-avg">—</td>
+        </tr>
+        <tr data-row-type="co-rate">
+          <td class="fg-sticky-double" colspan="2">一氧化碳排放速率(kg/h)</td>
+          <td id="fg-co-rate-1">—</td>
+          <td id="fg-co-rate-2">—</td>
+          <td id="fg-co-rate-3">—</td>
+          <td id="fg-co-rate-avg">—</td>
+        </tr>
+        <tr data-row-type="pm-measured">
+          <td class="fg-sticky-project" rowspan="2">颗粒物排放浓度（mg/m³）</td>
+          <td class="fg-sticky-sub">实测值</td>
+          <td><input class="vi-input" id="fg-pm-1" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-pm-2" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-pm-3" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td id="fg-pm-avg">—</td>
+        </tr>
+        <tr data-row-type="pm-conv">
+          <td class="fg-sticky-sub">折算值</td>
+          <td id="fg-pm-conv-1">—</td>
+          <td id="fg-pm-conv-2">—</td>
+          <td id="fg-pm-conv-3">—</td>
+          <td id="fg-pm-conv-avg">—</td>
+        </tr>
+        <tr data-row-type="pm-rate">
+          <td class="fg-sticky-double" colspan="2">颗粒物排放速率（kg/h）</td>
+          <td id="fg-pm-rate-1">—</td>
+          <td id="fg-pm-rate-2">—</td>
+          <td id="fg-pm-rate-3">—</td>
+          <td id="fg-pm-rate-avg">—</td>
+        </tr>
+        <tr data-row-type="so2-measured">
+          <td class="fg-sticky-project" rowspan="2">二氧化硫排放浓度（mg/m³）</td>
+          <td class="fg-sticky-sub">实测值</td>
+          <td><input class="vi-input" id="fg-so2-1" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-so2-2" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-so2-3" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td id="fg-so2-avg">—</td>
+        </tr>
+        <tr data-row-type="so2-conv">
+          <td class="fg-sticky-sub">折算值</td>
+          <td id="fg-so2-conv-1">—</td>
+          <td id="fg-so2-conv-2">—</td>
+          <td id="fg-so2-conv-3">—</td>
+          <td id="fg-so2-conv-avg">—</td>
+        </tr>
+        <tr data-row-type="so2-rate">
+          <td class="fg-sticky-double" colspan="2">二氧化硫排放速率(kg/h)</td>
+          <td id="fg-so2-rate-1">—</td>
+          <td id="fg-so2-rate-2">—</td>
+          <td id="fg-so2-rate-3">—</td>
+          <td id="fg-so2-rate-avg">—</td>
+        </tr>
+        <tr data-row-type="nox-measured">
+          <td class="fg-sticky-project" rowspan="2">氮氧化物排放浓度（mg/m³）</td>
+          <td class="fg-sticky-sub">实测值</td>
+          <td><input class="vi-input" id="fg-nox-1" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-nox-2" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-nox-3" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td id="fg-nox-avg">—</td>
+        </tr>
+        <tr data-row-type="nox-conv">
+          <td class="fg-sticky-sub">折算值</td>
+          <td id="fg-nox-conv-1">—</td>
+          <td id="fg-nox-conv-2">—</td>
+          <td id="fg-nox-conv-3">—</td>
+          <td id="fg-nox-conv-avg">—</td>
+        </tr>
+        <tr data-row-type="nox-rate">
+          <td class="fg-sticky-double" colspan="2">氮氧化物排放速率（kg/h）</td>
+          <td id="fg-nox-rate-1">—</td>
+          <td id="fg-nox-rate-2">—</td>
+          <td id="fg-nox-rate-3">—</td>
+          <td id="fg-nox-rate-avg">—</td>
+        </tr>
+      </tbody>
+    </table>
     </div>
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn primary" onclick="addFlueGasMeasurement()">+ 添加实测次数</button>
+      <button class="btn danger" onclick="removeFlueGasMeasurement()">- 删除实测次数</button>
+      <button class="btn" onclick="clearFlueGasData()">清空数据</button>
+    </div>
+    <div class="helper-text" style="margin-top:12px">折算公式：C折 = (21-基准氧)/(21-实测氧) × C实；排放速率：R = C实 × Q / 1000000。</div>
   </div>
 </div>
 
 <div class="fluegas-subpanel" id="fluegas-tab-dust">
-  <div class="template-grid-two">
-    <div>
-      <div class="template-section-title">颗粒物 / 流速 / 温度三次比对</div>
-      <div class="stats-setting-row">
-        <div class="stats-setting-item"><span class="stats-setting-label">颗粒物允许相对误差（%）</span><input id="fg-dust-pm-limit" oninput="calcFlueGas()" step="0.1" type="number" value="15"/></div>
-        <div class="stats-setting-item"><span class="stats-setting-label">流速允许相对误差（%）</span><input id="fg-dust-flow-limit" oninput="calcFlueGas()" step="0.1" type="number" value="10"/></div>
-        <div class="stats-setting-item"><span class="stats-setting-label">温度允许绝对误差（℃）</span><input id="fg-dust-temp-limit" oninput="calcFlueGas()" step="0.1" type="number" value="3"/></div>
-      </div>
-      <table class="simple-table">
-        <thead><tr><th>项目</th><th>参比1</th><th>CEMS1</th><th>参比2</th><th>CEMS2</th><th>参比3</th><th>CEMS3</th><th>平均参比</th><th>平均CEMS</th></tr></thead>
-        <tbody>
-          <tr><td>颗粒物（mg/m³）</td><td><input class="vi-input" id="fg-dust-pm-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-pm-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-pm-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-pm-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-pm-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-pm-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-dust-pm-ravg">—</td><td id="fg-dust-pm-cavg">—</td></tr>
-          <tr><td>流速（m/s）</td><td><input class="vi-input" id="fg-dust-flow-r1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-dust-flow-c1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-dust-flow-r2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-dust-flow-c2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-dust-flow-r3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-dust-flow-c3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-dust-flow-ravg">—</td><td id="fg-dust-flow-cavg">—</td></tr>
-          <tr><td>温度（℃）</td><td><input class="vi-input" id="fg-dust-temp-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-temp-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-temp-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-temp-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-temp-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-dust-temp-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-dust-temp-ravg">—</td><td id="fg-dust-temp-cavg">—</td></tr>
-        </tbody>
-      </table>
+  <div>
+    <div class="simple-table-container">
+    <table class="simple-table">
+      <thead>
+        <tr>
+          <th rowspan="2">时间</th>
+          <th rowspan="2">序号</th>
+          <th colspan="4">参比方法</th>
+          <th colspan="4">CEMS法</th>
+        </tr>
+        <tr>
+          <th>颗粒物浓度（mg/m³）</th>
+          <th>流速（m/s）</th>
+          <th>烟温（℃）</th>
+          <th>湿度（%）</th>
+          <th>颗粒物浓度（mg/m³）</th>
+          <th>流速（m/s）</th>
+          <th>烟温（℃）</th>
+          <th>湿度（%）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input class="vi-input" id="fg-dust-time-1" oninput="calcFlueGas()" type="text" placeholder="16:41-17:05"/></td>
+          <td>1</td>
+          <td><input class="vi-input" id="fg-dust-pm-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-flow-r1" oninput="calcFlueGas()" step="0.01" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-temp-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-moist-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-pm-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-flow-c1" oninput="calcFlueGas()" step="0.01" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-temp-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-moist-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+        </tr>
+        <tr>
+          <td><input class="vi-input" id="fg-dust-time-2" oninput="calcFlueGas()" type="text" placeholder="17:10-17:34"/></td>
+          <td>2</td>
+          <td><input class="vi-input" id="fg-dust-pm-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-flow-r2" oninput="calcFlueGas()" step="0.01" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-temp-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-moist-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-pm-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-flow-c2" oninput="calcFlueGas()" step="0.01" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-temp-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-moist-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+        </tr>
+        <tr>
+          <td><input class="vi-input" id="fg-dust-time-3" oninput="calcFlueGas()" type="text" placeholder="17:38-18:02"/></td>
+          <td>3</td>
+          <td><input class="vi-input" id="fg-dust-pm-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-flow-r3" oninput="calcFlueGas()" step="0.01" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-temp-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-moist-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-pm-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-flow-c3" oninput="calcFlueGas()" step="0.01" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-temp-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+          <td><input class="vi-input" id="fg-dust-moist-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+        </tr>
+        <tr>
+          <td colspan="2">平均值</td>
+          <td id="fg-dust-pm-ravg">—</td>
+          <td id="fg-dust-flow-ravg">—</td>
+          <td id="fg-dust-temp-ravg">—</td>
+          <td id="fg-dust-moist-ravg">—</td>
+          <td id="fg-dust-pm-cavg">—</td>
+          <td id="fg-dust-flow-cavg">—</td>
+          <td id="fg-dust-temp-cavg">—</td>
+          <td id="fg-dust-moist-cavg">—</td>
+        </tr>
+      </tbody>
+    </table>
     </div>
-    <div>
-      <div class="template-section-title">比对结果</div>
-      <table class="simple-table">
-        <thead><tr><th>项目</th><th>平均偏差</th><th>相对误差</th><th>限值</th><th>判定</th></tr></thead>
-        <tbody>
-          <tr><td>颗粒物</td><td id="fg-dust-pm-abs">—</td><td id="fg-dust-pm-rel">—</td><td id="fg-dust-pm-th">—</td><td id="fg-dust-pm-judge">—</td></tr>
-          <tr><td>流速</td><td id="fg-dust-flow-abs">—</td><td id="fg-dust-flow-rel">—</td><td id="fg-dust-flow-th">—</td><td id="fg-dust-flow-judge">—</td></tr>
-          <tr><td>温度</td><td id="fg-dust-temp-abs">—</td><td id="fg-dust-temp-rel">—</td><td id="fg-dust-temp-th">—</td><td id="fg-dust-temp-judge">—</td></tr>
-        </tbody>
-      </table>
-      <div class="result-box" style="margin-top:12px"><div class="result-label">综合提示</div><div class="result-value" id="fg-dust-summary" style="font-size:14px">—</div></div>
+    <div class="btn-row" style="margin-top:12px">
+      <button class="btn primary" onclick="addFlueGasDustMeasurement()">+ 添加记录</button>
+      <button class="btn danger" onclick="removeFlueGasDustMeasurement()">- 删除记录</button>
+      <button class="btn" onclick="clearFlueGasDustData()">清空数据</button>
     </div>
+  </div>
+  <div style="margin-top:20px">
+    <div class="template-section-title">比对结果</div>
+    <table class="simple-table">
+      <thead><tr><th>项目</th><th>误差类型</th><th>限值</th><th>计算值</th></tr></thead>
+      <tbody>
+        <tr>
+          <td rowspan="6">颗粒物</td>
+          <td>相对误差</td>
+          <td>（＞200mg/m³）±15%</td>
+          <td id="fg-dust-pm-rel-high">—</td>
+        </tr>
+        <tr>
+          <td>相对误差</td>
+          <td>（100-200）±20%</td>
+          <td id="fg-dust-pm-rel-medium">—</td>
+        </tr>
+        <tr>
+          <td>相对误差</td>
+          <td>（50-100）±25%</td>
+          <td id="fg-dust-pm-rel-low">—</td>
+        </tr>
+        <tr>
+          <td>相对误差</td>
+          <td>（20-50）±30%</td>
+          <td id="fg-dust-pm-rel-very-low">—</td>
+        </tr>
+        <tr>
+          <td>绝对误差</td>
+          <td>（10-20）±6mg/m³</td>
+          <td id="fg-dust-pm-abs-medium">—</td>
+        </tr>
+        <tr>
+          <td>绝对误差</td>
+          <td>（≤10）±5mg/m³</td>
+          <td id="fg-dust-pm-abs-low">—</td>
+        </tr>
+        <tr>
+          <td rowspan="2">流速（%）</td>
+          <td>相对误差</td>
+          <td>（≤10m/s）12%</td>
+          <td id="fg-dust-flow-rel-low">—</td>
+        </tr>
+        <tr>
+          <td>相对误差</td>
+          <td>（＞10m/s）10%</td>
+          <td id="fg-dust-flow-rel-high">—</td>
+        </tr>
+        <tr>
+          <td>温度</td>
+          <td>绝对误差（℃）</td>
+          <td>±3℃</td>
+          <td id="fg-dust-temp-abs">—</td>
+        </tr>
+        <tr>
+          <td rowspan="2">湿度</td>
+          <td>绝对误差</td>
+          <td>（≤5.0%）±1.5%</td>
+          <td id="fg-dust-moist-abs-low">—</td>
+        </tr>
+        <tr>
+          <td>相对误差</td>
+          <td>（＞5.0%）±25%</td>
+          <td id="fg-dust-moist-rel-high">—</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
@@ -2224,22 +2627,10 @@ body {
 <div class="rc-row"><span class="rc-key">σᵣ（复核）</span><span class="rc-val" id="rc-sr">—</span></div>
 <div class="rc-row"><span class="rc-key">差值</span><span class="rc-val" id="rc-diff">—</span></div>
 </div>
-<div class="btn-row">
-<button class="btn primary" onclick="saveRecord()">💾 保存记录</button>
-<button class="btn success" onclick="printReport()">🖨️ 打印报告</button>
-<button class="btn" onclick="exportCSV()">📄 导出 CSV</button>
-<button class="btn" onclick="exportJSON()">📦 导出 JSON</button>
-</div>
-<div class="print-signature">
-<div>检测人员签字：________________</div>
-<div>审核人员签字：________________</div>
-<div>日期：________________</div>
-</div>
-</div>
-</div>
-<!-- 数据可视化页签 -->
-<div class="tab-panel" id="tab-visualization">
-<div class="chart-grid">
+
+<div class="template-section-title" style="margin-top:24px;">📈 数据可视化</div>
+<!-- 数据可视化图表 -->
+<div class="chart-grid" style="margin-top:16px;">
 <div class="chart-wrap">
 <div class="section-title">各测点流速分布（与平均值对比）</div>
 <canvas id="chart-vel"></canvas>
@@ -2253,7 +2644,21 @@ body {
 <div class="section-title">历史 σᵣ 值趋势</div>
 <canvas id="chart-trend" style="max-height:200px"></canvas>
 </div>
+
+<div class="btn-row">
+<button class="btn primary" onclick="saveRecord()">💾 保存记录</button>
+<button class="btn success" onclick="printReport()">🖨️ 打印报告</button>
+<button class="btn" onclick="exportCSV()">📄 导出 CSV</button>
+<button class="btn" onclick="exportJSON()">📦 导出 JSON</button>
 </div>
+<div class="print-signature">
+<div>检测人员签字：________________</div>
+<div>审核人员签字：________________</div>
+<div>日期：________________</div>
+</div>
+</div>
+</div>
+
 <!-- 保存查询页签 -->
 <div class="tab-panel" id="tab-history">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:8px;flex-wrap:wrap">
@@ -3062,6 +3467,9 @@ function selectTemplate(id){
     switchTab('data-entry', true);
     if(tabNav) tabNav.classList.add('template-hidden');
     if(noteCard) noteCard.style.display = 'none';
+    if (currentTemplateState.id === 'fluegas') {
+      setTimeout(updateFlueGasResponsiveWidths, 0);
+    }
   }
 }
 
@@ -3074,6 +3482,9 @@ function switchFlueGasTab(tab){
   document.querySelectorAll('.fluegas-subpanel').forEach(panel => {
     panel.classList.toggle('active', panel.id === `fluegas-tab-${finalTab}`);
   });
+  if (finalTab === 'main') {
+    setTimeout(updateFlueGasResponsiveWidths, 0);
+  }
 }
 window.switchFlueGasTab = switchFlueGasTab;
 
@@ -3106,9 +3517,33 @@ function fluegasJudge(value, limit, mode='rel'){
   return pass ? '合格' : '不合格';
 }
 function fluegasCompare(prefix, limitId, mode='rel', dp=2, unit=''){
-  const refs = [num(`${prefix}-r1`), num(`${prefix}-r2`), num(`${prefix}-r3`)];
-  const cems = [num(`${prefix}-c1`), num(`${prefix}-c2`), num(`${prefix}-c3`)];
-  refs.forEach((v,i)=> setPlain(`${prefix}-d${i+1}`, (!Number.isNaN(v) && !Number.isNaN(cems[i])) ? formatNum(cems[i]-v, dp, unit) : '—'));
+  const refs = [];
+  const cems = [];
+  let i = 1;
+  
+  // Collect all values dynamically
+  while (true) {
+    const refElement = document.getElementById(`${prefix}-r${i}`);
+    const cemsElement = document.getElementById(`${prefix}-c${i}`);
+    
+    if (!refElement && !cemsElement) {
+      // No more input elements, exit loop
+      break;
+    }
+    
+    const refValue = num(`${prefix}-r${i}`);
+    const cemsValue = num(`${prefix}-c${i}`);
+    
+    refs.push(refValue);
+    cems.push(cemsValue);
+    i++;
+  }
+  
+  // Update difference values for existing rows
+  refs.forEach((v, idx) => {
+    setPlain(`${prefix}-d${idx+1}`, (!Number.isNaN(v) && !Number.isNaN(cems[idx])) ? formatNum(cems[idx]-v, dp, unit) : '—');
+  });
+  
   const refAvg = avg(refs), cemsAvg = avg(cems);
   const absErr = (!Number.isNaN(refAvg) && !Number.isNaN(cemsAvg)) ? cemsAvg - refAvg : NaN;
   const relErr = (!Number.isNaN(absErr) && !Number.isNaN(refAvg) && refAvg !== 0) ? absErr / refAvg * 100 : NaN;
@@ -3130,17 +3565,316 @@ function fluegasDual(refId, cemsId, limitId, absId, relId, judgeId, dp=2, unit='
   setPlain(judgeId, fluegasJudge(relErr, limit, 'rel'));
   return { absErr, relErr, judge: fluegasJudge(relErr, limit, 'rel') };
 }
+const FLUE_GAS_ROW_CONFIG = {
+  'o2': { kind: 'input', inputId: 'fg-o2-{n}', step: '0.1', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'temp': { kind: 'input', inputId: 'fg-temp-{n}', step: '0.1', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'moist': { kind: 'input', inputId: 'fg-moist-{n}', step: '0.1', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'flow': { kind: 'input', inputId: 'fg-flow-{n}', step: '1', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'pm-vol': { kind: 'input', inputId: 'fg-pm-vol-{n}', step: '0.1', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'co-measured': { kind: 'input', inputId: 'fg-co-{n}', step: '0.01', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'co-conv': { kind: 'display', cellId: 'fg-co-conv-{n}', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'co-rate': { kind: 'display', cellId: 'fg-co-rate-{n}', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'pm-measured': { kind: 'input', inputId: 'fg-pm-{n}', step: '0.1', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'pm-conv': { kind: 'display', cellId: 'fg-pm-conv-{n}', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'pm-rate': { kind: 'display', cellId: 'fg-pm-rate-{n}', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'so2-measured': { kind: 'input', inputId: 'fg-so2-{n}', step: '0.1', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'so2-conv': { kind: 'display', cellId: 'fg-so2-conv-{n}', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'so2-rate': { kind: 'display', cellId: 'fg-so2-rate-{n}', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'nox-measured': { kind: 'input', inputId: 'fg-nox-{n}', step: '0.1', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'nox-conv': { kind: 'display', cellId: 'fg-nox-conv-{n}', width: 'var(--fg-data-w)', fontSize: '12px' },
+  'nox-rate': { kind: 'display', cellId: 'fg-nox-rate-{n}', width: 'var(--fg-data-w)', fontSize: '12px' }
+};
+
+function getChineseNumber(num) {
+  const chineseNumbers = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+  if (num <= 10) return chineseNumbers[num];
+  if (num < 20) return '十' + chineseNumbers[num - 10];
+  if (num < 100) {
+    const tens = Math.floor(num / 10);
+    const ones = num % 10;
+    return chineseNumbers[tens] + '十' + (ones > 0 ? chineseNumbers[ones] : '');
+  }
+  return String(num);
+}
+
+function getFlueGasMeasurementCount() {
+  const table = document.getElementById('fg-measurement-table');
+  const thead = table ? table.querySelector('thead tr') : null;
+  if (!thead) return 0;
+  return Array.from(thead.querySelectorAll('th')).filter(th => /^第.+次$/.test(th.textContent.trim())).length;
+}
+
+function applyFlueGasCellStyle(cell, config) {
+  if (!cell || !config) return;
+  cell.style.width = config.width;
+  cell.style.minWidth = config.width;
+  cell.style.maxWidth = config.width;
+  cell.style.fontSize = config.fontSize;
+}
+
+// 更新所有现有单元格宽度和字体大小
+function updateAllFlueGasCellWidths() {
+  const table = document.getElementById('fg-measurement-table');
+  const rows = table.querySelectorAll('tr[data-row-type]');
+  
+  rows.forEach(row => {
+    const rowType = row.dataset.rowType;
+    const config = FLUE_GAS_ROW_CONFIG[rowType];
+    if (!config) return;
+    
+    const cells = row.querySelectorAll('td');
+    cells.forEach((cell) => {
+      // 检查单元格是否包含输入框或有测量相关的id
+      if (cell.querySelector('input') || (cell.id && (cell.id.includes('-conv-') || cell.id.includes('-rate-')))) {
+        applyFlueGasCellStyle(cell, config);
+      }
+    });
+  });
+  
+  // 更新现有表头的字体大小
+  const thead = table.querySelector('thead tr');
+  if (thead) {
+    const headers = thead.querySelectorAll('th');
+    headers.forEach(th => {
+      if (!th.classList.contains('fg-sticky-double') && !th.classList.contains('fg-sticky-project') && !th.classList.contains('fg-sticky-sub')) {
+        th.style.fontSize = '12px';
+      }
+    });
+  }
+}
+
+syncFlueGasMeasurementColgroup(getFlueGasMeasurementCount());
+updateAllFlueGasCellWidths();
+
+function updateFlueGasResponsiveWidths() {
+  const wrap = document.querySelector('#fluegas-tab-main .fg-sticky-wrap');
+  const table = document.getElementById('fg-measurement-table');
+  const root = document.documentElement;
+  if (!wrap || !table || !wrap.offsetParent) return;
+
+  const measurementCount = getFlueGasMeasurementCount();
+  const styles = getComputedStyle(root);
+  const projectW = parseFloat(styles.getPropertyValue('--fg-project-w')) || 220;
+  const subW = parseFloat(styles.getPropertyValue('--fg-sub-w')) || 80;
+  const baseDataW = 80;
+  const baseAvgW = 80;
+  const dynamicCols = measurementCount + 1;
+  const wrapWidth = wrap.clientWidth || 0;
+
+  if (!dynamicCols || wrapWidth <= 0) return;
+
+  const availableForDynamic = wrapWidth - projectW - subW;
+  const responsiveW = Math.max(baseDataW, Math.floor(availableForDynamic / dynamicCols));
+  const finalW = Number.isFinite(responsiveW) ? responsiveW : baseDataW;
+
+  root.style.setProperty('--fg-data-w', `${finalW}px`);
+  root.style.setProperty('--fg-avg-w', `${Math.max(baseAvgW, finalW)}px`);
+
+  const thead = table.querySelector('thead tr');
+  if (thead) {
+    const headers = Array.from(thead.querySelectorAll('th'));
+    headers.forEach((th, idx) => {
+      if (idx >= 1 && idx < headers.length) {
+        const w = idx === headers.length - 1 ? 'var(--fg-avg-w)' : 'var(--fg-data-w)';
+        if (!th.classList.contains('fg-sticky-double')) {
+          th.style.width = w;
+          th.style.minWidth = w;
+          th.style.maxWidth = w;
+        }
+      }
+    });
+  }
+
+  const avgIds = [
+    'fg-o2-avg','fg-temp-avg','fg-moist-avg','fg-flow-avg','fg-pm-vol-avg',
+    'fg-co-avg','fg-co-conv-avg','fg-co-rate-avg',
+    'fg-pm-avg','fg-pm-conv-avg','fg-pm-rate-avg',
+    'fg-so2-avg','fg-so2-conv-avg','fg-so2-rate-avg',
+    'fg-nox-avg','fg-nox-conv-avg','fg-nox-rate-avg'
+  ];
+  avgIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.width = 'var(--fg-avg-w)';
+      el.style.minWidth = 'var(--fg-avg-w)';
+      el.style.maxWidth = 'var(--fg-avg-w)';
+    }
+  });
+
+  syncFlueGasMeasurementColgroup(measurementCount);
+  updateAllFlueGasCellWidths();
+}
+
+window.addEventListener('resize', () => {
+  window.requestAnimationFrame(updateFlueGasResponsiveWidths);
+});
+
+function createFlueGasMeasurementCell(rowType, measureIndex) {
+  const config = FLUE_GAS_ROW_CONFIG[rowType];
+  if (!config) return null;
+
+  const td = document.createElement('td');
+  applyFlueGasCellStyle(td, config);
+
+  if (config.kind === 'input') {
+    const input = document.createElement('input');
+    input.className = 'vi-input';
+    input.type = 'number';
+    input.step = config.step;
+    input.id = config.inputId.replace('{n}', measureIndex);
+    input.oninput = calcFlueGas;
+    td.appendChild(input);
+  } else {
+    td.id = config.cellId.replace('{n}', measureIndex);
+    td.textContent = '—';
+  }
+
+  return td;
+}
+
+function syncFlueGasMeasurementColgroup(measurementCount) {
+  const colgroup = document.getElementById('fg-measurement-colgroup');
+  if (!colgroup) return;
+
+  colgroup.innerHTML = '';
+
+  const projectCol = document.createElement('col');
+  projectCol.className = 'fg-col-project';
+  colgroup.appendChild(projectCol);
+
+  const subCol = document.createElement('col');
+  subCol.className = 'fg-col-sub';
+  colgroup.appendChild(subCol);
+
+  for (let i = 0; i < measurementCount; i++) {
+    const measureCol = document.createElement('col');
+    measureCol.className = 'fg-col-measure';
+    colgroup.appendChild(measureCol);
+  }
+
+  const avgCol = document.createElement('col');
+  avgCol.className = 'fg-col-avg';
+  colgroup.appendChild(avgCol);
+}
+
+function addFlueGasMeasurement() {
+  const table = document.getElementById('fg-measurement-table');
+  const thead = table.querySelector('thead tr');
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const newCount = getFlueGasMeasurementCount() + 1;
+
+  const newTh = document.createElement('th');
+  newTh.textContent = `第${getChineseNumber(newCount)}次`;
+  newTh.style.width = 'var(--fg-data-w)';
+  newTh.style.minWidth = 'var(--fg-data-w)';
+  newTh.style.maxWidth = 'var(--fg-data-w)';
+  newTh.style.fontSize = '12px';
+  const avgTh = thead.querySelector('th:last-child');
+  if (avgTh) thead.insertBefore(newTh, avgTh);
+
+  rows.forEach(row => {
+    const rowType = row.dataset.rowType;
+    const newTd = createFlueGasMeasurementCell(rowType, newCount);
+    if (!newTd) return;
+    const avgTd = row.querySelector('td:last-child');
+    if (avgTd) row.insertBefore(newTd, avgTd);
+  });
+
+  syncFlueGasMeasurementColgroup(newCount);
+  updateFlueGasResponsiveWidths();
+  calcFlueGas();
+}
+
+function removeFlueGasMeasurement() {
+  const table = document.getElementById('fg-measurement-table');
+  const thead = table.querySelector('thead tr');
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const currentCount = getFlueGasMeasurementCount();
+
+  if (currentCount <= 3) {
+    toast('至少需要保留3次实测', 'warn');
+    return;
+  }
+
+  const measurementHeaders = Array.from(thead.querySelectorAll('th')).filter(th => /^第.+次$/.test(th.textContent.trim()));
+  const lastMeasurementHeader = measurementHeaders[measurementHeaders.length - 1];
+  if (lastMeasurementHeader) lastMeasurementHeader.remove();
+
+  rows.forEach(row => {
+    const cells = row.querySelectorAll('td');
+    if (cells.length < 2) return;
+    const avgTd = row.querySelector('td:last-child');
+    const measurementCell = avgTd ? avgTd.previousElementSibling : null;
+    if (measurementCell) measurementCell.remove();
+  });
+
+  syncFlueGasMeasurementColgroup(currentCount - 1);
+  updateFlueGasResponsiveWidths();
+  calcFlueGas();
+}
+
+function clearFlueGasData() {
+  // 清空所有输入值
+  const inputs = document.querySelectorAll('#fg-measurement-table input');
+  inputs.forEach(input => {
+    input.value = '';
+  });
+  
+  // 清空所有计算结果
+  const resultCells = document.querySelectorAll('#fg-measurement-table td[id*="-conv-"]');
+  resultCells.forEach(cell => {
+    cell.textContent = '—';
+  });
+  
+  const rateCells = document.querySelectorAll('#fg-measurement-table td[id*="-rate-"]');
+  rateCells.forEach(cell => {
+    cell.textContent = '—';
+  });
+  
+  const avgCells = document.querySelectorAll('#fg-measurement-table td[id*="-avg"]');
+  avgCells.forEach(cell => {
+    cell.textContent = '—';
+  });
+  
+  // 重新计算
+  calcFlueGas();
+  
+  toast('数据已清空', 'success');
+}
+
+setTimeout(updateFlueGasResponsiveWidths, 0);
+
 function calcFlueGas(){
   const base = num('fg-base-o2');
-  const o2 = [num('fg-o2-1'),num('fg-o2-2'),num('fg-o2-3')];
-  const flow = [num('fg-flow-1'),num('fg-flow-2'),num('fg-flow-3')];
-  const temp = [num('fg-temp1'),num('fg-temp2'),num('fg-temp3')];
-  const moist = [num('fg-moist1'),num('fg-moist2'),num('fg-moist3')];
-  const o2Avg = avg(o2), flowAvg = avg(flow), tempAvg = avg(temp), moistAvg = avg(moist);
-  setv('fg-o2-avg', o2Avg, 3); setv('fg-flow-avg', flowAvg, 1);
+  const table = document.getElementById('fg-measurement-table');
+  const measurementCount = getFlueGasMeasurementCount();
+  
+  // 收集所有实测数据
+  const o2 = [];
+  const flow = [];
+  const temp = [];
+  const moist = [];
+  const pmVol = [];
+  
+  for (let i = 1; i <= measurementCount; i++) {
+    o2.push(num(`fg-o2-${i}`));
+    flow.push(num(`fg-flow-${i}`));
+    temp.push(num(`fg-temp-${i}`));
+    moist.push(num(`fg-moist-${i}`));
+    pmVol.push(num(`fg-pm-vol-${i}`));
+  }
+  
+  const o2Avg = avg(o2), flowAvg = avg(flow), tempAvg = avg(temp), moistAvg = avg(moist), pmVolAvg = avg(pmVol);
+  setv('fg-o2-avg', o2Avg, 3); setv('fg-temp-avg', tempAvg, 1); setv('fg-moist-avg', moistAvg, 1); setv('fg-flow-avg', flowAvg, 1); setv('fg-pm-vol-avg', pmVolAvg, 1);
   setv('fg-res-o2', o2Avg, 3, '%'); setv('fg-res-temp', tempAvg, 1, '℃'); setv('fg-res-moist', moistAvg, 1, '%');
+  
   ['co','pm','so2','nox'].forEach(k=>{
-    const vals=[num(`fg-${k}-1`),num(`fg-${k}-2`),num(`fg-${k}-3`)];
+    const vals = [];
+    for (let i = 1; i <= measurementCount; i++) {
+      vals.push(num(`fg-${k}-${i}`));
+    }
     const a=avg(vals);
     setv(`fg-${k}-avg`, a, 3);
     const converted = vals.map((v,i)=> (!Number.isNaN(v)&&!Number.isNaN(base)&&!Number.isNaN(o2[i])&& (21-o2[i])!==0) ? ((21-base)/(21-o2[i]))*v : NaN);
@@ -3148,18 +3882,117 @@ function calcFlueGas(){
     setv(`fg-${k}-a1`, a, 3);
     setv(`fg-${k}-a2`, avg(converted), 3);
     setv(`fg-${k}-a3`, avg(rates), 4);
+    
+    // 显示所有污染物的折算值
+    for (let i = 0; i < measurementCount; i++) {
+      if (!Number.isNaN(vals[i]) && !Number.isNaN(base) && !Number.isNaN(o2[i]) && (21 - o2[i]) !== 0) {
+        const convValue = ((21 - base) / (21 - o2[i])) * vals[i];
+        setv(`fg-${k}-conv-${i+1}`, convValue, 3);
+      } else {
+        setv(`fg-${k}-conv-${i+1}`, NaN, 3);
+      }
+    }
+    setv(`fg-${k}-conv-avg`, avg(converted), 3);
+    
+    // 显示所有污染物的排放速率
+    for (let i = 0; i < measurementCount; i++) {
+      if (!Number.isNaN(vals[i]) && !Number.isNaN(flow[i])) {
+        const rateValue = vals[i] * flow[i] / 1000000;
+        setv(`fg-${k}-rate-${i+1}`, rateValue, 4);
+      } else {
+        setv(`fg-${k}-rate-${i+1}`, NaN, 4);
+      }
+    }
+    setv(`fg-${k}-rate-avg`, avg(rates), 4);
   });
 
+  // 颗粒物比对计算
   const dustPm = fluegasCompare('fg-dust-pm', 'fg-dust-pm-limit', 'rel', 2);
+  
+  // 流速比对计算
   const dustFlow = fluegasCompare('fg-dust-flow', 'fg-dust-flow-limit', 'rel', 2);
+  
+  // 温度比对计算
   const dustTemp = fluegasCompare('fg-dust-temp', 'fg-dust-temp-limit', 'abs', 2);
-  setPlain('fg-dust-pm-th', formatNum(num('fg-dust-pm-limit'), 1, '%'));
-  setPlain('fg-dust-flow-th', formatNum(num('fg-dust-flow-limit'), 1, '%'));
-  setPlain('fg-dust-temp-th', formatNum(num('fg-dust-temp-limit'), 1, '℃'));
-  const tempJudge = fluegasJudge(dustTemp.absErr, num('fg-dust-temp-limit'), 'abs');
-  setPlain('fg-dust-temp-judge', tempJudge);
-  const dustPass = [dustPm.judge, dustFlow.judge, tempJudge].every(v => v === '合格');
-  setPlain('fg-dust-summary', [dustPm.judge,dustFlow.judge,tempJudge].includes('—') ? '请补全三类比对数据。' : `颗粒物/流速/温度比对${dustPass ? '全部合格' : '存在超限项'}`);
+  
+  // 湿度比对计算
+  const dustMoist = fluegasCompare('fg-dust-moist', 'fg-dust-moist-limit', 'abs', 2, '%');
+  
+  // 计算颗粒物不同浓度范围的误差
+  const pmAvg = dustPm.refAvg;
+  const pmRelErr = dustPm.relErr;
+  
+  // 颗粒物误差判定
+  setPlain('fg-dust-pm-rel-high', formatNum(pmRelErr, 2, '%'));
+  setPlain('fg-dust-pm-judge-high', isNaN(pmRelErr) ? '—' : (pmAvg > 200 ? (Math.abs(pmRelErr) <= 15 ? '合格' : '不合格') : '—'));
+  
+  setPlain('fg-dust-pm-rel-medium', formatNum(pmRelErr, 2, '%'));
+  setPlain('fg-dust-pm-judge-medium', isNaN(pmRelErr) ? '—' : (pmAvg >= 100 && pmAvg <= 200 ? (Math.abs(pmRelErr) <= 20 ? '合格' : '不合格') : '—'));
+  
+  setPlain('fg-dust-pm-rel-low', formatNum(pmRelErr, 2, '%'));
+  setPlain('fg-dust-pm-judge-low', isNaN(pmRelErr) ? '—' : (pmAvg >= 50 && pmAvg < 100 ? (Math.abs(pmRelErr) <= 25 ? '合格' : '不合格') : '—'));
+  
+  setPlain('fg-dust-pm-rel-very-low', formatNum(pmRelErr, 2, '%'));
+  setPlain('fg-dust-pm-judge-very-low', isNaN(pmRelErr) ? '—' : (pmAvg >= 20 && pmAvg < 50 ? (Math.abs(pmRelErr) <= 30 ? '合格' : '不合格') : '—'));
+  
+  const pmAbsErr = Math.abs(dustPm.absErr);
+  setPlain('fg-dust-pm-abs-medium', formatNum(pmAbsErr, 2, 'mg/m³'));
+  setPlain('fg-dust-pm-judge-abs-medium', isNaN(pmAbsErr) ? '—' : (pmAvg >= 10 && pmAvg < 20 ? (pmAbsErr <= 6 ? '合格' : '不合格') : '—'));
+  
+  setPlain('fg-dust-pm-abs-low', formatNum(pmAbsErr, 2, 'mg/m³'));
+  setPlain('fg-dust-pm-judge-abs-low', isNaN(pmAbsErr) ? '—' : (pmAvg <= 10 ? (pmAbsErr <= 5 ? '合格' : '不合格') : '—'));
+  
+  // 流速误差判定
+  const dustFlowAvg = dustFlow.refAvg;
+  const flowRelErr = dustFlow.relErr;
+  
+  setPlain('fg-dust-flow-rel-low', formatNum(flowRelErr, 2, '%'));
+  setPlain('fg-dust-flow-judge-low', isNaN(flowRelErr) ? '—' : (dustFlowAvg <= 10 ? (Math.abs(flowRelErr) <= 12 ? '合格' : '不合格') : '—'));
+  
+  setPlain('fg-dust-flow-rel-high', formatNum(flowRelErr, 2, '%'));
+  setPlain('fg-dust-flow-judge-high', isNaN(flowRelErr) ? '—' : (dustFlowAvg > 10 ? (Math.abs(flowRelErr) <= 10 ? '合格' : '不合格') : '—'));
+  
+  // 温度误差判定
+  const tempAbsErr = Math.abs(dustTemp.absErr);
+  setPlain('fg-dust-temp-abs', formatNum(tempAbsErr, 2, '℃'));
+  setPlain('fg-dust-temp-judge', isNaN(tempAbsErr) ? '—' : (tempAbsErr <= 3 ? '合格' : '不合格'));
+  
+  // 湿度误差判定
+  const dustMoistAvg = dustMoist.refAvg;
+  const moistAbsErr = Math.abs(dustMoist.absErr);
+  const moistRelErr = dustMoist.relErr;
+  
+  setPlain('fg-dust-moist-abs-low', formatNum(moistAbsErr, 2, '%'));
+  setPlain('fg-dust-moist-judge-abs-low', isNaN(moistAbsErr) ? '—' : (dustMoistAvg <= 5.0 ? (moistAbsErr <= 1.5 ? '合格' : '不合格') : '—'));
+  
+  setPlain('fg-dust-moist-rel-high', formatNum(moistRelErr, 2, '%'));
+  setPlain('fg-dust-moist-judge-rel-high', isNaN(moistRelErr) ? '—' : (dustMoistAvg > 5.0 ? (Math.abs(moistRelErr) <= 25 ? '合格' : '不合格') : '—'));
+  
+  // 综合判定
+  const allJudges = [
+    'fg-dust-pm-judge-high', 'fg-dust-pm-judge-medium', 'fg-dust-pm-judge-low', 'fg-dust-pm-judge-very-low',
+    'fg-dust-pm-judge-abs-medium', 'fg-dust-pm-judge-abs-low',
+    'fg-dust-flow-judge-low', 'fg-dust-flow-judge-high',
+    'fg-dust-temp-judge',
+    'fg-dust-moist-judge-abs-low', 'fg-dust-moist-judge-rel-high'
+  ].map(id => document.getElementById(id)?.textContent || '—');
+  
+  const hasData = allJudges.some(judge => judge !== '—');
+  const hasUnqualified = allJudges.some(judge => judge === '不合格');
+  
+  setPlain('fg-dust-summary', hasData ? 
+    (hasUnqualified ? '比对存在超限项' : '比对全部合格') : 
+    '请补全比对数据' );
+  
+  // 平均值显示
+  setPlain('fg-dust-pm-ravg', formatNum(dustPm.refAvg, 2));
+  setPlain('fg-dust-pm-cavg', formatNum(dustPm.cemsAvg, 2));
+  setPlain('fg-dust-flow-ravg', formatNum(dustFlow.refAvg, 2));
+  setPlain('fg-dust-flow-cavg', formatNum(dustFlow.cemsAvg, 2));
+  setPlain('fg-dust-temp-ravg', formatNum(dustTemp.refAvg, 2));
+  setPlain('fg-dust-temp-cavg', formatNum(dustTemp.cemsAvg, 2));
+  setPlain('fg-dust-moist-ravg', formatNum(dustMoist.refAvg, 2, '%'));
+  setPlain('fg-dust-moist-cavg', formatNum(dustMoist.cemsAvg, 2, '%'));
 
   const noxCmp = fluegasCompare('fg-noxcmp', 'fg-noxcmp-limit', 'rel', 2);
   setPlain('fg-noxcmp-judge', noxCmp.judge === '—' ? '—' : `${noxCmp.judge}（限值 ${formatNum(noxCmp.limit,1,'%')}）`);
@@ -3724,6 +4557,147 @@ function renderParshallLookup(){
   const body = document.getElementById('parshall-lookup-body');
   if(!body) return;
   body.innerHTML = PARSHALL_DATA.map(p => `<tr><td>${p.id}</td><td>${p.b}</td><td>${p.c}</td><td>${p.n}</td><td>${p.hmin} ~ ${p.hmax}</td><td>${p.qmin} ~ ${p.qmax}</td><td>${(p.sub*100).toFixed(0)}%</td></tr>`).join('');
+}
+
+// 颗粒物/流速/温度/湿度比对模块 - 添加记录
+function addFlueGasDustMeasurement() {
+  const table = document.querySelector('#fluegas-tab-dust table.simple-table');
+  if (!table) return;
+  
+  const tbody = table.querySelector('tbody');
+  const rows = tbody.querySelectorAll('tr');
+  
+  // Find the last data row (before the average rows)
+  let lastDataRow = null;
+  for (let i = rows.length - 1; i >= 0; i--) {
+    const row = rows[i];
+    const timeInput = row.querySelector('input[id^="fg-dust-time-"]');
+    if (timeInput) {
+      lastDataRow = row;
+      break;
+    }
+  }
+  
+  if (!lastDataRow) return;
+  
+  // Get current count
+  const currentCount = parseInt(lastDataRow.querySelector('td:nth-child(2)').textContent) || 0;
+  const newCount = currentCount + 1;
+  
+  // Create new row
+  const newRow = document.createElement('tr');
+  newRow.innerHTML = `
+    <td><input class="vi-input" id="fg-dust-time-${newCount}" oninput="calcFlueGas()" type="text" placeholder="${formatTimeRange(newCount)}"/></td>
+    <td>${newCount}</td>
+    <td><input class="vi-input" id="fg-dust-pm-r${newCount}" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+    <td><input class="vi-input" id="fg-dust-flow-r${newCount}" oninput="calcFlueGas()" step="0.01" type="number"/></td>
+    <td><input class="vi-input" id="fg-dust-temp-r${newCount}" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+    <td><input class="vi-input" id="fg-dust-moist-r${newCount}" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+    <td><input class="vi-input" id="fg-dust-pm-c${newCount}" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+    <td><input class="vi-input" id="fg-dust-flow-c${newCount}" oninput="calcFlueGas()" step="0.01" type="number"/></td>
+    <td><input class="vi-input" id="fg-dust-temp-c${newCount}" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+    <td><input class="vi-input" id="fg-dust-moist-c${newCount}" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+  `;
+  
+  // Insert before the first average row
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    if (row.querySelector('td[colspan]')) {
+      tbody.insertBefore(newRow, row);
+      break;
+    }
+  }
+  
+  toast(`已添加第${newCount}条记录`);
+}
+
+// 颗粒物/流速/温度/湿度比对模块 - 删除记录
+function removeFlueGasDustMeasurement() {
+  const table = document.querySelector('#fluegas-tab-dust table.simple-table');
+  if (!table) return;
+  
+  const tbody = table.querySelector('tbody');
+  const rows = tbody.querySelectorAll('tr');
+  
+  // Find the last data row (before the average rows)
+  let lastDataRow = null;
+  for (let i = rows.length - 1; i >= 0; i--) {
+    const row = rows[i];
+    const timeInput = row.querySelector('input[id^="fg-dust-time-"]');
+    if (timeInput) {
+      lastDataRow = row;
+      break;
+    }
+  }
+  
+  if (!lastDataRow) return;
+  
+  const currentCount = parseInt(lastDataRow.querySelector('td:nth-child(2)').textContent) || 0;
+  if (currentCount <= 1) {
+    toast('至少需要保留1条记录', 'err');
+    return;
+  }
+  
+  lastDataRow.remove();
+  toast(`已删除第${currentCount}条记录`);
+  
+  // Renumber remaining rows
+  const dataRows = Array.from(tbody.querySelectorAll('tr input[id^="fg-dust-time-"]')).map((input, index) => input.closest('tr'));
+  dataRows.forEach((row, index) => {
+    const newCount = index + 1;
+    row.querySelector('td:nth-child(2)').textContent = newCount;
+    
+    // Update input IDs
+    const inputs = row.querySelectorAll('input');
+    inputs.forEach(input => {
+      const oldId = input.id;
+      if (oldId.includes('-r') || oldId.includes('-c')) {
+        input.id = oldId.replace(/-(r|c)\d+$/, `-$1${newCount}`);
+      } else if (oldId.includes('fg-dust-time-')) {
+        input.id = `fg-dust-time-${newCount}`;
+      }
+    });
+  });
+  
+  // Recalculate after deletion
+  calcFlueGas();
+}
+
+// 颗粒物/流速/温度/湿度比对模块 - 清空数据
+function clearFlueGasDustData() {
+  const table = document.querySelector('#fluegas-tab-dust table.simple-table');
+  if (!table) return;
+  
+  const rows = table.querySelectorAll('tbody tr');
+  
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    inputs.forEach(input => {
+      input.value = '';
+    });
+  });
+  
+  // 重新计算以清空结果
+  calcFlueGas();
+  toast('数据已清空');
+}
+
+// Helper function to format time range for new records
+function formatTimeRange(index) {
+  const baseHours = 16 + Math.floor((index - 1) * 25 / 60);
+  const baseMinutes = (index - 1) * 25 % 60;
+  
+  const startHour = String(baseHours).padStart(2, '0');
+  const startMinute = String(baseMinutes).padStart(2, '0');
+  
+  let endHour = baseHours;
+  let endMinute = baseMinutes + 24;
+  if (endMinute >= 60) {
+    endHour += Math.floor(endMinute / 60);
+    endMinute = endMinute % 60;
+  }
+  
+  return `${startHour}:${startMinute}-${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
 }
 
 (function initExtraTemplates(){
