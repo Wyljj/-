@@ -3329,7 +3329,7 @@ function calcWeather(){
 }
 function calcIons(){
   const v = id=>{ const n=num(id); return Number.isNaN(n)?0:n; };
-  const cat = v('ion-na')/23 + v('ion-k')/39 + v('ion-ca')/20 + v('ion-mg')/12 + v('ion-nh4')/18 + v('ion-fe')/18.7 + v('ion-mn')/27.5;
+  const cat = v('ion-na')/23 + v('ion-k')/39 + v('ion-ca')/20 + v('ion-mg')/12 + v('ion-nh4')/18 + v('ion-fe')/18.6 + v('ion-mn')/27.5;
   const an = v('ion-so4')/48 + v('ion-cl')/35.5 + v('ion-hco3')/61 + v('ion-co3')/30 + v('ion-sio3')/38 + v('ion-no3')/62 + v('ion-f')/19;
   const balance = (cat+an)!==0 ? (an-cat)/(an+cat)*100 : NaN;
   const hardCalc = (v('ion-ca')/20 + v('ion-mg')/12 + v('ion-fe')/18.6 + v('ion-mn')/27.5)*50;
@@ -3364,7 +3364,7 @@ function calcOdor(){
   calcO6();
 }
 function calcO6(){
-  const M = (a,b)=> ((Number.isNaN(a)?0:a) + (Number.isNaN(b)?0:b)*(1/3)) / 18;
+  const M = (a,b)=> ((Number.isNaN(a)?0:a) + (Number.isNaN(b)?0:b)*(1/3)) / 6;
   const a10=num('o6-a10'), b10=num('o6-b10');
   const a100=num('o6-a100'), b100=num('o6-b100');
   const a1000=num('o6-a1000'), b1000=num('o6-b1000');
@@ -3561,23 +3561,34 @@ function calcCems(){
 
   const accRows = [['o2','氧准确度'],['so2','SO₂准确度'],['nox','NOx准确度']];
   const accuracyResults = [];
+  // HJ 75-2017 附录A: RA = (|d̄| + cc) / R̄M × 100，cc = t(0.975,n) × Sd / √n
+  // t分位数表(双侧95%置信,df=n): n=9→2.262, n=8→2.306, n=7→2.365, n=6→2.447, n=5→2.571, n=3→3.182
+  const tTable = {3:3.182,4:2.776,5:2.571,6:2.447,7:2.365,8:2.306,9:2.262,10:2.228,12:2.179,15:2.131,20:2.086};
+  function getTVal(n){ return tTable[n] || (n>=20 ? 1.960 : tTable[Math.max(3,Math.min(20,n))] || 2.262); }
   accRows.forEach(([key,label])=>{
     const refs = [num(`cemsa-${key}-r1`), num(`cemsa-${key}-r2`), num(`cemsa-${key}-r3`)];
     const cems = [num(`cemsa-${key}-c1`), num(`cemsa-${key}-c2`), num(`cemsa-${key}-c3`)];
     const diffs = refs.map((ref,i)=> (!Number.isNaN(ref) && !Number.isNaN(cems[i])) ? cems[i]-ref : NaN).filter(v=>!Number.isNaN(v));
-    const rels = refs.map((ref,i)=> (!Number.isNaN(ref) && !Number.isNaN(cems[i]) && ref !== 0) ? (cems[i]-ref)/ref*100 : NaN).filter(v=>!Number.isNaN(v));
+    const validRefs = refs.filter((ref,i)=> !Number.isNaN(ref) && !Number.isNaN(cems[i]));
+    const n_d = diffs.length;
     const avgDiff = avg(diffs);
-    const maxRel = rels.length ? Math.max(...rels.map(v=>Math.abs(v))) : NaN;
+    const sdDiff = stdev(diffs);
+    const rmAvg = n_d > 0 ? avg(validRefs) : NaN;
+    // cc = t(0.975, n) × Sd / √n  (HJ 75-2017)
+    const cc = (n_d >= 3 && !Number.isNaN(sdDiff)) ? getTVal(n_d) * sdDiff / Math.sqrt(n_d) : NaN;
+    // RA = (|d̄| + cc) / R̄M × 100
+    const ra = (!Number.isNaN(avgDiff) && !Number.isNaN(cc) && !Number.isNaN(rmAvg) && rmAvg !== 0)
+      ? (Math.abs(avgDiff) + cc) / rmAvg * 100 : NaN;
     const limit = num(`cemsa-${key}-limit`);
-    const judge = cemsJudgeMetric(maxRel, limit);
+    const judge = cemsJudgeMetric(ra, limit);
     setPlain(`cemsa-${key}-avgdiff`, formatNum(avgDiff,3));
-    setPlain(`cemsa-${key}-maxrel`, formatNum(maxRel,2,'%'));
+    setPlain(`cemsa-${key}-maxrel`, formatNum(ra,2,'%'));
     setPlain(`cemsa-${key}-judge`, judge);
-    accuracyResults.push({label, avgDiff, maxRel, judge});
+    accuracyResults.push({label, avgDiff, ra, judge});
   });
   const accValid = accuracyResults.filter(r => r.judge !== '—');
   const accPass = accValid.filter(r => r.judge === '合格');
-  const accMaxRel = accValid.length ? Math.max(...accValid.map(r => Math.abs(r.maxRel||0))) : NaN;
+  const accMaxRel = accValid.length ? Math.max(...accValid.map(r => Math.abs(r.ra||0))) : NaN;
   setPlain('cemsa-valid', accValid.length ? String(accValid.length) : '—');
   setPlain('cemsa-pass', accValid.length ? `${accPass.length}/${accValid.length}` : '—');
   setPlain('cemsa-maxrel-all', formatNum(accMaxRel,2,'%'));
@@ -3693,7 +3704,7 @@ function calcOccupational(){
   document.getElementById('occ-lex').textContent = lexText;
 }
 function calcO6Panel(){
-  const M = (a,b)=> ((Number.isNaN(a)?0:a) + (Number.isNaN(b)?0:b)*(1/3)) / 18;
+  const M = (a,b)=> ((Number.isNaN(a)?0:a) + (Number.isNaN(b)?0:b)*(1/3)) / 6;
   const a10=num('o6p-a10'), b10=num('o6p-b10'), a100=num('o6p-a100'), b100=num('o6p-b100'), a1000=num('o6p-a1000'), b1000=num('o6p-b1000');
   const m1=M(a10,b10), m2=M(a100,b100), m3=M(a1000,b1000);
   setv('o6p-m1',m1,4); setv('o6p-m2',m2,4); setv('o6p-m3',m3,4);
