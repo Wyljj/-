@@ -1192,6 +1192,51 @@ td#fg-dust-moist-cavg {
   word-break: keep-all;
 }
 
+/* Button styles for nox comparison */
+.btn-add, .btn-delete, .btn-clear {
+  padding: 6px 12px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.btn-add {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn-delete {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-clear {
+  background-color: #6b7280;
+  color: white;
+}
+
+.btn-add:hover {
+  background-color: #2563eb;
+}
+
+.btn-delete:hover {
+  background-color: #dc2626;
+}
+
+.btn-clear:hover {
+  background-color: #4b5563;
+}
+
+/* NOX comparison table - wider CEMS column */
+#fluegas-tab-nox table.simple-table td:nth-child(4) input,
+#fluegas-tab-nox table.simple-table th:nth-child(4) {
+  width: 120px !important;
+  min-width: 120px;
+}
+
 .fg-sticky-wrap {
   position: relative;
   overflow-x: auto !important;
@@ -1318,15 +1363,7 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
 <div class="info-item">厂界/道路噪声</div>
 </div>
 </div>
-<div class="template-item" data-template="g219" onclick="selectTemplate('g219')">
-<div class="template-title">🛣️ G219国道噪声</div>
-<div class="template-desc">已添加模板目录</div>
-<div class="template-info">
-<div class="info-item">道路交通噪声</div>
-<div class="info-item">监测结果计算</div>
-</div>
-</div>
-<div class="template-item" data-template="parshall" onclick="selectTemplate('parshall')">
+    <div class="template-item" data-template="parshall" onclick="selectTemplate('parshall')">
 <div class="template-title">💧 巴歇尔槽流量计算</div>
 <div class="template-desc">已添加模板目录</div>
 <div class="template-info">
@@ -1334,15 +1371,7 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
 <div class="info-item">流量换算</div>
 </div>
 </div>
-<div class="template-item" data-template="weather" onclick="selectTemplate('weather')">
-<div class="template-title">🌬️ 气象</div>
-<div class="template-desc">已添加模板目录</div>
-<div class="template-info">
-<div class="info-item">气象条件记录</div>
-<div class="info-item">适宜程度判定</div>
-</div>
-</div>
-<div class="template-item" data-template="ions" onclick="selectTemplate('ions')">
+    <div class="template-item" data-template="ions" onclick="selectTemplate('ions')">
 <div class="template-title">⚗️ 阴阳离子平衡计算表</div>
 <div class="template-desc">已添加模板目录</div>
 <div class="template-info">
@@ -1350,36 +1379,12 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
 <div class="info-item">误差计算</div>
 </div>
 </div>
-<div class="template-item" data-template="odor" onclick="selectTemplate('odor')">
-<div class="template-title">👃 臭气浓度关系表</div>
-<div class="template-desc">已添加模板目录</div>
-<div class="template-info">
-<div class="info-item">臭气浓度换算</div>
-<div class="info-item">关系查询</div>
-</div>
-</div>
-<div class="template-item" data-template="cems" onclick="selectTemplate('cems')">
-<div class="template-title">🏭 CEMS 72小时调试报告</div>
-<div class="template-desc">已添加模板目录</div>
-<div class="template-info">
-<div class="info-item">调试报告编制</div>
-<div class="info-item">在线监测模板</div>
-</div>
-</div>
-<div class="template-item" data-template="occupational" onclick="selectTemplate('occupational')">
+    <div class="template-item" data-template="occupational" onclick="selectTemplate('occupational')">
 <div class="template-title">🧰 职业卫生计算模板</div>
 <div class="template-desc">已添加模板目录</div>
 <div class="template-info">
 <div class="info-item">化学因素</div>
 <div class="info-item">物理因素</div>
-</div>
-</div>
-<div class="template-item" data-template="o6" onclick="selectTemplate('o6')">
-<div class="template-title">🧪 厂区东北侧O₆</div>
-<div class="template-desc">已添加模板目录</div>
-<div class="template-info">
-<div class="info-item">厂区环境监测</div>
-<div class="info-item">现场数据计算</div>
 </div>
 </div>
 </div>
@@ -1798,25 +1803,40 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
 <div class="fluegas-subpanel" id="fluegas-tab-nox">
   <div class="template-grid-two">
     <div>
-      <div class="template-section-title">氮氧化物三次比对</div>
+      <div class="template-section-title">氮氧化物比对</div>
       <div class="stats-setting-row">
-        <div class="stats-setting-item"><span class="stats-setting-label">允许相对误差（%）</span><input id="fg-noxcmp-limit" oninput="calcFlueGas()" step="0.1" type="number" value="15"/></div>
+        <div class="stats-setting-item"><span class="stats-setting-label">置信系数</span><input id="fg-noxcmp-coeff" oninput="calcFlueGas()" step="0.01" type="number" value="2"/></div>
       </div>
       <table class="simple-table">
-        <thead><tr><th>轮次</th><th>参比值（mg/m³）</th><th>CEMS值（mg/m³）</th><th>偏差</th></tr></thead>
-        <tbody>
-          <tr><td>第一次</td><td><input class="vi-input" id="fg-noxcmp-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d1">—</td></tr>
-          <tr><td>第二次</td><td><input class="vi-input" id="fg-noxcmp-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d2">—</td></tr>
-          <tr><td>第三次</td><td><input class="vi-input" id="fg-noxcmp-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d3">—</td></tr>
+        <thead><tr><th>序号</th><th>时间（时、分）</th><th>参比方法（RM）A<br>mg/m³</th><th>CEMS法 B<br>mg/m³</th><th>数据对差=B-A<br>mg/m³</th></tr></thead>
+        <tbody id="fg-noxcmp-body">
+          <tr><td>1</td><td><input class="vi-input" id="fg-noxcmp-time-1" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-noxcmp-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d1">—</td></tr>
+          <tr><td>2</td><td><input class="vi-input" id="fg-noxcmp-time-2" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-noxcmp-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d2">—</td></tr>
+          <tr><td>3</td><td><input class="vi-input" id="fg-noxcmp-time-3" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-noxcmp-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d3">—</td></tr>
+          <tr><td>4</td><td><input class="vi-input" id="fg-noxcmp-time-4" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-noxcmp-r4" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c4" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d4">—</td></tr>
+          <tr><td>5</td><td><input class="vi-input" id="fg-noxcmp-time-5" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-noxcmp-r5" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c5" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d5">—</td></tr>
+          <tr><td>6</td><td><input class="vi-input" id="fg-noxcmp-time-6" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-noxcmp-r6" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c6" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d6">—</td></tr>
+          <tr><td>7</td><td><input class="vi-input" id="fg-noxcmp-time-7" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-noxcmp-r7" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c7" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d7">—</td></tr>
+          <tr><td>8</td><td><input class="vi-input" id="fg-noxcmp-time-8" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-noxcmp-r8" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c8" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d8">—</td></tr>
+          <tr><td>9</td><td><input class="vi-input" id="fg-noxcmp-time-9" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-noxcmp-r9" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-c9" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-d9">—</td></tr>
+          <tr style="background-color: rgba(34, 197, 94, 0.1); font-weight: bold;">
+            <td colspan="2">平均值</td>
+            <td id="fg-noxcmp-ravg">—</td>
+            <td id="fg-noxcmp-cavg">—</td>
+            <td id="fg-noxcmp-abs">—</td>
+          </tr>
         </tbody>
       </table>
+      <div style="margin-top:12px; text-align:center">
+        <button class="btn-add" onclick="addNoxCmpRecord()">+增加记录</button>
+        <button class="btn-delete" onclick="deleteNoxCmpRecord()">-删除记录</button>
+        <button class="btn-clear" onclick="clearNoxCmpData()">清空数据</button>
+      </div>
     </div>
-    <div>
+    <div style="margin-top:20px">
       <div class="template-grid-two">
-        <div class="result-box"><div class="result-label">平均参比</div><div class="result-value" id="fg-noxcmp-ravg">—</div></div>
-        <div class="result-box"><div class="result-label">平均在线</div><div class="result-value" id="fg-noxcmp-cavg">—</div></div>
-        <div class="result-box"><div class="result-label">平均偏差</div><div class="result-value" id="fg-noxcmp-abs">—</div></div>
         <div class="result-box"><div class="result-label">相对误差</div><div class="result-value" id="fg-noxcmp-rel">—</div></div>
+        <div class="result-box"><div class="result-label">不确定度</div><div class="result-value" id="fg-noxcmp-uncertainty">—</div></div>
       </div>
       <div class="result-box" style="margin-top:12px"><div class="result-label">判定</div><div class="result-value" id="fg-noxcmp-judge">—</div></div>
     </div>
@@ -3516,7 +3536,7 @@ function fluegasJudge(value, limit, mode='rel'){
   const pass = Math.abs(value) <= limit;
   return pass ? '合格' : '不合格';
 }
-function fluegasCompare(prefix, limitId, mode='rel', dp=2, unit=''){
+function fluegasCompare(prefix, limitId, mode='rel', dp=2, unit='', coeffId=''){
   const refs = [];
   const cems = [];
   let i = 1;
@@ -3529,6 +3549,12 @@ function fluegasCompare(prefix, limitId, mode='rel', dp=2, unit=''){
     if (!refElement && !cemsElement) {
       // No more input elements, exit loop
       break;
+    }
+    
+    // Skip if either element is not an input (to avoid processing average row)
+    if (refElement.tagName !== 'INPUT' || cemsElement.tagName !== 'INPUT') {
+      i++;
+      continue;
     }
     
     const refValue = num(`${prefix}-r${i}`);
@@ -3548,13 +3574,38 @@ function fluegasCompare(prefix, limitId, mode='rel', dp=2, unit=''){
   const absErr = (!Number.isNaN(refAvg) && !Number.isNaN(cemsAvg)) ? cemsAvg - refAvg : NaN;
   const relErr = (!Number.isNaN(absErr) && !Number.isNaN(refAvg) && refAvg !== 0) ? absErr / refAvg * 100 : NaN;
   const limit = num(limitId);
+  const coeff = coeffId ? num(coeffId) : 1;
+  
+  // Calculate uncertainty with confidence coefficient
+  const validRefs = refs.filter(v => !Number.isNaN(v));
+  const validCems = cems.filter(v => !Number.isNaN(v));
+  const n = Math.min(validRefs.length, validCems.length);
+  let uncertainty = NaN;
+  
+  if (n >= 2 && !Number.isNaN(refAvg) && !Number.isNaN(cemsAvg)) {
+    // Calculate standard deviation of differences
+    const diffs = [];
+    for (let j = 0; j < n; j++) {
+      if (!Number.isNaN(validRefs[j]) && !Number.isNaN(validCems[j])) {
+        diffs.push(validCems[j] - validRefs[j]);
+      }
+    }
+    if (diffs.length >= 2) {
+      const meanDiff = diffs.reduce((a, b) => a + b, 0) / diffs.length;
+      const variance = diffs.reduce((sum, d) => sum + Math.pow(d - meanDiff, 2), 0) / (diffs.length - 1);
+      const stdDev = Math.sqrt(variance);
+      uncertainty = coeff * stdDev / Math.sqrt(n);
+    }
+  }
+  
   const metric = mode === 'abs' ? absErr : relErr;
   setPlain(`${prefix}-ravg`, formatNum(refAvg, dp, unit));
   setPlain(`${prefix}-cavg`, formatNum(cemsAvg, dp, unit));
   setPlain(`${prefix}-abs`, formatNum(absErr, dp, unit));
   setPlain(`${prefix}-rel`, formatNum(relErr, 2, '%'));
   setPlain(`${prefix}-judge`, fluegasJudge(metric, limit, mode));
-  return { refAvg, cemsAvg, absErr, relErr, limit, judge: fluegasJudge(metric, limit, mode) };
+  setPlain(`${prefix}-uncertainty`, formatNum(uncertainty, dp, unit));
+  return { refAvg, cemsAvg, absErr, relErr, limit, judge: fluegasJudge(metric, limit, mode), uncertainty };
 }
 function fluegasDual(refId, cemsId, limitId, absId, relId, judgeId, dp=2, unit=''){
   const ref = num(refId), cems = num(cemsId), limit = num(limitId);
@@ -3994,7 +4045,7 @@ function calcFlueGas(){
   setPlain('fg-dust-moist-ravg', formatNum(dustMoist.refAvg, 2, '%'));
   setPlain('fg-dust-moist-cavg', formatNum(dustMoist.cemsAvg, 2, '%'));
 
-  const noxCmp = fluegasCompare('fg-noxcmp', 'fg-noxcmp-limit', 'rel', 2);
+  const noxCmp = fluegasCompare('fg-noxcmp', 'fg-noxcmp-limit', 'rel', 2, '', 'fg-noxcmp-coeff');
   setPlain('fg-noxcmp-judge', noxCmp.judge === '—' ? '—' : `${noxCmp.judge}（限值 ${formatNum(noxCmp.limit,1,'%')}）`);
   const so2Cmp = fluegasCompare('fg-so2cmp', 'fg-so2cmp-limit', 'rel', 2);
   setPlain('fg-so2cmp-judge', so2Cmp.judge === '—' ? '—' : `${so2Cmp.judge}（限值 ${formatNum(so2Cmp.limit,1,'%')}）`);
@@ -4036,6 +4087,66 @@ function calcFlueGas(){
   });
   setPlain('fg-water-summary', waterJudges.includes('—') ? '请补充在线水质比对数据。' : (waterJudges.every(v=>v==='合格') ? '水质在线比对全部合格。' : '水质在线比对存在超限项。'));
 }
+
+// 氮氧化物比对 - 增加记录
+function addNoxCmpRecord() {
+  const body = document.getElementById('fg-noxcmp-body');
+  const rows = body.children.length - 1; // 减去平均值行
+  const newRow = rows + 1;
+  
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${newRow}</td>
+    <td><input class="vi-input" id="fg-noxcmp-time-${newRow}" type="text" placeholder="时:分"/></td>
+    <td><input class="vi-input" id="fg-noxcmp-r${newRow}" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+    <td><input class="vi-input" id="fg-noxcmp-c${newRow}" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+    <td id="fg-noxcmp-d${newRow}">—</td>
+  `;
+  
+  // 插入到平均值行之前
+  const avgRow = body.lastElementChild;
+  body.insertBefore(tr, avgRow);
+  
+  // 重新计算序号
+  for (let i = 0; i < body.children.length - 1; i++) {
+    body.children[i].children[0].textContent = i + 1;
+  }
+  
+  calcFlueGas();
+}
+
+// 氮氧化物比对 - 删除记录
+function deleteNoxCmpRecord() {
+  const body = document.getElementById('fg-noxcmp-body');
+  const rows = body.children.length - 1; // 减去平均值行
+  
+  if (rows > 1) {
+    // 删除倒数第二行（最后一条数据行）
+    body.removeChild(body.children[rows - 1]);
+    
+    // 重新计算序号
+    for (let i = 0; i < body.children.length - 1; i++) {
+      body.children[i].children[0].textContent = i + 1;
+    }
+    
+    calcFlueGas();
+  }
+}
+
+// 氮氧化物比对 - 清空数据
+function clearNoxCmpData() {
+  const body = document.getElementById('fg-noxcmp-body');
+  
+  for (let i = 0; i < body.children.length - 1; i++) { // 不处理平均值行
+    const inputs = body.children[i].querySelectorAll('input');
+    inputs.forEach(input => input.value = '');
+    const result = body.children[i].querySelector('[id^="fg-noxcmp-d"]');
+    if (result) result.textContent = '—';
+  }
+  
+  calcFlueGas();
+}
+
 function calcNoiseCheck(){
   const sec = num('nc-sec'), leq = num('nc-leq');
   document.getElementById('nc-min').value = (!Number.isNaN(sec)&&sec>0)?(sec/60).toFixed(2):'';
@@ -4705,7 +4816,7 @@ function formatTimeRange(index) {
   const now = new Date();
   const d = document.getElementById('w-date'); if(d && !d.value) d.value = now.toISOString().slice(0,10);
   const t = document.getElementById('w-time'); if(t && !t.value) t.value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-  calcFlueGas(); calcNoiseCheck(); calcNoiseCheckReverse(); calcG219(); calcParshall(); calcWeather(); calcIons(); calcOdor(); calcCems(); calcOccupational(); calcO6Panel(); refreshCemsReport();
+  calcFlueGas(); calcNoiseCheck(); calcNoiseCheckReverse(); calcParshall(); calcIons(); calcOccupational(); refreshCemsReport();
 })();
 </script>
 </div></div></body>
