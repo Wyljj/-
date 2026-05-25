@@ -523,7 +523,7 @@ body {
   font-family: var(--mono);
   font-size: 11px;
   color: var(--text3);
-  width: 40px;
+  width: 100px;
 }
 .vi-input {
   width: 100%;
@@ -1253,6 +1253,29 @@ td#fg-dust-moist-cavg {
 .fg-sticky-wrap::-webkit-scrollbar-track { background: transparent; }
 
 .simple-table th, .simple-table td { border-bottom:1px solid var(--border); padding:6px 4px; text-align:center; font-size:13px; font-weight: bold; white-space: nowrap; }
+table#noise-table-600 th:first-child, table#noise-table-600 td:first-child,
+table#noise-table-1200 th:first-child, table#noise-table-1200 td:first-child { width: 100px !important; min-width: 100px; max-width: 100px; }
+table#noise-table-600 th:nth-child(2), table#noise-table-600 th:nth-child(4),
+table#noise-table-1200 th:nth-child(2), table#noise-table-1200 th:nth-child(4) { background-color: rgba(59, 130, 246, 0.2) !important; border: 1px solid #000000 !important; }
+table#noise-table-600 th:nth-child(3), table#noise-table-600 th:nth-child(5), table#noise-table-600 th:nth-child(6),
+table#noise-table-1200 th:nth-child(3), table#noise-table-1200 th:nth-child(5), table#noise-table-1200 th:nth-child(6) { background-color: rgba(34, 197, 94, 0.2) !important; border: 1px solid #000000 !important; }
+#template-noisecheck .card-title { display: block !important; font-family: Tahoma, Geneva, sans-serif !important; font-size: 15px !important; }
+tbody#parshall-lookup-body > tr:nth-child(1) > td:nth-child(1) { background-color: rgba(255, 255, 255, 0.2) !important; border-width: 0px !important; border-style: solid !important; border-color: rgb(234, 179, 8) !important; }
+tbody#parshall-lookup-body > tr:nth-child(6) > td:nth-child(1) { background-color: rgba(59, 130, 246, 0.2) !important; }
+tbody#parshall-lookup-body > tr:nth-child(18) > td:nth-child(1) { background-color: rgba(34, 197, 94, 0.2) !important; }
+tbody#parshall-lookup-body > tr:nth-child(-n+5) { background-color: transparent !important; }
+tbody#parshall-lookup-body > tr:nth-child(1) { border-top: 2px solid #000000 !important; }
+tbody#parshall-lookup-body > tr:nth-child(5) { border-bottom: 2px solid #000000 !important; }
+tbody#parshall-lookup-body > tr:nth-child(n+6):nth-child(-n+17) { background-color: transparent !important; }
+tbody#parshall-lookup-body > tr:nth-child(6) { border-top: 2px solid #000000 !important; }
+tbody#parshall-lookup-body > tr:nth-child(17) { border-bottom: 2px solid #000000 !important; }
+tbody#parshall-lookup-body > tr:nth-child(n+18):nth-child(-n+25) { background-color: transparent !important; }
+tbody#parshall-lookup-body > tr:nth-child(18) { border-top: 2px solid #000000 !important; }
+tbody#parshall-lookup-body > tr:nth-child(25) { border-bottom: 2px solid #000000 !important; }
+#parshall-input-table .result-cell { text-align: center; font-weight: bold; color: var(--text); }
+.parshall-btn-row { display: flex; flex-direction: row; align-items: center; justify-content: center; margin-bottom: 12px; gap: 12px; }
+.parshall-add-btn { background-color: #3b82f6 !important; color: #ffffff !important; border-radius: 8px !important; padding: 8px 16px !important; border: none !important; }
+.parshall-remove-btn, .parshall-clear-btn { background-color: transparent !important; color: #ef4444 !important; border-radius: 8px !important; padding: 8px 16px !important; border: 1px solid #ef4444 !important; }
 table.simple-table:not(#fg-measurement-table) td:first-child { text-align:center; white-space: normal; word-break: break-word; width: 220px !important; flex-shrink: 0; }
 table.simple-table:not(#fg-measurement-table) td:nth-child(2) { width: 56px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; white-space: nowrap; word-break: keep-all; }
 table.simple-table:not(#fg-measurement-table) td:nth-child(n+3):not(:last-child) { width: 30px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; }
@@ -1846,25 +1869,41 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
 <div class="fluegas-subpanel" id="fluegas-tab-so2">
   <div class="template-grid-two">
     <div>
-      <div class="template-section-title">二氧化硫三次比对</div>
+      <div class="template-section-title">二氧化硫比对</div>
       <div class="stats-setting-row">
+        <div class="stats-setting-item"><span class="stats-setting-label">置信系数</span><input id="fg-so2cmp-coeff" oninput="calcFlueGas()" step="0.01" type="number" value="2"/></div>
         <div class="stats-setting-item"><span class="stats-setting-label">允许相对误差（%）</span><input id="fg-so2cmp-limit" oninput="calcFlueGas()" step="0.1" type="number" value="15"/></div>
       </div>
       <table class="simple-table">
-        <thead><tr><th>轮次</th><th>参比值（mg/m³）</th><th>CEMS值（mg/m³）</th><th>偏差</th></tr></thead>
-        <tbody>
-          <tr><td>第一次</td><td><input class="vi-input" id="fg-so2cmp-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d1">—</td></tr>
-          <tr><td>第二次</td><td><input class="vi-input" id="fg-so2cmp-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d2">—</td></tr>
-          <tr><td>第三次</td><td><input class="vi-input" id="fg-so2cmp-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d3">—</td></tr>
+        <thead><tr><th>序号</th><th>时间（时、分）</th><th>参比方法（RM）A<br>mg/m³</th><th>CEMS法 B<br>mg/m³</th><th>数据对差=B-A<br>mg/m³</th></tr></thead>
+        <tbody id="fg-so2cmp-body">
+          <tr><td>1</td><td><input class="vi-input" id="fg-so2cmp-time-1" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-so2cmp-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d1">—</td></tr>
+          <tr><td>2</td><td><input class="vi-input" id="fg-so2cmp-time-2" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-so2cmp-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d2">—</td></tr>
+          <tr><td>3</td><td><input class="vi-input" id="fg-so2cmp-time-3" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-so2cmp-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d3">—</td></tr>
+          <tr><td>4</td><td><input class="vi-input" id="fg-so2cmp-time-4" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-so2cmp-r4" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c4" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d4">—</td></tr>
+          <tr><td>5</td><td><input class="vi-input" id="fg-so2cmp-time-5" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-so2cmp-r5" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c5" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d5">—</td></tr>
+          <tr><td>6</td><td><input class="vi-input" id="fg-so2cmp-time-6" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-so2cmp-r6" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c6" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d6">—</td></tr>
+          <tr><td>7</td><td><input class="vi-input" id="fg-so2cmp-time-7" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-so2cmp-r7" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c7" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d7">—</td></tr>
+          <tr><td>8</td><td><input class="vi-input" id="fg-so2cmp-time-8" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-so2cmp-r8" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c8" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d8">—</td></tr>
+          <tr><td>9</td><td><input class="vi-input" id="fg-so2cmp-time-9" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-so2cmp-r9" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-c9" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-d9">—</td></tr>
+          <tr style="background-color: rgba(34, 197, 94, 0.1); font-weight: bold;">
+            <td colspan="2">平均值</td>
+            <td id="fg-so2cmp-ravg">—</td>
+            <td id="fg-so2cmp-cavg">—</td>
+            <td id="fg-so2cmp-abs">—</td>
+          </tr>
         </tbody>
       </table>
+      <div style="margin-top:12px; text-align:center">
+        <button class="btn-add" onclick="addSo2CmpRecord()">+增加记录</button>
+        <button class="btn-delete" onclick="deleteSo2CmpRecord()">-删除记录</button>
+        <button class="btn-clear" onclick="clearSo2CmpData()">清空数据</button>
+      </div>
     </div>
-    <div>
+    <div style="margin-top:20px">
       <div class="template-grid-two">
-        <div class="result-box"><div class="result-label">平均参比</div><div class="result-value" id="fg-so2cmp-ravg">—</div></div>
-        <div class="result-box"><div class="result-label">平均在线</div><div class="result-value" id="fg-so2cmp-cavg">—</div></div>
-        <div class="result-box"><div class="result-label">平均偏差</div><div class="result-value" id="fg-so2cmp-abs">—</div></div>
         <div class="result-box"><div class="result-label">相对误差</div><div class="result-value" id="fg-so2cmp-rel">—</div></div>
+        <div class="result-box"><div class="result-label">不确定度</div><div class="result-value" id="fg-so2cmp-uncertainty">—</div></div>
       </div>
       <div class="result-box" style="margin-top:12px"><div class="result-label">判定</div><div class="result-value" id="fg-so2cmp-judge">—</div></div>
     </div>
@@ -1874,25 +1913,41 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
 <div class="fluegas-subpanel" id="fluegas-tab-o2">
   <div class="template-grid-two">
     <div>
-      <div class="template-section-title">含氧量三次比对</div>
+      <div class="template-section-title">含氧量比对</div>
       <div class="stats-setting-row">
+        <div class="stats-setting-item"><span class="stats-setting-label">置信系数</span><input id="fg-o2cmp-coeff" oninput="calcFlueGas()" step="0.01" type="number" value="2"/></div>
         <div class="stats-setting-item"><span class="stats-setting-label">允许绝对误差（%）</span><input id="fg-o2cmp-limit" oninput="calcFlueGas()" step="0.1" type="number" value="1"/></div>
       </div>
       <table class="simple-table">
-        <thead><tr><th>轮次</th><th>参比值（%）</th><th>CEMS值（%）</th><th>偏差</th></tr></thead>
-        <tbody>
-          <tr><td>第一次</td><td><input class="vi-input" id="fg-o2cmp-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d1">—</td></tr>
-          <tr><td>第二次</td><td><input class="vi-input" id="fg-o2cmp-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d2">—</td></tr>
-          <tr><td>第三次</td><td><input class="vi-input" id="fg-o2cmp-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d3">—</td></tr>
+        <thead><tr><th>序号</th><th>时间（时、分）</th><th>参比方法（RM）A<br>%</th><th>CEMS法 B<br>%</th><th>数据对差=B-A<br>%</th></tr></thead>
+        <tbody id="fg-o2cmp-body">
+          <tr><td>1</td><td><input class="vi-input" id="fg-o2cmp-time-1" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-o2cmp-r1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d1">—</td></tr>
+          <tr><td>2</td><td><input class="vi-input" id="fg-o2cmp-time-2" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-o2cmp-r2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d2">—</td></tr>
+          <tr><td>3</td><td><input class="vi-input" id="fg-o2cmp-time-3" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-o2cmp-r3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d3">—</td></tr>
+          <tr><td>4</td><td><input class="vi-input" id="fg-o2cmp-time-4" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-o2cmp-r4" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c4" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d4">—</td></tr>
+          <tr><td>5</td><td><input class="vi-input" id="fg-o2cmp-time-5" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-o2cmp-r5" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c5" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d5">—</td></tr>
+          <tr><td>6</td><td><input class="vi-input" id="fg-o2cmp-time-6" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-o2cmp-r6" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c6" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d6">—</td></tr>
+          <tr><td>7</td><td><input class="vi-input" id="fg-o2cmp-time-7" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-o2cmp-r7" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c7" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d7">—</td></tr>
+          <tr><td>8</td><td><input class="vi-input" id="fg-o2cmp-time-8" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-o2cmp-r8" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c8" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d8">—</td></tr>
+          <tr><td>9</td><td><input class="vi-input" id="fg-o2cmp-time-9" type="text" placeholder="时:分"/></td><td><input class="vi-input" id="fg-o2cmp-r9" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-c9" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-d9">—</td></tr>
+          <tr style="background-color: rgba(34, 197, 94, 0.1); font-weight: bold;">
+            <td colspan="2">平均值</td>
+            <td id="fg-o2cmp-ravg">—</td>
+            <td id="fg-o2cmp-cavg">—</td>
+            <td id="fg-o2cmp-abs">—</td>
+          </tr>
         </tbody>
       </table>
+      <div style="margin-top:12px; text-align:center">
+        <button class="btn-add" onclick="addO2CmpRecord()">+增加记录</button>
+        <button class="btn-delete" onclick="deleteO2CmpRecord()">-删除记录</button>
+        <button class="btn-clear" onclick="clearO2CmpData()">清空数据</button>
+      </div>
     </div>
-    <div>
+    <div style="margin-top:20px">
       <div class="template-grid-two">
-        <div class="result-box"><div class="result-label">平均参比</div><div class="result-value" id="fg-o2cmp-ravg">—</div></div>
-        <div class="result-box"><div class="result-label">平均在线</div><div class="result-value" id="fg-o2cmp-cavg">—</div></div>
-        <div class="result-box"><div class="result-label">平均偏差</div><div class="result-value" id="fg-o2cmp-abs">—</div></div>
-        <div class="result-box"><div class="result-label">相对误差</div><div class="result-value" id="fg-o2cmp-rel">—</div></div>
+        <div class="result-box"><div class="result-label">绝对误差</div><div class="result-value" id="fg-o2cmp-abs-err">—</div></div>
+        <div class="result-box"><div class="result-label">不确定度</div><div class="result-value" id="fg-o2cmp-uncertainty">—</div></div>
       </div>
       <div class="result-box" style="margin-top:12px"><div class="result-label">判定</div><div class="result-value" id="fg-o2cmp-judge">—</div></div>
     </div>
@@ -1965,28 +2020,131 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
 </div>
 </div><div class="template-panel" id="template-noisecheck">
 <div class="card">
-<div class="card-title">📢 噪声验算公式</div>
-<div class="template-subtitle">按模板关系：SEL = Leq + 10 × log10(T/1s)。已拆成“数据录入 + 验算结果”两段，便于后续继续扩展空白子表。</div>
-<div class="module-subnav">
-<button class="module-subbtn active" data-group="noisecheck" data-tab="entry" onclick="switchTemplateSubTab('noisecheck','entry')">数据录入</button>
-<button class="module-subbtn" data-group="noisecheck" data-tab="result" onclick="switchTemplateSubTab('noisecheck','result')">验算结果</button>
+<div class="card-title">📢 固定测量时长10分钟( 600 秒)</div>
+<div class="btn-row" style="margin-bottom:16px;">
+  <button class="btn primary" onclick="addNoiseRow600()">➕ 添加行</button>
+  <button class="btn danger" onclick="removeNoiseRow600()">➖ 删除行</button>
+  <button class="btn danger" onclick="clearNoiseTable600()">🗑️ 清空数据</button>
 </div>
-<div class="module-subpanel active" data-group="noisecheck" data-tab="entry">
-  <div class="meta-row">
-    <div class="field"><label>监测时长（秒）</label><input id="nc-sec" oninput="calcNoiseCheck(); calcNoiseCheckReverse()" step="1" type="number" value="600"/></div>
-    <div class="field"><label>Leq（dB）</label><input id="nc-leq" oninput="calcNoiseCheck()" step="0.1" type="number"/></div>
-    <div class="field"><label>SEL（dB）</label><input id="nc-sel" oninput="calcNoiseCheckReverse()" step="0.1" type="number"/></div>
-    <div class="field"><label>监测时间（min）</label><input id="nc-min" readonly="" step="0.01" type="number"/></div>
-  </div>
-  <div class="template-tip" style="margin-top:14px">当前保留单事件噪声最核心的 Leq / SEL 双向换算；后续如果原模板还有补充表，可继续接到同一模板下，不需要再新开独立模板。</div>
+<div class="simple-table-container">
+<table class="simple-table" id="noise-table-600">
+  <thead>
+    <tr>
+      <th style="width:100px">#</th>
+      <th style="width:130px">Leq(等效声级)(dB)</th>
+      <th style="width:130px">SEL(计算)(dB)</th>
+      <th style="width:130px">SEL(目标)(dB)</th>
+      <th style="width:90px">T(s)</th>
+      <th style="width:90px">T(min)</th>
+    </tr>
+  </thead>
+  <tbody id="noise-table-body-600">
+    <tr data-row="0">
+      <td class="pt">1</td>
+      <td><input class="vi-input" id="nc600-leq-0" oninput="calcNoiseRow600(0)" step="0.1" type="number" placeholder="输入Leq"/></td>
+      <td><input class="vi-input" id="nc600-sel-calc-0" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc600-sel-target-0" oninput="calcNoiseRow600(0)" step="0.1" type="number" placeholder="目标SEL"/></td>
+      <td><input class="vi-input" id="nc600-t-sec-0" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc600-t-min-0" readonly="" step="0.01" type="text" value="—"/></td>
+    </tr>
+    <tr data-row="1">
+      <td class="pt">2</td>
+      <td><input class="vi-input" id="nc600-leq-1" oninput="calcNoiseRow600(1)" step="0.1" type="number" placeholder="输入Leq"/></td>
+      <td><input class="vi-input" id="nc600-sel-calc-1" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc600-sel-target-1" oninput="calcNoiseRow600(1)" step="0.1" type="number" placeholder="目标SEL"/></td>
+      <td><input class="vi-input" id="nc600-t-sec-1" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc600-t-min-1" readonly="" step="0.01" type="text" value="—"/></td>
+    </tr>
+    <tr data-row="2">
+      <td class="pt">3</td>
+      <td><input class="vi-input" id="nc600-leq-2" oninput="calcNoiseRow600(2)" step="0.1" type="number" placeholder="输入Leq"/></td>
+      <td><input class="vi-input" id="nc600-sel-calc-2" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc600-sel-target-2" oninput="calcNoiseRow600(2)" step="0.1" type="number" placeholder="目标SEL"/></td>
+      <td><input class="vi-input" id="nc600-t-sec-2" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc600-t-min-2" readonly="" step="0.01" type="text" value="—"/></td>
+    </tr>
+    <tr data-row="3">
+      <td class="pt">4</td>
+      <td><input class="vi-input" id="nc600-leq-3" oninput="calcNoiseRow600(3)" step="0.1" type="number" placeholder="输入Leq"/></td>
+      <td><input class="vi-input" id="nc600-sel-calc-3" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc600-sel-target-3" oninput="calcNoiseRow600(3)" step="0.1" type="number" placeholder="目标SEL"/></td>
+      <td><input class="vi-input" id="nc600-t-sec-3" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc600-t-min-3" readonly="" step="0.01" type="text" value="—"/></td>
+    </tr>
+    <tr data-row="4">
+      <td class="pt">5</td>
+      <td><input class="vi-input" id="nc600-leq-4" oninput="calcNoiseRow600(4)" step="0.1" type="number" placeholder="输入Leq"/></td>
+      <td><input class="vi-input" id="nc600-sel-calc-4" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc600-sel-target-4" oninput="calcNoiseRow600(4)" step="0.1" type="number" placeholder="目标SEL"/></td>
+      <td><input class="vi-input" id="nc600-t-sec-4" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc600-t-min-4" readonly="" step="0.01" type="text" value="—"/></td>
+    </tr>
+  </tbody>
+</table>
 </div>
-<div class="module-subpanel" data-group="noisecheck" data-tab="result">
-  <div class="template-grid-three">
-    <div class="result-box"><div class="result-label">计算 SEL</div><div class="result-value" id="nc-sel-out">—</div></div>
-    <div class="result-box"><div class="result-label">反算 Leq</div><div class="result-value" id="nc-leq-out">—</div></div>
-    <div class="result-box"><div class="result-label">时长系数 10logT</div><div class="result-value" id="nc-logt">—</div></div>
-  </div>
-  <div class="template-tip" style="margin-top:14px">公式说明：监测时长越长，SEL 相对于 Leq 的修正值越大；结果页可直接作为后续报告引用区。</div>
+</div>
+<div class="card">
+<div class="card-title">📢 固定测量时长20分钟（1200 秒）</div>
+<div class="btn-row" style="margin-bottom:16px;">
+  <button class="btn primary" onclick="addNoiseRow1200()">➕ 添加行</button>
+  <button class="btn danger" onclick="removeNoiseRow1200()">➖ 删除行</button>
+  <button class="btn danger" onclick="clearNoiseTable1200()">🗑️ 清空数据</button>
+</div>
+<div class="simple-table-container">
+<table class="simple-table" id="noise-table-1200">
+  <thead>
+    <tr>
+      <th style="width:100px">#</th>
+      <th style="width:130px">Leq(等效声级)(dB)</th>
+      <th style="width:130px">SEL(计算)(dB)</th>
+      <th style="width:130px">SEL(目标)(dB)</th>
+      <th style="width:90px">T(s)</th>
+      <th style="width:90px">T(min)</th>
+    </tr>
+  </thead>
+  <tbody id="noise-table-body-1200">
+    <tr data-row="0">
+      <td class="pt">1</td>
+      <td><input class="vi-input" id="nc1200-leq-0" oninput="calcNoiseRow1200(0)" step="0.1" type="number" placeholder="输入Leq"/></td>
+      <td><input class="vi-input" id="nc1200-sel-calc-0" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc1200-sel-target-0" oninput="calcNoiseRow1200(0)" step="0.1" type="number" placeholder="目标SEL"/></td>
+      <td><input class="vi-input" id="nc1200-t-sec-0" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc1200-t-min-0" readonly="" step="0.01" type="text" value="—"/></td>
+    </tr>
+    <tr data-row="1">
+      <td class="pt">2</td>
+      <td><input class="vi-input" id="nc1200-leq-1" oninput="calcNoiseRow1200(1)" step="0.1" type="number" placeholder="输入Leq"/></td>
+      <td><input class="vi-input" id="nc1200-sel-calc-1" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc1200-sel-target-1" oninput="calcNoiseRow1200(1)" step="0.1" type="number" placeholder="目标SEL"/></td>
+      <td><input class="vi-input" id="nc1200-t-sec-1" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc1200-t-min-1" readonly="" step="0.01" type="text" value="—"/></td>
+    </tr>
+    <tr data-row="2">
+      <td class="pt">3</td>
+      <td><input class="vi-input" id="nc1200-leq-2" oninput="calcNoiseRow1200(2)" step="0.1" type="number" placeholder="输入Leq"/></td>
+      <td><input class="vi-input" id="nc1200-sel-calc-2" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc1200-sel-target-2" oninput="calcNoiseRow1200(2)" step="0.1" type="number" placeholder="目标SEL"/></td>
+      <td><input class="vi-input" id="nc1200-t-sec-2" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc1200-t-min-2" readonly="" step="0.01" type="text" value="—"/></td>
+    </tr>
+    <tr data-row="3">
+      <td class="pt">4</td>
+      <td><input class="vi-input" id="nc1200-leq-3" oninput="calcNoiseRow1200(3)" step="0.1" type="number" placeholder="输入Leq"/></td>
+      <td><input class="vi-input" id="nc1200-sel-calc-3" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc1200-sel-target-3" oninput="calcNoiseRow1200(3)" step="0.1" type="number" placeholder="目标SEL"/></td>
+      <td><input class="vi-input" id="nc1200-t-sec-3" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc1200-t-min-3" readonly="" step="0.01" type="text" value="—"/></td>
+    </tr>
+    <tr data-row="4">
+      <td class="pt">5</td>
+      <td><input class="vi-input" id="nc1200-leq-4" oninput="calcNoiseRow1200(4)" step="0.1" type="number" placeholder="输入Leq"/></td>
+      <td><input class="vi-input" id="nc1200-sel-calc-4" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc1200-sel-target-4" oninput="calcNoiseRow1200(4)" step="0.1" type="number" placeholder="目标SEL"/></td>
+      <td><input class="vi-input" id="nc1200-t-sec-4" readonly="" step="0.1" type="text" value="—"/></td>
+      <td><input class="vi-input" id="nc1200-t-min-4" readonly="" step="0.01" type="text" value="—"/></td>
+    </tr>
+  </tbody>
+</table>
 </div>
 </div>
 </div><div class="template-panel" id="template-g219">
@@ -2029,34 +2187,36 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
 </div><div class="template-panel" id="template-parshall">
 <div class="card">
 <div class="card-title">💧 巴歇尔槽流量计算</div>
-<div class="template-subtitle">已拆成“参数录入 / 流量计算 / 槽型对照表”三段，符合原 Excel 的参数表 + 计算表结构。</div>
-<div class="module-subnav">
-<button class="module-subbtn active" data-group="parshall" data-tab="entry" onclick="switchTemplateSubTab('parshall','entry')">参数录入</button>
-<button class="module-subbtn" data-group="parshall" data-tab="calc" onclick="switchTemplateSubTab('parshall','calc')">流量计算</button>
-<button class="module-subbtn" data-group="parshall" data-tab="lookup" onclick="switchTemplateSubTab('parshall','lookup')">槽型对照表</button>
-</div>
-<div class="module-subpanel active" data-group="parshall" data-tab="entry">
-  <div class="meta-row">
-    <div class="field"><label>槽型</label><select id="parshall-type" onchange="calcParshall()"></select></div>
-    <div class="field"><label>水位 h（m）</label><input id="parshall-h" oninput="calcParshall()" step="0.001" type="number"/></div>
-    <div class="field"><label>临界淹没度</label><input id="parshall-sub" readonly=""/></div>
-    <div class="field"><label>公式</label><input id="parshall-formula" readonly=""/></div>
+<div class="template-subtitle">公式：Q = C × h^n（Q为流量，L/s；h为水位，m）</div>
+  <div class="template-section-title">参数录入</div>
+  <div class="parshall-btn-row">
+    <button class="btn parshall-add-btn" onclick="addParshallRow()">➕ 添加行</button>
+    <button class="btn parshall-remove-btn" onclick="removeParshallRow()">➖ 删除行</button>
+    <button class="btn parshall-clear-btn" onclick="clearParshallTable()">🗑️ 清空数据</button>
   </div>
-</div>
-<div class="module-subpanel" data-group="parshall" data-tab="calc">
-  <div class="template-grid-three">
-    <div class="result-box"><div class="result-label">流量 Q（L/s）</div><div class="result-value" id="parshall-q">—</div></div>
-    <div class="result-box"><div class="result-label">适用水位范围</div><div class="result-value" id="parshall-range" style="font-size:14px">—</div></div>
-    <div class="result-box"><div class="result-label">适用流量范围</div><div class="result-value" id="parshall-qrange" style="font-size:14px">—</div></div>
+  <div class="simple-table-container" style="max-height:400px;overflow-y:auto;">
+    <table class="summary-table" id="parshall-input-table">
+      <thead>
+        <tr>
+          <th style="width:40px">#</th>
+          <th>喉宽b（m）</th>
+          <th>指数n</th>
+          <th>C（流量系数）</th>
+          <th>液位高度h（m）</th>
+          <th>流量Q（L/s）</th>
+          <th>流量（m³/h）</th>
+        </tr>
+      </thead>
+      <tbody id="parshall-tbody">
+      </tbody>
+    </table>
   </div>
-  <div class="template-tip" style="margin-top:14px">当前采用 Q = C × h^n 直接计算。后续若原表还有更复杂的工况判断，也可继续叠加在本页下方。</div>
-</div>
-<div class="module-subpanel" data-group="parshall" data-tab="lookup">
+  
+  <div class="template-section-title" style="text-align: center; height: 50px; line-height: 50px; background-color: rgba(168, 85, 247, 0.03);">槽型对照表</div>
   <table class="summary-table">
-    <thead><tr><th>序号</th><th>喉道宽度 b(m)</th><th>C</th><th>n</th><th>水位范围 h(m)</th><th>流量范围 Q(L/s)</th><th>临界淹没度</th></tr></thead>
+    <thead><tr><th>类别</th><th>序号</th><th>喉道宽度 b(m)</th><th>流量公式Q=Cha<sup>n</sup>(L/s)</th><th>水位范围 h(m)</th><th>流量范围 Q(L/s)</th><th>临界淹没度%</th></tr></thead>
     <tbody id="parshall-lookup-body"></tbody>
   </table>
-</div>
 </div>
 </div><div class="template-panel" id="template-weather">
 <div class="card">
@@ -3419,31 +3579,31 @@ function switchTab(tabId, force = false) {
 window.switchTab = switchTab;
 
 const PARSHALL_DATA = [
-  {id:1,b:0.025,c:60.4,n:1.55,hmin:0.015,hmax:0.21,qmin:0.09,qmax:5.4,sub:0.5},
-  {id:2,b:0.051,c:120.7,n:1.55,hmin:0.015,hmax:0.24,qmin:0.18,qmax:13.2,sub:0.5},
-  {id:3,b:0.076,c:177.1,n:1.55,hmin:0.03,hmax:0.33,qmin:0.77,qmax:32.1,sub:0.5},
-  {id:4,b:0.152,c:381.2,n:1.58,hmin:0.03,hmax:0.45,qmin:1.5,qmax:111,sub:0.6},
-  {id:5,b:0.228,c:535.4,n:1.53,hmin:0.03,hmax:0.60,qmin:2.5,qmax:251,sub:0.6},
-  {id:6,b:0.25,c:561,n:1.513,hmin:0.03,hmax:0.60,qmin:3,qmax:250,sub:0.6},
-  {id:7,b:0.30,c:679,n:1.521,hmin:0.03,hmax:0.75,qmin:3.5,qmax:400,sub:0.6},
-  {id:8,b:0.45,c:1038,n:1.537,hmin:0.03,hmax:0.75,qmin:4.5,qmax:630,sub:0.6},
-  {id:9,b:0.60,c:1403,n:1.548,hmin:0.05,hmax:0.75,qmin:12.5,qmax:850,sub:0.6},
-  {id:10,b:0.75,c:1772,n:1.557,hmin:0.06,hmax:0.75,qmin:25,qmax:1100,sub:0.6},
-  {id:11,b:0.90,c:2147,n:1.565,hmin:0.06,hmax:0.75,qmin:30,qmax:1250,sub:0.6},
-  {id:12,b:1.00,c:2397,n:1.569,hmin:0.06,hmax:0.80,qmin:30,qmax:1500,sub:0.7},
-  {id:13,b:1.20,c:2904,n:1.577,hmin:0.06,hmax:0.80,qmin:35,qmax:2000,sub:0.7},
-  {id:14,b:1.50,c:3668,n:1.586,hmin:0.06,hmax:0.80,qmin:45,qmax:2500,sub:0.7},
-  {id:15,b:1.80,c:4440,n:1.593,hmin:0.08,hmax:0.80,qmin:80,qmax:3000,sub:0.7},
-  {id:16,b:2.10,c:5222,n:1.599,hmin:0.08,hmax:0.80,qmin:95,qmax:3600,sub:0.7},
-  {id:17,b:2.40,c:6004,n:1.605,hmin:0.08,hmax:0.80,qmin:100,qmax:4000,sub:0.7},
-  {id:18,b:3.05,c:7463,n:1.6,hmin:0.09,hmax:1.07,qmin:160,qmax:8280,sub:0.8},
-  {id:19,b:3.66,c:8859,n:1.6,hmin:0.09,hmax:1.37,qmin:190,qmax:14680,sub:0.8},
-  {id:20,b:4.57,c:10960,n:1.6,hmin:0.09,hmax:1.67,qmin:230,qmax:25040,sub:0.8},
-  {id:21,b:6.10,c:14450,n:1.6,hmin:0.09,hmax:1.83,qmin:310,qmax:37970,sub:0.8},
-  {id:22,b:7.62,c:17940,n:1.6,hmin:0.09,hmax:1.83,qmin:380,qmax:47160,sub:0.8},
-  {id:23,b:9.14,c:21440,n:1.6,hmin:0.09,hmax:1.83,qmin:460,qmax:56330,sub:0.8},
-  {id:24,b:12.19,c:28430,n:1.6,hmin:0.09,hmax:1.83,qmin:600,qmax:74700,sub:0.8},
-  {id:25,b:15.24,c:35410,n:1.6,hmin:0.09,hmax:1.83,qmin:750,qmax:93040,sub:0.8}
+  {id:1,b:0.025,c:60.4,n:1.55,hmin:0.015,hmax:0.21,qmin:0.09,qmax:5.4,sub:0.5,type:'小型'},
+  {id:2,b:0.051,c:120.7,n:1.55,hmin:0.015,hmax:0.24,qmin:0.18,qmax:13.2,sub:0.5,type:'小型'},
+  {id:3,b:0.076,c:177.1,n:1.55,hmin:0.03,hmax:0.33,qmin:0.77,qmax:32.1,sub:0.5,type:'小型'},
+  {id:4,b:0.152,c:381.2,n:1.58,hmin:0.03,hmax:0.45,qmin:1.5,qmax:111,sub:0.6,type:'小型'},
+  {id:5,b:0.228,c:535.4,n:1.53,hmin:0.03,hmax:0.60,qmin:2.5,qmax:251,sub:0.6,type:'小型'},
+  {id:6,b:0.25,c:561,n:1.513,hmin:0.03,hmax:0.60,qmin:3,qmax:250,sub:0.6,type:'标准型'},
+  {id:7,b:0.30,c:679,n:1.521,hmin:0.03,hmax:0.75,qmin:3.5,qmax:400,sub:0.6,type:'标准型'},
+  {id:8,b:0.45,c:1038,n:1.537,hmin:0.03,hmax:0.75,qmin:4.5,qmax:630,sub:0.6,type:'标准型'},
+  {id:9,b:0.60,c:1403,n:1.548,hmin:0.05,hmax:0.75,qmin:12.5,qmax:850,sub:0.6,type:'标准型'},
+  {id:10,b:0.75,c:1772,n:1.557,hmin:0.06,hmax:0.75,qmin:25,qmax:1100,sub:0.6,type:'标准型'},
+  {id:11,b:0.90,c:2147,n:1.565,hmin:0.06,hmax:0.75,qmin:30,qmax:1250,sub:0.6,type:'标准型'},
+  {id:12,b:1.00,c:2397,n:1.569,hmin:0.06,hmax:0.80,qmin:30,qmax:1500,sub:0.7,type:'标准型'},
+  {id:13,b:1.20,c:2904,n:1.577,hmin:0.06,hmax:0.80,qmin:35,qmax:2000,sub:0.7,type:'标准型'},
+  {id:14,b:1.50,c:3668,n:1.586,hmin:0.06,hmax:0.80,qmin:45,qmax:2500,sub:0.7,type:'标准型'},
+  {id:15,b:1.80,c:4440,n:1.593,hmin:0.08,hmax:0.80,qmin:80,qmax:3000,sub:0.7,type:'标准型'},
+  {id:16,b:2.10,c:5222,n:1.599,hmin:0.08,hmax:0.80,qmin:95,qmax:3600,sub:0.7,type:'标准型'},
+  {id:17,b:2.40,c:6004,n:1.605,hmin:0.08,hmax:0.80,qmin:100,qmax:4000,sub:0.7,type:'标准型'},
+  {id:18,b:3.05,c:7463,n:1.6,hmin:0.09,hmax:1.07,qmin:160,qmax:8280,sub:0.8,type:'大型'},
+  {id:19,b:3.66,c:8859,n:1.6,hmin:0.09,hmax:1.37,qmin:190,qmax:14680,sub:0.8,type:'大型'},
+  {id:20,b:4.57,c:10960,n:1.6,hmin:0.09,hmax:1.67,qmin:230,qmax:25040,sub:0.8,type:'大型'},
+  {id:21,b:6.10,c:14450,n:1.6,hmin:0.09,hmax:1.83,qmin:310,qmax:37970,sub:0.8,type:'大型'},
+  {id:22,b:7.62,c:17940,n:1.6,hmin:0.09,hmax:1.83,qmin:380,qmax:47160,sub:0.8,type:'大型'},
+  {id:23,b:9.14,c:21440,n:1.6,hmin:0.09,hmax:1.83,qmin:460,qmax:56330,sub:0.8,type:'大型'},
+  {id:24,b:12.19,c:28430,n:1.6,hmin:0.09,hmax:1.83,qmin:600,qmax:74700,sub:0.8,type:'大型'},
+  {id:25,b:15.24,c:35410,n:1.6,hmin:0.09,hmax:1.83,qmin:750,qmax:93040,sub:0.8,type:'大型'}
 ];
 function num(id){ const el=document.getElementById(id); if(!el) return NaN; const v=parseFloat(el.value); return isNaN(v)?NaN:v; }
 function setv(id,val,dp=4,suffix=''){ const el=document.getElementById(id); if(!el) return; el.textContent=(val===null||val===undefined||Number.isNaN(val))?'—':`${Number(val).toFixed(dp)}${suffix}`; }
@@ -4047,11 +4207,10 @@ function calcFlueGas(){
 
   const noxCmp = fluegasCompare('fg-noxcmp', 'fg-noxcmp-limit', 'rel', 2, '', 'fg-noxcmp-coeff');
   setPlain('fg-noxcmp-judge', noxCmp.judge === '—' ? '—' : `${noxCmp.judge}（限值 ${formatNum(noxCmp.limit,1,'%')}）`);
-  const so2Cmp = fluegasCompare('fg-so2cmp', 'fg-so2cmp-limit', 'rel', 2);
+  const so2Cmp = fluegasCompare('fg-so2cmp', 'fg-so2cmp-limit', 'rel', 2, '', 'fg-so2cmp-coeff');
   setPlain('fg-so2cmp-judge', so2Cmp.judge === '—' ? '—' : `${so2Cmp.judge}（限值 ${formatNum(so2Cmp.limit,1,'%')}）`);
-  const o2Cmp = fluegasCompare('fg-o2cmp', 'fg-o2cmp-limit', 'abs', 2);
-  const o2Judge = fluegasJudge(o2Cmp.absErr, num('fg-o2cmp-limit'), 'abs');
-  setPlain('fg-o2cmp-judge', o2Judge === '—' ? '—' : `${o2Judge}（限值 ${formatNum(num('fg-o2cmp-limit'),1,'%')}）`);
+  const o2Cmp = fluegasCompare('fg-o2cmp', 'fg-o2cmp-limit', 'abs', 2, '%', 'fg-o2cmp-coeff');
+  setPlain('fg-o2cmp-judge', o2Cmp.judge === '—' ? '—' : `${o2Cmp.judge}（限值 ${formatNum(o2Cmp.limit,1,'%')}）`);
 
   const range = num('fg-drift-range');
   const zVals = [num('fg-drift-z1'), num('fg-drift-z2'), num('fg-drift-z3')].filter(v=>!Number.isNaN(v));
@@ -4147,19 +4306,245 @@ function clearNoxCmpData() {
   calcFlueGas();
 }
 
-function calcNoiseCheck(){
-  const sec = num('nc-sec'), leq = num('nc-leq');
-  document.getElementById('nc-min').value = (!Number.isNaN(sec)&&sec>0)?(sec/60).toFixed(2):'';
-  const logt = (!Number.isNaN(sec)&&sec>0)?10*Math.log10(sec):NaN;
-  const sel = (!Number.isNaN(logt)&&!Number.isNaN(leq)) ? leq + logt : NaN;
-  setv('nc-logt', logt, 3); setv('nc-sel-out', sel, 3);
-  calcNoiseCheckReverse();
+// 二氧化硫比对 - 增加记录
+function addSo2CmpRecord() {
+  const body = document.getElementById('fg-so2cmp-body');
+  const rows = body.children.length - 1; // 减去平均值行
+  const newRow = rows + 1;
+
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${newRow}</td>
+    <td><input class="vi-input" id="fg-so2cmp-time-${newRow}" type="text" placeholder="时:分"/></td>
+    <td><input class="vi-input" id="fg-so2cmp-r${newRow}" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+    <td><input class="vi-input" id="fg-so2cmp-c${newRow}" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+    <td id="fg-so2cmp-d${newRow}">—</td>
+  `;
+
+  // 插入到平均值行之前
+  const avgRow = body.lastElementChild;
+  body.insertBefore(tr, avgRow);
+
+  // 重新计算序号
+  for (let i = 0; i < body.children.length - 1; i++) {
+    body.children[i].children[0].textContent = i + 1;
+  }
+
+  calcFlueGas();
 }
-function calcNoiseCheckReverse(){
-  const sec = num('nc-sec'), sel = num('nc-sel');
-  const logt = (!Number.isNaN(sec)&&sec>0)?10*Math.log10(sec):NaN;
-  const leq = (!Number.isNaN(logt)&&!Number.isNaN(sel)) ? sel - logt : NaN;
-  setv('nc-leq-out', leq, 3);
+
+// 二氧化硫比对 - 删除记录
+function deleteSo2CmpRecord() {
+  const body = document.getElementById('fg-so2cmp-body');
+  const rows = body.children.length - 1; // 减去平均值行
+
+  if (rows > 1) {
+    // 删除倒数第二行（最后一条数据行）
+    body.removeChild(body.children[rows - 1]);
+
+    // 重新计算序号
+    for (let i = 0; i < body.children.length - 1; i++) {
+      body.children[i].children[0].textContent = i + 1;
+    }
+
+    calcFlueGas();
+  }
+}
+
+// 二氧化硫比对 - 清空数据
+function clearSo2CmpData() {
+  const body = document.getElementById('fg-so2cmp-body');
+
+  for (let i = 0; i < body.children.length - 1; i++) { // 不处理平均值行
+    const inputs = body.children[i].querySelectorAll('input');
+    inputs.forEach(input => input.value = '');
+    const result = body.children[i].querySelector('[id^="fg-so2cmp-d"]');
+    if (result) result.textContent = '—';
+  }
+
+  calcFlueGas();
+}
+
+// 含氧量比对 - 增加记录
+function addO2CmpRecord() {
+  const body = document.getElementById('fg-o2cmp-body');
+  const rows = body.children.length - 1; // 减去平均值行
+  const newRow = rows + 1;
+
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${newRow}</td>
+    <td><input class="vi-input" id="fg-o2cmp-time-${newRow}" type="text" placeholder="时:分"/></td>
+    <td><input class="vi-input" id="fg-o2cmp-r${newRow}" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+    <td><input class="vi-input" id="fg-o2cmp-c${newRow}" oninput="calcFlueGas()" step="0.1" type="number"/></td>
+    <td id="fg-o2cmp-d${newRow}">—</td>
+  `;
+
+  // 插入到平均值行之前
+  const avgRow = body.lastElementChild;
+  body.insertBefore(tr, avgRow);
+
+  // 重新计算序号
+  for (let i = 0; i < body.children.length - 1; i++) {
+    body.children[i].children[0].textContent = i + 1;
+  }
+
+  calcFlueGas();
+}
+
+// 含氧量比对 - 删除记录
+function deleteO2CmpRecord() {
+  const body = document.getElementById('fg-o2cmp-body');
+  const rows = body.children.length - 1; // 减去平均值行
+
+  if (rows > 1) {
+    // 删除倒数第二行（最后一条数据行）
+    body.removeChild(body.children[rows - 1]);
+
+    // 重新计算序号
+    for (let i = 0; i < body.children.length - 1; i++) {
+      body.children[i].children[0].textContent = i + 1;
+    }
+
+    calcFlueGas();
+  }
+}
+
+// 含氧量比对 - 清空数据
+function clearO2CmpData() {
+  const body = document.getElementById('fg-o2cmp-body');
+
+  for (let i = 0; i < body.children.length - 1; i++) { // 不处理平均值行
+    const inputs = body.children[i].querySelectorAll('input');
+    inputs.forEach(input => input.value = '');
+    const result = body.children[i].querySelector('[id^="fg-o2cmp-d"]');
+    if (result) result.textContent = '—';
+  }
+
+  calcFlueGas();
+}
+
+function calcNoiseRow600(rowIdx){
+  const sec = 600;
+  const leq = num(`nc600-leq-${rowIdx}`);
+  const selTarget = num(`nc600-sel-target-${rowIdx}`);
+  
+  const logt = 10 * Math.log10(sec);
+  const selCalc = !Number.isNaN(leq) ? leq + logt : NaN;
+  
+  const el1 = document.getElementById(`nc600-sel-calc-${rowIdx}`);
+  if(el1) el1.value = !Number.isNaN(selCalc) ? selCalc.toFixed(3) : '—';
+  
+  if(!Number.isNaN(leq) && !Number.isNaN(selTarget)){
+    const delta = selTarget - leq;
+    const tSec = Math.pow(10, delta / 10);
+    const el2 = document.getElementById(`nc600-t-sec-${rowIdx}`);
+    const el3 = document.getElementById(`nc600-t-min-${rowIdx}`);
+    if(el2) el2.value = tSec.toFixed(2);
+    if(el3) el3.value = (tSec / 60).toFixed(4);
+  } else {
+    const el2 = document.getElementById(`nc600-t-sec-${rowIdx}`);
+    const el3 = document.getElementById(`nc600-t-min-${rowIdx}`);
+    if(el2) el2.value = '—';
+    if(el3) el3.value = '—';
+  }
+}
+function addNoiseRow600(){
+  const tbody = document.getElementById('noise-table-body-600');
+  const rowCount = tbody.children.length;
+  const newRow = document.createElement('tr');
+  newRow.setAttribute('data-row', rowCount);
+  newRow.innerHTML = `
+    <td class="pt">${rowCount + 1}</td>
+    <td><input class="vi-input" id="nc600-leq-${rowCount}" oninput="calcNoiseRow600(${rowCount})" step="0.1" type="number" placeholder="输入Leq"/></td>
+    <td><input class="vi-input" id="nc600-sel-calc-${rowCount}" readonly="" step="0.1" type="text" value="—"/></td>
+    <td><input class="vi-input" id="nc600-sel-target-${rowCount}" oninput="calcNoiseRow600(${rowCount})" step="0.1" type="number" placeholder="目标SEL"/></td>
+    <td><input class="vi-input" id="nc600-t-sec-${rowCount}" readonly="" step="0.1" type="text" value="—"/></td>
+    <td><input class="vi-input" id="nc600-t-min-${rowCount}" readonly="" step="0.01" type="text" value="—"/></td>
+  `;
+  tbody.appendChild(newRow);
+}
+function removeNoiseRow600(){
+  const tbody = document.getElementById('noise-table-body-600');
+  const rowCount = tbody.children.length;
+  if(rowCount > 5){
+    tbody.removeChild(tbody.lastChild);
+    for(let i = 0; i < tbody.children.length; i++){
+      tbody.children[i].querySelector('.pt').textContent = i + 1;
+      tbody.children[i].setAttribute('data-row', i);
+    }
+  }
+}
+function clearNoiseTable600(){
+  const tbody = document.getElementById('noise-table-body-600');
+  for(let i = 0; i < tbody.children.length; i++){
+    document.getElementById(`nc600-leq-${i}`).value = '';
+    document.getElementById(`nc600-sel-calc-${i}`).value = '—';
+    document.getElementById(`nc600-sel-target-${i}`).value = '';
+    document.getElementById(`nc600-t-sec-${i}`).value = '—';
+    document.getElementById(`nc600-t-min-${i}`).value = '—';
+  }
+}
+function calcNoiseRow1200(rowIdx){
+  const sec = 1200;
+  const leq = num(`nc1200-leq-${rowIdx}`);
+  const selTarget = num(`nc1200-sel-target-${rowIdx}`);
+  
+  const logt = 10 * Math.log10(sec);
+  const selCalc = !Number.isNaN(leq) ? leq + logt : NaN;
+  
+  const el1 = document.getElementById(`nc1200-sel-calc-${rowIdx}`);
+  if(el1) el1.value = !Number.isNaN(selCalc) ? selCalc.toFixed(3) : '—';
+  
+  if(!Number.isNaN(leq) && !Number.isNaN(selTarget)){
+    const delta = selTarget - leq;
+    const tSec = Math.pow(10, delta / 10);
+    const el2 = document.getElementById(`nc1200-t-sec-${rowIdx}`);
+    const el3 = document.getElementById(`nc1200-t-min-${rowIdx}`);
+    if(el2) el2.value = tSec.toFixed(2);
+    if(el3) el3.value = (tSec / 60).toFixed(4);
+  } else {
+    const el2 = document.getElementById(`nc1200-t-sec-${rowIdx}`);
+    const el3 = document.getElementById(`nc1200-t-min-${rowIdx}`);
+    if(el2) el2.value = '—';
+    if(el3) el3.value = '—';
+  }
+}
+function addNoiseRow1200(){
+  const tbody = document.getElementById('noise-table-body-1200');
+  const rowCount = tbody.children.length;
+  const newRow = document.createElement('tr');
+  newRow.setAttribute('data-row', rowCount);
+  newRow.innerHTML = `
+    <td class="pt">${rowCount + 1}</td>
+    <td><input class="vi-input" id="nc1200-leq-${rowCount}" oninput="calcNoiseRow1200(${rowCount})" step="0.1" type="number" placeholder="输入Leq"/></td>
+    <td><input class="vi-input" id="nc1200-sel-calc-${rowCount}" readonly="" step="0.1" type="text" value="—"/></td>
+    <td><input class="vi-input" id="nc1200-sel-target-${rowCount}" oninput="calcNoiseRow1200(${rowCount})" step="0.1" type="number" placeholder="目标SEL"/></td>
+    <td><input class="vi-input" id="nc1200-t-sec-${rowCount}" readonly="" step="0.1" type="text" value="—"/></td>
+    <td><input class="vi-input" id="nc1200-t-min-${rowCount}" readonly="" step="0.01" type="text" value="—"/></td>
+  `;
+  tbody.appendChild(newRow);
+}
+function removeNoiseRow1200(){
+  const tbody = document.getElementById('noise-table-body-1200');
+  const rowCount = tbody.children.length;
+  if(rowCount > 5){
+    tbody.removeChild(tbody.lastChild);
+    for(let i = 0; i < tbody.children.length; i++){
+      tbody.children[i].querySelector('.pt').textContent = i + 1;
+      tbody.children[i].setAttribute('data-row', i);
+    }
+  }
+}
+function clearNoiseTable1200(){
+  const tbody = document.getElementById('noise-table-body-1200');
+  for(let i = 0; i < tbody.children.length; i++){
+    document.getElementById(`nc1200-leq-${i}`).value = '';
+    document.getElementById(`nc1200-sel-calc-${i}`).value = '—';
+    document.getElementById(`nc1200-sel-target-${i}`).value = '';
+    document.getElementById(`nc1200-t-sec-${i}`).value = '—';
+    document.getElementById(`nc1200-t-min-${i}`).value = '—';
+  }
 }
 function calcG219(){
   const meas=num('g219-meas'), bg=num('g219-bg'), lmax=num('g219-lmax'), truck=num('g219-truck');
@@ -4667,7 +5052,120 @@ function calcO6Panel(){
 function renderParshallLookup(){
   const body = document.getElementById('parshall-lookup-body');
   if(!body) return;
-  body.innerHTML = PARSHALL_DATA.map(p => `<tr><td>${p.id}</td><td>${p.b}</td><td>${p.c}</td><td>${p.n}</td><td>${p.hmin} ~ ${p.hmax}</td><td>${p.qmin} ~ ${p.qmax}</td><td>${(p.sub*100).toFixed(0)}%</td></tr>`).join('');
+  const rows = [];
+  let currentType = '';
+  let typeCount = 0;
+  for(let i = 0; i < PARSHALL_DATA.length; i++){
+    const p = PARSHALL_DATA[i];
+    if(p.type !== currentType){
+      currentType = p.type;
+      typeCount = 1;
+      for(let j = i + 1; j < PARSHALL_DATA.length; j++){
+        if(PARSHALL_DATA[j].type === currentType) typeCount++;
+        else break;
+      }
+      rows.push(`<tr><td rowspan="${typeCount}">${p.type}</td><td>${p.id}</td><td>${p.b}</td><td>${p.c}ha<sup>${p.n}</sup></td><td>${p.hmin} ~ ${p.hmax}</td><td>${p.qmin} ~ ${p.qmax}</td><td>${(p.sub*100).toFixed(0)}%</td></tr>`);
+    } else {
+      rows.push(`<tr><td>${p.id}</td><td>${p.b}</td><td>${p.c}ha<sup>${p.n}</sup></td><td>${p.hmin} ~ ${p.hmax}</td><td>${p.qmin} ~ ${p.qmax}</td><td>${(p.sub*100).toFixed(0)}%</td></tr>`);
+    }
+  }
+  body.innerHTML = rows.join('');
+}
+
+function initParshallTable(){
+  const tbody = document.getElementById('parshall-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = '';
+  for(let i = 0; i < 5; i++){
+    addParshallRowHtml(i + 1);
+  }
+}
+
+function addParshallRowHtml(rowNum){
+  const tbody = document.getElementById('parshall-tbody');
+  if(!tbody) return;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${rowNum}</td>
+    <td><input class="vi-input" type="number" step="0.001" oninput="calcParshallRow(this)"/></td>
+    <td><input class="vi-input" type="number" step="0.001" oninput="calcParshallRow(this)"/></td>
+    <td><input class="vi-input" type="number" step="0.001" oninput="calcParshallRow(this)"/></td>
+    <td><input class="vi-input" type="number" step="0.001" oninput="calcParshallRow(this)"/></td>
+    <td class="result-cell" id="parshall-q-${rowNum}">—</td>
+    <td class="result-cell" id="parshall-qmh-${rowNum}">—</td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function addParshallRow(){
+  const tbody = document.getElementById('parshall-tbody');
+  if(!tbody) return;
+  const rowNum = tbody.children.length + 1;
+  addParshallRowHtml(rowNum);
+}
+
+function removeParshallRow(){
+  const tbody = document.getElementById('parshall-tbody');
+  if(!tbody || tbody.children.length <= 1) return;
+  tbody.removeChild(tbody.lastChild);
+  // 重新编号
+  Array.from(tbody.children).forEach((tr, i) => {
+    tr.children[0].textContent = i + 1;
+  });
+}
+
+function clearParshallTable(){
+  const tbody = document.getElementById('parshall-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = '';
+  for(let i = 0; i < 5; i++){
+    addParshallRowHtml(i + 1);
+  }
+}
+
+function calcParshallRow(input){
+  const tr = input.closest('tr');
+  const rowIndex = Array.from(tr.parentNode.children).indexOf(tr) + 1;
+  const inputs = tr.querySelectorAll('input');
+  const c = parseFloat(inputs[2].value);
+  const n = parseFloat(inputs[1].value);
+  const h = parseFloat(inputs[3].value);
+  
+  const qCell = document.getElementById(`parshall-q-${rowIndex}`);
+  const qmhCell = document.getElementById(`parshall-qmh-${rowIndex}`);
+  
+  if(isNaN(c) || isNaN(n) || isNaN(h) || h <= 0){
+    qCell.textContent = '—';
+    qmhCell.textContent = '—';
+    return;
+  }
+  
+  const Q = c * Math.pow(h, n);
+  const Qmh = Q * 3.6;
+  qCell.textContent = Q.toFixed(2);
+  qmhCell.textContent = Qmh.toFixed(2);
+}
+
+function calcParshallByParams(){
+  const b = parseFloat(document.getElementById('parshall-b').value);
+  const n = parseFloat(document.getElementById('parshall-n').value);
+  const c = parseFloat(document.getElementById('parshall-c').value);
+  const h = parseFloat(document.getElementById('parshall-h').value);
+  
+  const qInput = document.getElementById('parshall-q');
+  const qmhInput = document.getElementById('parshall-qmh');
+  
+  if(isNaN(b) || isNaN(n) || isNaN(c) || isNaN(h) || h <= 0){
+    qInput.value = '—';
+    qmhInput.value = '—';
+    return;
+  }
+  
+  const Q = c * Math.pow(h, n);
+  const Qmh = Q * 3.6;
+  
+  qInput.value = Q.toFixed(2);
+  qmhInput.value = Qmh.toFixed(2);
 }
 
 // 颗粒物/流速/温度/湿度比对模块 - 添加记录
@@ -4813,6 +5311,8 @@ function formatTimeRange(index) {
 
 (function initExtraTemplates(){
   initParshall();
+  renderParshallLookup();
+  initParshallTable();
   const now = new Date();
   const d = document.getElementById('w-date'); if(d && !d.value) d.value = now.toISOString().slice(0,10);
   const t = document.getElementById('w-time'); if(t && !t.value) t.value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
