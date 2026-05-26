@@ -36,7 +36,7 @@
   --sans: 'Noto Sans SC', sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-div { font-size: 13px; font-weight: bold; }
+div { font-size: 13px; }
 html { font-size: 14px; }
 body {
   font-family: var(--sans);
@@ -3690,8 +3690,8 @@ function fluegasCompare(prefix, limitId, mode='rel', dp=2, unit='', coeffId=''){
       break;
     }
     
-    // Skip if either element is not an input (to avoid processing average row)
-    if (refElement.tagName !== 'INPUT' || cemsElement.tagName !== 'INPUT') {
+    // Skip if either element is missing or not an input (to avoid processing average row)
+    if (!refElement || !cemsElement || refElement.tagName !== 'INPUT' || cemsElement.tagName !== 'INPUT') {
       i++;
       continue;
     }
@@ -3984,7 +3984,7 @@ function removeFlueGasMeasurement() {
   const currentCount = getFlueGasMeasurementCount();
 
   if (currentCount <= 3) {
-    toast('至少需要保留3次实测', 'warn');
+    toast('至少需要保留3次实测', 'err');
     return;
   }
 
@@ -4031,7 +4031,7 @@ function clearFlueGasData() {
   // 重新计算
   calcFlueGas();
   
-  toast('数据已清空', 'success');
+  toast('数据已清空', 'ok');
 }
 
 setTimeout(updateFlueGasResponsiveWidths, 0);
@@ -5033,7 +5033,7 @@ function calcO6Panel(){
     if(m1 < 0.58) { odor='<10'; range='<10'; }
     else if(Math.abs(m1-0.58)<1e-9) { odor='10'; range='10'; }
     else if(Number.isNaN(m2) || m2 < 0.58) { odor = Math.trunc(10 * Math.pow(10, (m1-0.58)/(m1-m2))); range='10-100'; }
-    else if(!Number.isNaN(m3)) { odor = Math.trunc(100 * Math.pow(10, (m2-0.58)/(m2-m3) * Math.log10(10))); range='100-1000或更高'; }
+    else if(!Number.isNaN(m3)) { odor = Math.trunc(100 * Math.pow(10, (m2-0.58)/(m2-m3) * Math.log10(1000/100))); range='100-1000或更高'; }
   }
   document.getElementById('o6p-odor').textContent = odor;
   setPlain('o6p-range', `当前自动落入：${range}`);
