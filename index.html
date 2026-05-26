@@ -2187,7 +2187,7 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
 </div><div class="template-panel" id="template-parshall">
 <div class="card">
 <div class="card-title">💧 巴歇尔槽流量计算</div>
-<div class="template-subtitle">公式：Q = C × h^n（Q为流量，L/s；h为水位，m）</div>
+<div class="template-subtitle">公式：Q = C × h<sub>a</sub><sup>n</sup>（Q为流量，L/s；h<sub>a</sub>为上游水位，m）</div>
   <div class="template-section-title">参数录入</div>
   <div class="parshall-btn-row">
     <button class="btn parshall-add-btn" onclick="addParshallRow()">➕ 添加行</button>
@@ -2214,7 +2214,7 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
   
   <div class="template-section-title" style="text-align: center; height: 50px; line-height: 50px; background-color: rgba(168, 85, 247, 0.03);">槽型对照表</div>
   <table class="summary-table">
-    <thead><tr><th>类别</th><th>序号</th><th>喉道宽度 b(m)</th><th>流量公式Q=Cha<sup>n</sup>(L/s)</th><th>水位范围 h(m)</th><th>流量范围 Q(L/s)</th><th>临界淹没度%</th></tr></thead>
+    <thead><tr><th>类别</th><th>序号</th><th>喉道宽度 b(m)</th><th>流量公式 Q=C·h<sub>a</sub><sup>n</sup>（L/s）</th><th>水位范围 h(m)</th><th>流量范围 Q(L/s)</th><th>临界淹没度%</th></tr></thead>
     <tbody id="parshall-lookup-body"></tbody>
   </table>
 </div>
@@ -3101,6 +3101,10 @@ function clearVelocities(){
 
 // ── Charts ──
 function renderCharts(vals, vbar, devs){
+  if (typeof Chart === 'undefined') {
+    renderTrend();
+    return;
+  }
   const labels = vals.map(x => `测点${x.i + 1}`);
   const vData = vals.map(x => x.v);
   const dData = devs.map(x => x.d);
@@ -3163,6 +3167,7 @@ function renderCharts(vals, vbar, devs){
 }
 
 function renderTrend(){
+  if (typeof Chart === 'undefined') return;
   const hist = getHistory();
   const canvas = document.getElementById('chart-trend');
   if (!canvas) return;
@@ -4555,12 +4560,19 @@ function initParshall(){
 function calcParshall(){
   initParshall();
   renderParshallLookup();
-  const p = PARSHALL_DATA.find(x=>String(x.id)===document.getElementById('parshall-type').value);
+  const typeEl = document.getElementById('parshall-type');
+  // 当前页面使用“多行参数录入表”，旧版单选槽型控件已移除；无控件时直接跳过旧版计算，避免初始化报错。
+  if (!typeEl) return;
+  const p = PARSHALL_DATA.find(x=>String(x.id)===typeEl.value);
   if(!p) return;
-  document.getElementById('parshall-sub').value = `${(p.sub*100).toFixed(0)}%`;
-  document.getElementById('parshall-formula').value = `Q=${p.c}×h^${p.n}`;
-  document.getElementById('parshall-range').textContent = `${p.hmin} ~ ${p.hmax} m`;
-  document.getElementById('parshall-qrange').textContent = `${p.qmin} ~ ${p.qmax} L/s`;
+  const subEl = document.getElementById('parshall-sub');
+  if (subEl) subEl.value = `${(p.sub*100).toFixed(0)}%`;
+  const parshallFormulaEl = document.getElementById('parshall-formula');
+  if (parshallFormulaEl) parshallFormulaEl.value = `Q=${p.c}×hₐ^${p.n}`;
+  const rangeEl = document.getElementById('parshall-range');
+  if (rangeEl) rangeEl.textContent = `${p.hmin} ~ ${p.hmax} m`;
+  const qRangeEl = document.getElementById('parshall-qrange');
+  if (qRangeEl) qRangeEl.textContent = `${p.qmin} ~ ${p.qmax} L/s`;
   const h = num('parshall-h');
   const q = (!Number.isNaN(h)&&h>0) ? p.c*Math.pow(h,p.n) : NaN;
   setv('parshall-q', q, 2);
@@ -5043,9 +5055,9 @@ function renderParshallLookup(){
         if(PARSHALL_DATA[j].type === currentType) typeCount++;
         else break;
       }
-      rows.push(`<tr><td rowspan="${typeCount}">${p.type}</td><td>${p.id}</td><td>${p.b}</td><td>${p.c}ha<sup>${p.n}</sup></td><td>${p.hmin} ~ ${p.hmax}</td><td>${p.qmin} ~ ${p.qmax}</td><td>${(p.sub*100).toFixed(0)}%</td></tr>`);
+      rows.push(`<tr><td rowspan="${typeCount}">${p.type}</td><td>${p.id}</td><td>${p.b}</td><td>${p.c}h<sub>a</sub><sup>${p.n}</sup></td><td>${p.hmin} ~ ${p.hmax}</td><td>${p.qmin} ~ ${p.qmax}</td><td>${(p.sub*100).toFixed(0)}%</td></tr>`);
     } else {
-      rows.push(`<tr><td>${p.id}</td><td>${p.b}</td><td>${p.c}ha<sup>${p.n}</sup></td><td>${p.hmin} ~ ${p.hmax}</td><td>${p.qmin} ~ ${p.qmax}</td><td>${(p.sub*100).toFixed(0)}%</td></tr>`);
+      rows.push(`<tr><td>${p.id}</td><td>${p.b}</td><td>${p.c}h<sub>a</sub><sup>${p.n}</sup></td><td>${p.hmin} ~ ${p.hmax}</td><td>${p.qmin} ~ ${p.qmax}</td><td>${(p.sub*100).toFixed(0)}%</td></tr>`);
     }
   }
   body.innerHTML = rows.join('');
@@ -5126,13 +5138,17 @@ function calcParshallRow(input){
 }
 
 function calcParshallByParams(){
-  const b = parseFloat(document.getElementById('parshall-b').value);
-  const n = parseFloat(document.getElementById('parshall-n').value);
-  const c = parseFloat(document.getElementById('parshall-c').value);
-  const h = parseFloat(document.getElementById('parshall-h').value);
-  
+  const bEl = document.getElementById('parshall-b');
+  const nEl = document.getElementById('parshall-n');
+  const cEl = document.getElementById('parshall-c');
+  const hEl = document.getElementById('parshall-h');
   const qInput = document.getElementById('parshall-q');
   const qmhInput = document.getElementById('parshall-qmh');
+  if (!bEl || !nEl || !cEl || !hEl || !qInput || !qmhInput) return;
+  const b = parseFloat(bEl.value);
+  const n = parseFloat(nEl.value);
+  const c = parseFloat(cEl.value);
+  const h = parseFloat(hEl.value);
   
   if(isNaN(b) || isNaN(n) || isNaN(c) || isNaN(h) || h <= 0){
     qInput.value = '—';
@@ -5288,6 +5304,19 @@ function formatTimeRange(index) {
   return `${startHour}:${startMinute}-${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
 }
 
+
+function calcNoiseCheck(){
+  const tbody = document.getElementById('noise-table-body-600');
+  if (!tbody) return;
+  Array.from(tbody.children).forEach((row, index) => calcNoiseRow600(index));
+}
+
+function calcNoiseCheckReverse(){
+  const tbody = document.getElementById('noise-table-body-1200');
+  if (!tbody) return;
+  Array.from(tbody.children).forEach((row, index) => calcNoiseRow1200(index));
+}
+
 (function initExtraTemplates(){
   initParshall();
   renderParshallLookup();
@@ -5295,7 +5324,8 @@ function formatTimeRange(index) {
   const now = new Date();
   const d = document.getElementById('w-date'); if(d && !d.value) d.value = now.toISOString().slice(0,10);
   const t = document.getElementById('w-time'); if(t && !t.value) t.value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-  calcFlueGas(); calcNoiseCheck(); calcNoiseCheckReverse(); calcParshall(); calcIons(); calcOccupational(); refreshCemsReport();
+  [calcFlueGas, calcNoiseCheck, calcNoiseCheckReverse, calcParshall, calcIons, calcOccupational, refreshCemsReport]
+    .forEach(fn => { try { if (typeof fn === 'function') fn(); } catch (e) { console.warn('初始化模块跳过：', e); } });
 })();
 </script>
 </div></div></body>
