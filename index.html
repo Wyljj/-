@@ -425,6 +425,15 @@ body {
 }
 .field label {
   font-size: 11px; color: var(--text2); margin-bottom: 6px; display: block; text-align: left; }
+#template-monitoring .dimension-grid .field:nth-child(1) label,
+#template-monitoring .dimension-grid .field:nth-child(2) label,
+#template-monitoring .dimension-grid .field:nth-child(3) label {
+  text-align: center;
+}
+#template-monitoring .dimension-grid .field:nth-child(3) {
+  flex-direction: column;
+  text-align: center;
+}
 .field input {
   width: 100%; height: 32px; padding: 0 10px; text-align: center;
   background: var(--bg3); border: 1px solid var(--border);
@@ -1276,7 +1285,8 @@ tbody#parshall-lookup-body > tr:nth-child(25) { border-bottom: 2px solid #000000
 .parshall-btn-row { display: flex; flex-direction: row; align-items: center; justify-content: center; margin-bottom: 12px; gap: 12px; }
 .parshall-add-btn { background-color: #3b82f6 !important; color: #ffffff !important; border-radius: 8px !important; padding: 8px 16px !important; border: none !important; }
 .parshall-remove-btn, .parshall-clear-btn { background-color: transparent !important; color: #ef4444 !important; border-radius: 8px !important; padding: 8px 16px !important; border: 1px solid #ef4444 !important; }
-table.simple-table:not(#fg-measurement-table) td:first-child { text-align:center; white-space: normal; word-break: break-word; width: 220px !important; flex-shrink: 0; }
+table.simple-table:not(#fg-measurement-table):not(#occ-chem-table) td:first-child { text-align:center; white-space: normal; word-break: break-word; width: 220px !important; flex-shrink: 0; }
+table#occ-chem-table th:first-child, table#occ-chem-table td:first-child { width: 100px !important; min-width: 100px; max-width: 100px; }
 table.simple-table:not(#fg-measurement-table) td:nth-child(2) { width: 56px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; white-space: nowrap; word-break: keep-all; }
 table.simple-table:not(#fg-measurement-table) td:nth-child(n+3):not(:last-child) { width: 30px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; }
 table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !important; font-size: 13px !important; font-weight: bold; }
@@ -1299,6 +1309,49 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
 .module-subnav{
   display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;
   padding:10px; background:var(--bg3); border:1px solid var(--border); border-radius:10px;
+}
+.occ-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding: 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.occ-tab-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+  font-weight: 500;
+}
+.occ-tab-btn:hover {
+  background: var(--bg4);
+  color: var(--text);
+}
+.occ-tab-btn.active {
+  background: var(--accent2);
+  color: #fff;
+  border-color: var(--accent2);
+}
+.occ-tab-content {
+  animation: fadeInUp 0.25s ease;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .module-subbtn{
   height:32px; padding:0 12px; border-radius:6px; border:1px solid var(--border2);
@@ -1458,7 +1511,7 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
 <div class="dimension-grid">
 <div class="field"><label>矩形烟道长度 L (m)</label><input id="m-length" oninput="calc()" placeholder="如：2.5" step="0.001" type="number"/></div>
 <div class="field"><label>矩形烟道宽度 W (m)</label><input id="m-width" oninput="calc()" placeholder="如：1.8" step="0.001" type="number"/></div>
-<div class="field"><label>当量直径 D (m)</label><input id="m-diameter" readonly="" step="0.001" type="number"/></div>
+<div class="field"><label>当量直径 D (m)</label><span id="m-diameter">—</span></div>
 </div>
 </div><div class="card vel-wrap">
 <div class="card-title">
@@ -2042,42 +2095,42 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
     <tr data-row="0">
       <td class="pt">1</td>
       <td><input class="vi-input" id="nc600-leq-0" oninput="calcNoiseRow600(0)" step="0.1" type="number" placeholder="输入Leq"/></td>
-      <td><input class="vi-input" id="nc600-sel-calc-0" readonly="" step="0.1" type="text" value="—"/></td>
+      <td id="nc600-sel-calc-0">—</td>
       <td><input class="vi-input" id="nc600-sel-target-0" oninput="calcNoiseRow600(0)" step="0.1" type="number" placeholder="目标SEL"/></td>
-      <td><input class="vi-input" id="nc600-t-sec-0" readonly="" step="0.1" type="text" value="—"/></td>
-      <td><input class="vi-input" id="nc600-t-min-0" readonly="" step="0.01" type="text" value="—"/></td>
+      <td id="nc600-t-sec-0">—</td>
+      <td id="nc600-t-min-0">—</td>
     </tr>
     <tr data-row="1">
       <td class="pt">2</td>
       <td><input class="vi-input" id="nc600-leq-1" oninput="calcNoiseRow600(1)" step="0.1" type="number" placeholder="输入Leq"/></td>
-      <td><input class="vi-input" id="nc600-sel-calc-1" readonly="" step="0.1" type="text" value="—"/></td>
+      <td id="nc600-sel-calc-1">—</td>
       <td><input class="vi-input" id="nc600-sel-target-1" oninput="calcNoiseRow600(1)" step="0.1" type="number" placeholder="目标SEL"/></td>
-      <td><input class="vi-input" id="nc600-t-sec-1" readonly="" step="0.1" type="text" value="—"/></td>
-      <td><input class="vi-input" id="nc600-t-min-1" readonly="" step="0.01" type="text" value="—"/></td>
+      <td id="nc600-t-sec-1">—</td>
+      <td id="nc600-t-min-1">—</td>
     </tr>
     <tr data-row="2">
       <td class="pt">3</td>
       <td><input class="vi-input" id="nc600-leq-2" oninput="calcNoiseRow600(2)" step="0.1" type="number" placeholder="输入Leq"/></td>
-      <td><input class="vi-input" id="nc600-sel-calc-2" readonly="" step="0.1" type="text" value="—"/></td>
+      <td id="nc600-sel-calc-2">—</td>
       <td><input class="vi-input" id="nc600-sel-target-2" oninput="calcNoiseRow600(2)" step="0.1" type="number" placeholder="目标SEL"/></td>
-      <td><input class="vi-input" id="nc600-t-sec-2" readonly="" step="0.1" type="text" value="—"/></td>
-      <td><input class="vi-input" id="nc600-t-min-2" readonly="" step="0.01" type="text" value="—"/></td>
+      <td id="nc600-t-sec-2">—</td>
+      <td id="nc600-t-min-2">—</td>
     </tr>
     <tr data-row="3">
       <td class="pt">4</td>
       <td><input class="vi-input" id="nc600-leq-3" oninput="calcNoiseRow600(3)" step="0.1" type="number" placeholder="输入Leq"/></td>
-      <td><input class="vi-input" id="nc600-sel-calc-3" readonly="" step="0.1" type="text" value="—"/></td>
+      <td id="nc600-sel-calc-3">—</td>
       <td><input class="vi-input" id="nc600-sel-target-3" oninput="calcNoiseRow600(3)" step="0.1" type="number" placeholder="目标SEL"/></td>
-      <td><input class="vi-input" id="nc600-t-sec-3" readonly="" step="0.1" type="text" value="—"/></td>
-      <td><input class="vi-input" id="nc600-t-min-3" readonly="" step="0.01" type="text" value="—"/></td>
+      <td id="nc600-t-sec-3">—</td>
+      <td id="nc600-t-min-3">—</td>
     </tr>
     <tr data-row="4">
       <td class="pt">5</td>
       <td><input class="vi-input" id="nc600-leq-4" oninput="calcNoiseRow600(4)" step="0.1" type="number" placeholder="输入Leq"/></td>
-      <td><input class="vi-input" id="nc600-sel-calc-4" readonly="" step="0.1" type="text" value="—"/></td>
+      <td id="nc600-sel-calc-4">—</td>
       <td><input class="vi-input" id="nc600-sel-target-4" oninput="calcNoiseRow600(4)" step="0.1" type="number" placeholder="目标SEL"/></td>
-      <td><input class="vi-input" id="nc600-t-sec-4" readonly="" step="0.1" type="text" value="—"/></td>
-      <td><input class="vi-input" id="nc600-t-min-4" readonly="" step="0.01" type="text" value="—"/></td>
+      <td id="nc600-t-sec-4">—</td>
+      <td id="nc600-t-min-4">—</td>
     </tr>
   </tbody>
 </table>
@@ -2106,42 +2159,42 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
     <tr data-row="0">
       <td class="pt">1</td>
       <td><input class="vi-input" id="nc1200-leq-0" oninput="calcNoiseRow1200(0)" step="0.1" type="number" placeholder="输入Leq"/></td>
-      <td><input class="vi-input" id="nc1200-sel-calc-0" readonly="" step="0.1" type="text" value="—"/></td>
+      <td id="nc1200-sel-calc-0">—</td>
       <td><input class="vi-input" id="nc1200-sel-target-0" oninput="calcNoiseRow1200(0)" step="0.1" type="number" placeholder="目标SEL"/></td>
-      <td><input class="vi-input" id="nc1200-t-sec-0" readonly="" step="0.1" type="text" value="—"/></td>
-      <td><input class="vi-input" id="nc1200-t-min-0" readonly="" step="0.01" type="text" value="—"/></td>
+      <td id="nc1200-t-sec-0">—</td>
+      <td id="nc1200-t-min-0">—</td>
     </tr>
     <tr data-row="1">
       <td class="pt">2</td>
       <td><input class="vi-input" id="nc1200-leq-1" oninput="calcNoiseRow1200(1)" step="0.1" type="number" placeholder="输入Leq"/></td>
-      <td><input class="vi-input" id="nc1200-sel-calc-1" readonly="" step="0.1" type="text" value="—"/></td>
+      <td id="nc1200-sel-calc-1">—</td>
       <td><input class="vi-input" id="nc1200-sel-target-1" oninput="calcNoiseRow1200(1)" step="0.1" type="number" placeholder="目标SEL"/></td>
-      <td><input class="vi-input" id="nc1200-t-sec-1" readonly="" step="0.1" type="text" value="—"/></td>
-      <td><input class="vi-input" id="nc1200-t-min-1" readonly="" step="0.01" type="text" value="—"/></td>
+      <td id="nc1200-t-sec-1">—</td>
+      <td id="nc1200-t-min-1">—</td>
     </tr>
     <tr data-row="2">
       <td class="pt">3</td>
       <td><input class="vi-input" id="nc1200-leq-2" oninput="calcNoiseRow1200(2)" step="0.1" type="number" placeholder="输入Leq"/></td>
-      <td><input class="vi-input" id="nc1200-sel-calc-2" readonly="" step="0.1" type="text" value="—"/></td>
+      <td id="nc1200-sel-calc-2">—</td>
       <td><input class="vi-input" id="nc1200-sel-target-2" oninput="calcNoiseRow1200(2)" step="0.1" type="number" placeholder="目标SEL"/></td>
-      <td><input class="vi-input" id="nc1200-t-sec-2" readonly="" step="0.1" type="text" value="—"/></td>
-      <td><input class="vi-input" id="nc1200-t-min-2" readonly="" step="0.01" type="text" value="—"/></td>
+      <td id="nc1200-t-sec-2">—</td>
+      <td id="nc1200-t-min-2">—</td>
     </tr>
     <tr data-row="3">
       <td class="pt">4</td>
       <td><input class="vi-input" id="nc1200-leq-3" oninput="calcNoiseRow1200(3)" step="0.1" type="number" placeholder="输入Leq"/></td>
-      <td><input class="vi-input" id="nc1200-sel-calc-3" readonly="" step="0.1" type="text" value="—"/></td>
+      <td id="nc1200-sel-calc-3">—</td>
       <td><input class="vi-input" id="nc1200-sel-target-3" oninput="calcNoiseRow1200(3)" step="0.1" type="number" placeholder="目标SEL"/></td>
-      <td><input class="vi-input" id="nc1200-t-sec-3" readonly="" step="0.1" type="text" value="—"/></td>
-      <td><input class="vi-input" id="nc1200-t-min-3" readonly="" step="0.01" type="text" value="—"/></td>
+      <td id="nc1200-t-sec-3">—</td>
+      <td id="nc1200-t-min-3">—</td>
     </tr>
     <tr data-row="4">
       <td class="pt">5</td>
       <td><input class="vi-input" id="nc1200-leq-4" oninput="calcNoiseRow1200(4)" step="0.1" type="number" placeholder="输入Leq"/></td>
-      <td><input class="vi-input" id="nc1200-sel-calc-4" readonly="" step="0.1" type="text" value="—"/></td>
+      <td id="nc1200-sel-calc-4">—</td>
       <td><input class="vi-input" id="nc1200-sel-target-4" oninput="calcNoiseRow1200(4)" step="0.1" type="number" placeholder="目标SEL"/></td>
-      <td><input class="vi-input" id="nc1200-t-sec-4" readonly="" step="0.1" type="text" value="—"/></td>
-      <td><input class="vi-input" id="nc1200-t-min-4" readonly="" step="0.01" type="text" value="—"/></td>
+      <td id="nc1200-t-sec-4">—</td>
+      <td id="nc1200-t-min-4">—</td>
     </tr>
   </tbody>
 </table>
@@ -2667,37 +2720,218 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
 </div><div class="template-panel" id="template-occupational">
 <div class="card">
 <div class="card-title">🧰 职业卫生计算模板</div>
-<div class="template-subtitle">包含化学因素和物理因素两大模块，所有内容在同一页面显示。</div>
+<div class="template-subtitle">包含化学因素和物理因素两大模块。</div>
 
-<div style="margin-bottom:24px;">
-  <div class="template-section-title">⚗️ 化学因素</div>
-  <div class="meta-row">
-    <div class="field"><label>接触时间1（h）</label><input id="occ-chem-t1" oninput="calcOccupational()" step="0.1" type="number" value="2"/></div>
-    <div class="field"><label>接触时间2（h）</label><input id="occ-chem-t2" oninput="calcOccupational()" step="0.1" type="number"/></div>
-    <div class="field"><label>PC-STEL</label><input id="occ-chem-stel" oninput="calcOccupational()" step="0.1" type="number" value="600"/></div>
-    <div class="field"><label>PC-TWA</label><input id="occ-chem-twa-limit" oninput="calcOccupational()" step="0.1" type="number" value="300"/></div>
-    <div class="field"><label>浓度组1（5个，逗号分隔）</label><input id="occ-chem-c1" oninput="calcOccupational()" value="1.19,2.6"/></div>
-    <div class="field"><label>浓度组2（可选）</label><input id="occ-chem-c2" oninput="calcOccupational()"/></div>
-  </div>
-  <div class="template-grid-two" style="margin-top:12px">
-    <div class="result-box"><div class="result-label">CPE / PC-STEL判定</div><div class="result-value" id="occ-cste">—</div></div>
-    <div class="result-box"><div class="result-label">CTWA / PC-TWA判定</div><div class="result-value" id="occ-ctwa">—</div></div>
-    <div class="result-box"><div class="result-label">3×PC-TWA / 5×PC-TWA</div><div class="result-value" id="occ-peak-limit">—</div></div>
-    <div class="result-box"><div class="result-label">峰接触判定</div><div class="result-value" id="occ-peak-judge">—</div></div>
+<div class="occ-tabs">
+  <button class="occ-tab-btn active" data-tab="occ-chem" onclick="switchOccTab('occ-chem')">⚗️ 化学因素</button>
+  <button class="occ-tab-btn" data-tab="occ-noise" onclick="switchOccTab('occ-noise')">🔊 物理因素（噪声）</button>
+</div>
+
+<div id="occ-chem" class="occ-tab-content" style="display:block;">
+  <div style="margin-bottom:24px;">
+    <div style="overflow-x:auto;">
+      <table class="simple-table" id="occ-chem-table" style="min-width:1200px;">
+        <thead>
+          <tr>
+            <th style="width:50px; min-width:50px; max-width:50px;">序号</th>
+            <th style="width:80px;">采样点</th>
+            <th style="width:70px;">工种</th>
+            <th style="width:80px;">接触时间（h/d）</th>
+            <th style="width:70px;">检测结果<br>C<sub>STE</sub></th>
+            <th style="width:60px;">计算结果<br>C<sub>TWA</sub></th>
+            <th style="width:60px;">接触限值<br>PC-STEL</th>
+            <th style="width:50px;">判定</th>
+            <th style="width:60px;">接触限值<br>PC-TWA</th>
+            <th style="width:50px;">判定</th>
+            <th style="width:60px;">峰接触浓度<br>C<sub>PE</sub></th>
+            <th style="width:60px;">3PC-TWA</th>
+            <th style="width:60px;">5PC-TWA</th>
+            <th style="width:50px;">判定</th>
+            <th style="width:50px;">最终<br>判定</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="15" style="background-color: rgba(59, 130, 246, 0.15); font-weight:bold;">情况一：一个工种一个场所</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td><input class="vi-input" id="occ-c1-sp1" type="text" placeholder="采样点"/></td>
+            <td rowspan="5"><input class="vi-input" id="occ-c1-w" type="text" placeholder="工种"/></td>
+            <td rowspan="5"><input class="vi-input" id="occ-c1-t" oninput="calcOccupational()" step="0.1" type="number" placeholder="接触时间"/></td>
+            <td><input class="vi-input" id="occ-c1-cste1" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+            <td rowspan="5" id="occ-c1-ctwa">—</td>
+            <td rowspan="5"><input class="vi-input" id="occ-c1-stel" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-STEL"/></td>
+            <td rowspan="5" id="occ-c1-stel-judge">—</td>
+            <td rowspan="5"><input class="vi-input" id="occ-c1-twa-limit" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-TWA"/></td>
+            <td rowspan="5" id="occ-c1-twa-judge">—</td>
+            <td rowspan="5" id="occ-c1-cpe">—</td>
+            <td rowspan="5" id="occ-c1-3twa">—</td>
+            <td rowspan="5" id="occ-c1-5twa">—</td>
+            <td rowspan="5" id="occ-c1-peak-judge">—</td>
+            <td rowspan="5" id="occ-c1-final-judge">—</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><input class="vi-input" id="occ-c1-sp2" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c1-cste2" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><input class="vi-input" id="occ-c1-sp3" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c1-cste3" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><input class="vi-input" id="occ-c1-sp4" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c1-cste4" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><input class="vi-input" id="occ-c1-sp5" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c1-cste5" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td colspan="15" style="background-color: rgba(34, 197, 94, 0.15); font-weight:bold;">情况二：同个工种多个场所</td>
+          </tr>
+          <tr>
+            <td colspan="15" style="background-color: rgba(34, 197, 94, 0.08); font-weight:bold;">工种一</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><input class="vi-input" id="occ-c2w1-sp1" type="text" placeholder="采样点"/></td>
+            <td rowspan="5"><input class="vi-input" id="occ-c2w1-w" type="text" placeholder="工种"/></td>
+            <td rowspan="5"><input class="vi-input" id="occ-c2w1-t" oninput="calcOccupational()" step="0.1" type="number" placeholder="接触时间"/></td>
+            <td><input class="vi-input" id="occ-c2w1-cste1" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+            <td rowspan="5" id="occ-c2w1-ctwa">—</td>
+            <td rowspan="5"><input class="vi-input" id="occ-c2w1-stel" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-STEL"/></td>
+            <td rowspan="5" id="occ-c2w1-stel-judge">—</td>
+            <td rowspan="5"><input class="vi-input" id="occ-c2w1-twa-limit" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-TWA"/></td>
+            <td rowspan="5" id="occ-c2w1-twa-judge">—</td>
+            <td rowspan="5" id="occ-c2w1-cpe">—</td>
+            <td rowspan="5" id="occ-c2w1-3twa">—</td>
+            <td rowspan="5" id="occ-c2w1-5twa">—</td>
+            <td rowspan="5" id="occ-c2w1-peak-judge">—</td>
+            <td rowspan="5" id="occ-c2w1-final-judge">—</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td><input class="vi-input" id="occ-c2w1-sp2" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c2w1-cste2" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td><input class="vi-input" id="occ-c2w1-sp3" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c2w1-cste3" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td><input class="vi-input" id="occ-c2w1-sp4" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c2w1-cste4" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td><input class="vi-input" id="occ-c2w1-sp5" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c2w1-cste5" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td colspan="15" style="background-color: rgba(34, 197, 94, 0.08); font-weight:bold;">工种二</td>
+          </tr>
+          <tr>
+            <td>11</td>
+            <td><input class="vi-input" id="occ-c2w2-sp1" type="text" placeholder="采样点"/></td>
+            <td rowspan="5"><input class="vi-input" id="occ-c2w2-w" type="text" placeholder="工种"/></td>
+            <td rowspan="5"><input class="vi-input" id="occ-c2w2-t" oninput="calcOccupational()" step="0.1" type="number" placeholder="接触时间"/></td>
+            <td><input class="vi-input" id="occ-c2w2-cste1" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+            <td rowspan="5" id="occ-c2w2-ctwa">—</td>
+            <td rowspan="5"><input class="vi-input" id="occ-c2w2-stel" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-STEL"/></td>
+            <td rowspan="5" id="occ-c2w2-stel-judge">—</td>
+            <td rowspan="5"><input class="vi-input" id="occ-c2w2-twa-limit" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-TWA"/></td>
+            <td rowspan="5" id="occ-c2w2-twa-judge">—</td>
+            <td rowspan="5" id="occ-c2w2-cpe">—</td>
+            <td rowspan="5" id="occ-c2w2-3twa">—</td>
+            <td rowspan="5" id="occ-c2w2-5twa">—</td>
+            <td rowspan="5" id="occ-c2w2-peak-judge">—</td>
+            <td rowspan="5" id="occ-c2w2-final-judge">—</td>
+          </tr>
+          <tr>
+            <td>12</td>
+            <td><input class="vi-input" id="occ-c2w2-sp2" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c2w2-cste2" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td>13</td>
+            <td><input class="vi-input" id="occ-c2w2-sp3" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c2w2-cste3" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td>14</td>
+            <td><input class="vi-input" id="occ-c2w2-sp4" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c2w2-cste4" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td>15</td>
+            <td><input class="vi-input" id="occ-c2w2-sp5" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c2w2-cste5" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td colspan="15" style="background-color: rgba(34, 197, 94, 0.08); font-weight:bold;">工种三</td>
+          </tr>
+          <tr>
+            <td>16</td>
+            <td><input class="vi-input" id="occ-c2w3-sp1" type="text" placeholder="采样点"/></td>
+            <td rowspan="5"><input class="vi-input" id="occ-c2w3-w" type="text" placeholder="工种"/></td>
+            <td rowspan="5"><input class="vi-input" id="occ-c2w3-t" oninput="calcOccupational()" step="0.1" type="number" placeholder="接触时间"/></td>
+            <td><input class="vi-input" id="occ-c2w3-cste1" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+            <td rowspan="5" id="occ-c2w3-ctwa">—</td>
+            <td rowspan="5"><input class="vi-input" id="occ-c2w3-stel" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-STEL"/></td>
+            <td rowspan="5" id="occ-c2w3-stel-judge">—</td>
+            <td rowspan="5"><input class="vi-input" id="occ-c2w3-twa-limit" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-TWA"/></td>
+            <td rowspan="5" id="occ-c2w3-twa-judge">—</td>
+            <td rowspan="5" id="occ-c2w3-cpe">—</td>
+            <td rowspan="5" id="occ-c2w3-3twa">—</td>
+            <td rowspan="5" id="occ-c2w3-5twa">—</td>
+            <td rowspan="5" id="occ-c2w3-peak-judge">—</td>
+            <td rowspan="5" id="occ-c2w3-final-judge">—</td>
+          </tr>
+          <tr>
+            <td>17</td>
+            <td><input class="vi-input" id="occ-c2w3-sp2" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c2w3-cste2" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td>18</td>
+            <td><input class="vi-input" id="occ-c2w3-sp3" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c2w3-cste3" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td>19</td>
+            <td><input class="vi-input" id="occ-c2w3-sp4" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c2w3-cste4" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+          <tr>
+            <td>20</td>
+            <td><input class="vi-input" id="occ-c2w3-sp5" type="text" placeholder="采样点"/></td>
+            <td><input class="vi-input" id="occ-c2w3-cste5" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
-<div style="border-top:1px solid var(--border); padding-top:24px;">
-  <div class="template-section-title">🔊 物理因素（噪声）</div>
-  <div class="meta-row">
-    <div class="field"><label>接触时间（h/d）</label><input id="occ-noise-time" oninput="calcOccupational()" step="0.1" type="number" value="4"/></div>
-    <div class="field"><label>每周工作天数</label><input id="occ-noise-days" oninput="calcOccupational()" step="0.1" type="number" value="5"/></div>
-    <div class="field"><label>职业接触限值</label><input id="occ-noise-limit" oninput="calcOccupational()" step="0.1" type="number" value="85"/></div>
-    <div class="field"><label>三次测量值（dB）</label><input id="occ-noise-v" oninput="calcOccupational()" value="69.7,70.5,72.7"/></div>
-  </div>
-  <div class="template-grid-two" style="margin-top:12px">
-    <div class="result-box"><div class="result-label">LAeq,Te</div><div class="result-value" id="occ-laeq">—</div></div>
-    <div class="result-box"><div class="result-label">LEX,8h / LEX,w</div><div class="result-value" id="occ-lex">—</div></div>
+<div id="occ-noise" class="occ-tab-content" style="display:none;">
+  <div style="margin-bottom:24px;">
+    <div class="meta-row">
+      <div class="field"><label>接触时间（h/d）</label><input id="occ-noise-time" oninput="calcOccupational()" step="0.1" type="number" value="4"/></div>
+      <div class="field"><label>每周工作天数</label><input id="occ-noise-days" oninput="calcOccupational()" step="0.1" type="number" value="5"/></div>
+      <div class="field"><label>职业接触限值</label><input id="occ-noise-limit" oninput="calcOccupational()" step="0.1" type="number" value="85"/></div>
+      <div class="field"><label>三次测量值（dB）</label><input id="occ-noise-v" oninput="calcOccupational()" value="69.7,70.5,72.7"/></div>
+    </div>
+    <div class="template-grid-two" style="margin-top:12px">
+      <div class="result-box"><div class="result-label">LAeq,Te</div><div class="result-value" id="occ-laeq">—</div></div>
+      <div class="result-box"><div class="result-label">LEX,8h / LEX,w</div><div class="result-value" id="occ-lex">—</div></div>
+    </div>
   </div>
 </div>
 
@@ -3002,9 +3236,9 @@ function calc(){
 
   if(!isNaN(length) && !isNaN(width) && length > 0 && width > 0){
     diameter = (2 * length * width) / (length + width);
-    document.getElementById('m-diameter').value = diameter.toFixed(6);
+    document.getElementById('m-diameter').textContent = diameter.toFixed(6);
   } else {
-    document.getElementById('m-diameter').value = '';
+    document.getElementById('m-diameter').textContent = '—';
   }
 
   if(n < 2){
@@ -3657,6 +3891,16 @@ function switchTemplateSubTab(group, tab){
   });
 }
 window.switchTemplateSubTab = switchTemplateSubTab;
+
+function switchOccTab(tabId){
+  document.querySelectorAll('.occ-tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabId);
+  });
+  document.querySelectorAll('.occ-tab-content').forEach(content => {
+    content.style.display = content.id === tabId ? 'block' : 'none';
+  });
+}
+window.switchOccTab = switchOccTab;
 
 window.selectTemplate = selectTemplate;
 
@@ -4412,20 +4656,20 @@ function calcNoiseRow600(rowIdx){
   const selCalc = !Number.isNaN(leq) ? leq + logt : NaN;
   
   const el1 = document.getElementById(`nc600-sel-calc-${rowIdx}`);
-  if(el1) el1.value = !Number.isNaN(selCalc) ? selCalc.toFixed(3) : '—';
+  if(el1) el1.textContent = !Number.isNaN(selCalc) ? selCalc.toFixed(3) : '—';
   
   if(!Number.isNaN(leq) && !Number.isNaN(selTarget)){
     const delta = selTarget - leq;
     const tSec = Math.pow(10, delta / 10);
     const el2 = document.getElementById(`nc600-t-sec-${rowIdx}`);
     const el3 = document.getElementById(`nc600-t-min-${rowIdx}`);
-    if(el2) el2.value = tSec.toFixed(2);
-    if(el3) el3.value = (tSec / 60).toFixed(4);
+    if(el2) el2.textContent = tSec.toFixed(2);
+    if(el3) el3.textContent = (tSec / 60).toFixed(4);
   } else {
     const el2 = document.getElementById(`nc600-t-sec-${rowIdx}`);
     const el3 = document.getElementById(`nc600-t-min-${rowIdx}`);
-    if(el2) el2.value = '—';
-    if(el3) el3.value = '—';
+    if(el2) el2.textContent = '—';
+    if(el3) el3.textContent = '—';
   }
 }
 function addNoiseRow600(){
@@ -4436,10 +4680,10 @@ function addNoiseRow600(){
   newRow.innerHTML = `
     <td class="pt">${rowCount + 1}</td>
     <td><input class="vi-input" id="nc600-leq-${rowCount}" oninput="calcNoiseRow600(${rowCount})" step="0.1" type="number" placeholder="输入Leq"/></td>
-    <td><input class="vi-input" id="nc600-sel-calc-${rowCount}" readonly="" step="0.1" type="text" value="—"/></td>
+    <td id="nc600-sel-calc-${rowCount}">—</td>
     <td><input class="vi-input" id="nc600-sel-target-${rowCount}" oninput="calcNoiseRow600(${rowCount})" step="0.1" type="number" placeholder="目标SEL"/></td>
-    <td><input class="vi-input" id="nc600-t-sec-${rowCount}" readonly="" step="0.1" type="text" value="—"/></td>
-    <td><input class="vi-input" id="nc600-t-min-${rowCount}" readonly="" step="0.01" type="text" value="—"/></td>
+    <td id="nc600-t-sec-${rowCount}">—</td>
+    <td id="nc600-t-min-${rowCount}">—</td>
   `;
   tbody.appendChild(newRow);
 }
@@ -4458,10 +4702,10 @@ function clearNoiseTable600(){
   const tbody = document.getElementById('noise-table-body-600');
   for(let i = 0; i < tbody.children.length; i++){
     document.getElementById(`nc600-leq-${i}`).value = '';
-    document.getElementById(`nc600-sel-calc-${i}`).value = '—';
+    document.getElementById(`nc600-sel-calc-${i}`).textContent = '—';
     document.getElementById(`nc600-sel-target-${i}`).value = '';
-    document.getElementById(`nc600-t-sec-${i}`).value = '—';
-    document.getElementById(`nc600-t-min-${i}`).value = '—';
+    document.getElementById(`nc600-t-sec-${i}`).textContent = '—';
+    document.getElementById(`nc600-t-min-${i}`).textContent = '—';
   }
 }
 function calcNoiseRow1200(rowIdx){
@@ -4473,20 +4717,20 @@ function calcNoiseRow1200(rowIdx){
   const selCalc = !Number.isNaN(leq) ? leq + logt : NaN;
   
   const el1 = document.getElementById(`nc1200-sel-calc-${rowIdx}`);
-  if(el1) el1.value = !Number.isNaN(selCalc) ? selCalc.toFixed(3) : '—';
+  if(el1) el1.textContent = !Number.isNaN(selCalc) ? selCalc.toFixed(3) : '—';
   
   if(!Number.isNaN(leq) && !Number.isNaN(selTarget)){
     const delta = selTarget - leq;
     const tSec = Math.pow(10, delta / 10);
     const el2 = document.getElementById(`nc1200-t-sec-${rowIdx}`);
     const el3 = document.getElementById(`nc1200-t-min-${rowIdx}`);
-    if(el2) el2.value = tSec.toFixed(2);
-    if(el3) el3.value = (tSec / 60).toFixed(4);
+    if(el2) el2.textContent = tSec.toFixed(2);
+    if(el3) el3.textContent = (tSec / 60).toFixed(4);
   } else {
     const el2 = document.getElementById(`nc1200-t-sec-${rowIdx}`);
     const el3 = document.getElementById(`nc1200-t-min-${rowIdx}`);
-    if(el2) el2.value = '—';
-    if(el3) el3.value = '—';
+    if(el2) el2.textContent = '—';
+    if(el3) el3.textContent = '—';
   }
 }
 function addNoiseRow1200(){
@@ -4497,10 +4741,10 @@ function addNoiseRow1200(){
   newRow.innerHTML = `
     <td class="pt">${rowCount + 1}</td>
     <td><input class="vi-input" id="nc1200-leq-${rowCount}" oninput="calcNoiseRow1200(${rowCount})" step="0.1" type="number" placeholder="输入Leq"/></td>
-    <td><input class="vi-input" id="nc1200-sel-calc-${rowCount}" readonly="" step="0.1" type="text" value="—"/></td>
+    <td id="nc1200-sel-calc-${rowCount}">—</td>
     <td><input class="vi-input" id="nc1200-sel-target-${rowCount}" oninput="calcNoiseRow1200(${rowCount})" step="0.1" type="number" placeholder="目标SEL"/></td>
-    <td><input class="vi-input" id="nc1200-t-sec-${rowCount}" readonly="" step="0.1" type="text" value="—"/></td>
-    <td><input class="vi-input" id="nc1200-t-min-${rowCount}" readonly="" step="0.01" type="text" value="—"/></td>
+    <td id="nc1200-t-sec-${rowCount}">—</td>
+    <td id="nc1200-t-min-${rowCount}">—</td>
   `;
   tbody.appendChild(newRow);
 }
@@ -4519,10 +4763,10 @@ function clearNoiseTable1200(){
   const tbody = document.getElementById('noise-table-body-1200');
   for(let i = 0; i < tbody.children.length; i++){
     document.getElementById(`nc1200-leq-${i}`).value = '';
-    document.getElementById(`nc1200-sel-calc-${i}`).value = '—';
+    document.getElementById(`nc1200-sel-calc-${i}`).textContent = '—';
     document.getElementById(`nc1200-sel-target-${i}`).value = '';
-    document.getElementById(`nc1200-t-sec-${i}`).value = '—';
-    document.getElementById(`nc1200-t-min-${i}`).value = '—';
+    document.getElementById(`nc1200-t-sec-${i}`).textContent = '—';
+    document.getElementById(`nc1200-t-min-${i}`).textContent = '—';
   }
 }
 function calcG219(){
@@ -4991,26 +5235,93 @@ function calcCems(){
 }
 
 function calcOccupational(){
-  const t1=num('occ-chem-t1'), t2=num('occ-chem-t2'), stel=num('occ-chem-stel'), twaLimit=num('occ-chem-twa-limit');
-  const c1=parseNums(document.getElementById('occ-chem-c1').value), c2=parseNums(document.getElementById('occ-chem-c2').value);
-  const avg1 = avg(c1), avg2 = avg(c2);
-  const validChem = c1.concat(c2).filter(v=>!isNaN(v));
-  const cpe = validChem.length ? Math.max(...validChem) : NaN;
-  const ctwa = (((!Number.isNaN(avg1) ? avg1 : 0) * (!Number.isNaN(t1) ? t1 : 0)) + (((!Number.isNaN(avg2) ? avg2 : 0) * (!Number.isNaN(t2) ? t2 : 0)))) / 8;
-  const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(stel)) ? (cpe < stel ? '符合' : '不符合') : '—';
-  const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(twaLimit)) ? (ctwa < twaLimit ? '符合' : '不符合') : '—';
-  const threeTwa = !Number.isNaN(twaLimit) ? twaLimit * 3 : NaN;
-  const fiveTwa = !Number.isNaN(twaLimit) ? twaLimit * 5 : NaN;
-  const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa) && !Number.isNaN(fiveTwa))
-    ? ((cpe < threeTwa && cpe < fiveTwa) ? '符合' : '不符合')
-    : '—';
-
-  document.getElementById('occ-cste').textContent = `${!Number.isNaN(cpe)?cpe.toFixed(2):'—'} / ${stelJudge}`;
-  document.getElementById('occ-ctwa').textContent = `${!Number.isNaN(ctwa)?ctwa.toFixed(2):'—'} / ${twaJudge}`;
-  const peakLimitEl = document.getElementById('occ-peak-limit');
-  if(peakLimitEl) peakLimitEl.textContent = `${!Number.isNaN(threeTwa)?threeTwa.toFixed(2):'—'} / ${!Number.isNaN(fiveTwa)?fiveTwa.toFixed(2):'—'}`;
-  const peakJudgeEl = document.getElementById('occ-peak-judge');
-  if(peakJudgeEl) peakJudgeEl.textContent = peakJudge;
+  // 情况一计算函数：一个工种一个场所
+  // C_TWA = AVERAGE(CSTE_1到CSTE_5) × 接触时间 / 8
+  const calcChemCase1 = (prefix) => {
+    const t = num(`${prefix}-t`);
+    const stel = num(`${prefix}-stel`);
+    const twaLimit = num(`${prefix}-twa-limit`);
+    
+    const concs = [];
+    for (let i = 1; i <= 5; i++) {
+      const cste = num(`${prefix}-cste${i}`);
+      if (!Number.isNaN(cste)) {
+        concs.push(cste);
+      }
+    }
+    
+    const avgConc = concs.length ? avg(concs) : NaN;
+    const cpe = concs.length ? Math.max(...concs) : NaN;
+    const ctwa = (!Number.isNaN(avgConc) && !Number.isNaN(t)) ? (avgConc * t) / 8 : NaN;
+    const threeTwa = !Number.isNaN(twaLimit) ? twaLimit * 3 : NaN;
+    const fiveTwa = !Number.isNaN(twaLimit) ? twaLimit * 5 : NaN;
+    
+    const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(stel)) ? (cpe <= stel ? '符合' : '不符合') : '—';
+    const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(twaLimit)) ? (ctwa <= twaLimit ? '符合' : '不符合') : '—';
+    const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa)) ? (cpe <= threeTwa ? '符合' : '不符合') : '—';
+    const finalJudge = (stelJudge === '符合' && twaJudge === '符合' && peakJudge === '符合') ? '符合' : 
+                       (stelJudge !== '—' || twaJudge !== '—' || peakJudge !== '—') ? '不符合' : '—';
+    
+    setPlain(`${prefix}-ctwa`, !Number.isNaN(ctwa) ? ctwa.toFixed(4) : '—');
+    setPlain(`${prefix}-stel-judge`, stelJudge);
+    setPlain(`${prefix}-twa-judge`, twaJudge);
+    setPlain(`${prefix}-cpe`, !Number.isNaN(cpe) ? cpe.toFixed(1) : '—');
+    setPlain(`${prefix}-3twa`, !Number.isNaN(threeTwa) ? threeTwa.toFixed(0) : '—');
+    setPlain(`${prefix}-5twa`, !Number.isNaN(fiveTwa) ? fiveTwa.toFixed(0) : '—');
+    setPlain(`${prefix}-peak-judge`, peakJudge);
+    setPlain(`${prefix}-final-judge`, finalJudge);
+  };
+  
+  // 情况二计算函数：同个工种多个场所
+  // C_TWA = (CSTE_1×t + CSTE_2×t + ...) / 8
+  const calcChemCase2 = (prefix) => {
+    const t = num(`${prefix}-t`);
+    const stel = num(`${prefix}-stel`);
+    const twaLimit = num(`${prefix}-twa-limit`);
+    
+    let totalCtwa = 0;
+    let hasData = false;
+    const concs = [];
+    
+    for (let i = 1; i <= 5; i++) {
+      const cste = num(`${prefix}-cste${i}`);
+      if (!Number.isNaN(cste)) {
+        concs.push(cste);
+        if (!Number.isNaN(t)) {
+          totalCtwa += cste * t;
+          hasData = true;
+        }
+      }
+    }
+    
+    const cpe = concs.length ? Math.max(...concs) : NaN;
+    const ctwa = hasData ? totalCtwa / 8 : NaN;
+    const threeTwa = !Number.isNaN(twaLimit) ? twaLimit * 3 : NaN;
+    const fiveTwa = !Number.isNaN(twaLimit) ? twaLimit * 5 : NaN;
+    
+    const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(stel)) ? (cpe <= stel ? '符合' : '不符合') : '—';
+    const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(twaLimit)) ? (ctwa <= twaLimit ? '符合' : '不符合') : '—';
+    const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa)) ? (cpe <= threeTwa ? '符合' : '不符合') : '—';
+    const finalJudge = (stelJudge === '符合' && twaJudge === '符合' && peakJudge === '符合') ? '符合' : 
+                       (stelJudge !== '—' || twaJudge !== '—' || peakJudge !== '—') ? '不符合' : '—';
+    
+    setPlain(`${prefix}-ctwa`, !Number.isNaN(ctwa) ? ctwa.toFixed(4) : '—');
+    setPlain(`${prefix}-stel-judge`, stelJudge);
+    setPlain(`${prefix}-twa-judge`, twaJudge);
+    setPlain(`${prefix}-cpe`, !Number.isNaN(cpe) ? cpe.toFixed(1) : '—');
+    setPlain(`${prefix}-3twa`, !Number.isNaN(threeTwa) ? threeTwa.toFixed(0) : '—');
+    setPlain(`${prefix}-5twa`, !Number.isNaN(fiveTwa) ? fiveTwa.toFixed(0) : '—');
+    setPlain(`${prefix}-peak-judge`, peakJudge);
+    setPlain(`${prefix}-final-judge`, finalJudge);
+  };
+  
+  // 情况一：一个工种一个场所
+  calcChemCase1('occ-c1');
+  
+  // 情况二：同个工种多个场所（3个工种）
+  calcChemCase2('occ-c2w1');
+  calcChemCase2('occ-c2w2');
+  calcChemCase2('occ-c2w3');
 
   const hours=num('occ-noise-time'), days=num('occ-noise-days'), limit=num('occ-noise-limit');
   const vals=parseNums(document.getElementById('occ-noise-v').value);
