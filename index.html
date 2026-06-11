@@ -35,6 +35,188 @@
   --mono: 'IBM Plex Mono', monospace;
   --sans: 'Noto Sans SC', sans-serif;
 }
+
+/* ── Light theme ── */
+[data-theme="light"] {
+  --bg: #dde2e8;
+  --bg2: #eaecf0;
+  --bg3: #e2e6eb;
+  --bg4: #d4d9e0;
+  --border: #bcc4ce;
+  --border2: #8f9baa;
+  --text: #0d1117;
+  --text2: #3d4752;
+  --text3: #6a7585;
+  --accent: #0057d9;
+  --accent2: #004bbf;
+  --green: #116329;
+  --green-bg: #c9f0d2;
+  --green-border: #5dab78;
+  --red: #b91c1c;
+  --red-bg: #fde8e8;
+  --red-border: #e07575;
+  --yellow: #7a4f00;
+  --yellow-bg: #fef3c0;
+}
+
+[data-theme="light"] .field input[type=date] { color-scheme: light; }
+[data-theme="light"] .vi-input { color-scheme: light; }
+
+/* 亮色主题：增强卡片层次与阴影 */
+[data-theme="light"] .card,
+[data-theme="light"] .tab-panel,
+[data-theme="light"] .template-sidebar,
+[data-theme="light"] .system-header {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.08);
+}
+[data-theme="light"] .card:hover,
+[data-theme="light"] .tab-panel:hover,
+[data-theme="light"] .template-sidebar:hover,
+[data-theme="light"] .system-header:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.13), 0 2px 6px rgba(0,0,0,0.09);
+}
+[data-theme="light"] .template-item {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.09);
+}
+[data-theme="light"] .template-item:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.13);
+  background: #f0f3f6;
+}
+[data-theme="light"] .template-item.active {
+  background: #d8e4f8;
+  border-color: var(--accent2);
+  border-left: 3px solid var(--accent2);
+  box-shadow: 0 0 0 3px rgba(0,75,191,0.10), 0 2px 8px rgba(0,0,0,0.08);
+}
+[data-theme="light"] .tab-btn.active {
+  box-shadow: 0 2px 8px rgba(0,75,191,0.25);
+}
+[data-theme="light"] .stat {
+  background: #e2e8f4;
+  border-color: #b0bece;
+}
+[data-theme="light"] .vi-input {
+  background: #e4e8ed;
+  border-color: #9aa3ae;
+}
+[data-theme="light"] .vi-input:hover {
+  border-color: #7a8fa8;
+  background: #fff;
+}
+[data-theme="light"] .vi-input:focus {
+  background: #fff;
+  border-color: var(--accent2);
+  box-shadow: 0 0 0 2px rgba(0,75,191,0.12);
+}
+[data-theme="light"] .vi-input.has-val {
+  color: var(--accent2);
+  background: #dce8fc;
+  border-color: #80a8e0;
+}
+[data-theme="light"] .topbar {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+[data-theme="light"] .tab-navigation {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+[data-theme="light"] .import-inline {
+  background: #d8dde4;
+  border-color: #aab2bb;
+}
+[data-theme="light"] .recheck {
+  background: #dde4f4;
+  border-left-color: var(--accent2);
+  border-color: #a8b4d0;
+}
+[data-theme="light"] .limit-row {
+  background: #d8dde4;
+  border-color: #aab2bb;
+}
+[data-theme="light"] .stats-setting-row {
+  background: #d8dde4;
+  border-color: #aab2bb;
+}
+[data-theme="light"] .simple-table th {
+  background: #c8cdd6;
+  color: #1a2230;
+}
+[data-theme="light"] .simple-table tr:nth-child(even) td {
+  background: #e6eaf0;
+}
+[data-theme="light"] .vel-table th {
+  color: #3d4752;
+}
+[data-theme="light"] .result-box {
+  background: #edf0f4;
+  border-color: #bcc4ce;
+}
+[data-theme="light"] .verdict.none {
+  background: #edf0f4;
+}
+
+/* ── Theme toggle button ── */
+.theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: var(--bg2);
+  color: var(--text2);
+  font-family: var(--sans);
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent2);
+  color: var(--text);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transform: translateY(-1px);
+}
+
+.theme-toggle .toggle-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.theme-toggle .toggle-track {
+  width: 30px;
+  height: 16px;
+  border-radius: 8px;
+  background: var(--border2);
+  position: relative;
+  transition: background 0.25s;
+  flex-shrink: 0;
+}
+
+[data-theme="light"] .theme-toggle .toggle-track {
+  background: var(--accent2);
+}
+
+.theme-toggle .toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.25s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+
+[data-theme="light"] .theme-toggle .toggle-thumb {
+  transform: translateX(14px);
+}
 * { box-sizing: border-box; margin: 0; padding: 0; }
 div { font-size: 13px; }
 html { font-size: 14px; }
@@ -61,14 +243,15 @@ body {
 
 /* 系统标题区域 */
 .system-header {
-  background: var(--bg2);
+  background: linear-gradient(160deg, var(--bg2) 60%, color-mix(in srgb, var(--accent2) 8%, var(--bg2)));
   border: 1px solid var(--border);
+  border-top: 3px solid var(--accent2);
   border-radius: 10px;
   padding: 24px;
   width: 100%;
   max-width: 1450px;
   margin: 2px auto 2px auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   transition: all 0.3s ease;
   text-align: center;
 }
@@ -137,11 +320,13 @@ body {
 }
 
 .template-header h3 {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   color: var(--text);
   margin: 0;
   text-align: center;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .template-list {
@@ -169,8 +354,9 @@ body {
 
 .template-item.active {
   border-color: var(--accent2);
+  border-left: 3px solid var(--accent);
   background: var(--bg3);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 14px rgba(31,111,235,0.18);
 }
 
 .template-title {
@@ -257,10 +443,11 @@ body {
 }
 
 .tab-btn.active {
-  color: var(--text);
-  background: var(--accent2);
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%);
   font-weight: 500;
-  box-shadow: 0 2px 8px rgba(31, 111, 235, 0.3);
+  box-shadow: 0 2px 10px rgba(31, 111, 235, 0.35);
+  letter-spacing: 0.01em;
 }
 
 /* 页签内容区域 */
@@ -390,9 +577,12 @@ body {
   border-color: var(--border2);
 }
 .card-title {
-  font-size: 13px; font-weight: 500; color: var(--text);
+  font-size: 13px; font-weight: 600; color: var(--text);
   margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
   display: flex; align-items: center; gap: 8px;
+  letter-spacing: 0.01em;
 }
 
 /* ── Meta fields ── */
@@ -444,6 +634,7 @@ body {
   outline: none; border-color: var(--accent2);
 }
 .field input[type=date] { color-scheme: dark; }
+[data-theme="light"] .field input[type=date] { color-scheme: light; }
 
 /* ── Main grid ── */
 .calc-grid { display: grid; grid-template-columns: 1fr 360px; gap: 16px; align-items: start; }
@@ -585,8 +776,8 @@ body {
 }
 .stat-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; text-align: center; }
 .stat-val {
-  font-family: var(--mono); font-size: 22px; font-weight: 500;
-  color: var(--text); letter-spacing: -1px;
+  font-family: var(--mono); font-size: 22px; font-weight: 600;
+  color: var(--accent); letter-spacing: -1px;
   text-align: center;
 }
 .stat-sub { font-size: 10px; color: var(--text3); margin-top: 3px; text-align: center; }
@@ -603,8 +794,9 @@ body {
 .verdict.fail { background: var(--red-bg); border-color: var(--red-border); }
 .verdict-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; text-align: center; }
 .verdict-main {
-  font-family: var(--mono); font-size: 16px; font-weight: 500;
+  font-family: var(--mono); font-size: 16px; font-weight: 700;
   text-align: center;
+  letter-spacing: 0.02em;
 }
 .verdict.ok .verdict-main { color: var(--green); }
 .verdict.fail .verdict-main { color: var(--red); }
@@ -666,15 +858,24 @@ body {
   height: 32px; padding: 0 14px; font-size: 12px;
   border-radius: 6px; border: 1px solid var(--border2);
   background: var(--bg3); color: var(--text2);
-  cursor: pointer; transition: all .15s; font-family: var(--sans);
+  cursor: pointer; transition: all .2s ease; font-family: var(--sans);
   display: flex; align-items: center; gap: 6px;
 }
-.btn:hover { background: var(--bg4); color: var(--text); border-color: var(--text3); }
+.btn:hover { background: var(--bg4); color: var(--text); border-color: var(--text3); transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+.btn:active { transform: translateY(0); box-shadow: none; }
 .btn.primary {
-  background: var(--accent2); border-color: var(--accent2);
+  background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%);
+  border-color: transparent;
   color: #fff;
+  box-shadow: 0 2px 8px rgba(31,111,235,0.35);
+  font-weight: 500;
 }
-.btn.primary:hover { background: var(--accent); border-color: var(--accent); }
+.btn.primary:hover {
+  background: linear-gradient(135deg, var(--accent) 0%, #79bbff 100%);
+  box-shadow: 0 4px 14px rgba(31,111,235,0.45);
+  transform: translateY(-1px);
+}
+.btn.primary:active { transform: translateY(0); box-shadow: 0 1px 4px rgba(31,111,235,0.3); }
 .btn.danger { color: var(--red); border-color: var(--red-border); }
 .btn.danger:hover { background: var(--red-bg); }
 .btn.success { color: var(--green); border-color: var(--green-border); }
@@ -1055,6 +1256,19 @@ body {
 .result-value { font-family: var(--mono); font-size:18px; color:var(--text); }
 .helper-text { font-size:11px; color:var(--text3); line-height:1.7; }
 .simple-table { width:auto; border-collapse: collapse; table-layout: fixed; min-width: 100%; }
+.simple-table thead th {
+  background: var(--bg3);
+  color: var(--text2);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 8px 6px;
+  border-bottom: 2px solid var(--border2);
+}
+.simple-table tbody tr:hover td {
+  background: color-mix(in srgb, var(--accent2) 6%, var(--bg2));
+}
 #fg-measurement-table { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 #fg-measurement-table col.fg-col-project { width: var(--fg-project-w); }
 #fg-measurement-table col.fg-col-sub { width: var(--fg-sub-w); }
@@ -1264,6 +1478,8 @@ td#fg-dust-moist-cavg {
 .simple-table th, .simple-table td { border-bottom:1px solid var(--border); padding:6px 4px; text-align:center; font-size:13px; font-weight: bold; white-space: nowrap; }
 table#noise-table-600 th:first-child, table#noise-table-600 td:first-child,
 table#noise-table-1200 th:first-child, table#noise-table-1200 td:first-child { width: 100px !important; min-width: 100px; max-width: 100px; }
+table#noise-table-600 > thead > tr > th:nth-child(1),
+table#noise-table-1200 > thead > tr > th:nth-child(1) { border-width: 1px; border-style: solid; border-color: rgb(0, 0, 0); }
 table#noise-table-600 th:nth-child(2), table#noise-table-600 th:nth-child(4),
 table#noise-table-1200 th:nth-child(2), table#noise-table-1200 th:nth-child(4) { background-color: rgba(59, 130, 246, 0.2) !important; border: 1px solid #000000 !important; }
 table#noise-table-600 th:nth-child(3), table#noise-table-600 th:nth-child(5), table#noise-table-600 th:nth-child(6),
@@ -1391,6 +1607,12 @@ table.simple-table:not(#fg-measurement-table) td:last-child { width: 30px !impor
 </style>
 </head>
 <body>
+<!-- 主题切换按钮 -->
+<button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="切换亮/暗主题">
+  <span class="toggle-icon" id="theme-icon">🌙</span>
+  <div class="toggle-track"><div class="toggle-thumb"></div></div>
+  <span id="theme-label">暗色</span>
+</button>
 <div class="app">
 <!-- 系统标题区域 -->
 <div class="system-header">
@@ -5638,6 +5860,27 @@ function calcNoiseCheckReverse(){
   [calcFlueGas, calcNoiseCheck, calcNoiseCheckReverse, calcParshall, calcIons, calcOccupational, refreshCemsReport]
     .forEach(fn => { try { if (typeof fn === 'function') fn(); } catch (e) { console.warn('初始化模块跳过：', e); } });
 })();
+
+/* ── 主题切换 ── */
+(function initTheme(){
+  const saved = localStorage.getItem('theme') || 'dark';
+  applyTheme(saved);
+})();
+
+function toggleTheme(){
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('theme', next);
+}
+
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  const icon = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  if(icon) icon.textContent = theme === 'light' ? '☀️' : '🌙';
+  if(label) label.textContent = theme === 'light' ? '亮色' : '暗色';
+}
 </script>
 </div></div></body>
 </html>
