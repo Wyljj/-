@@ -1577,6 +1577,252 @@ textarea.input-warning {
   }
 }
 
+@media (max-width: 640px) {
+  body {
+    min-width: 0;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .theme-toggle {
+    top: 12px;
+    right: 12px;
+    height: 36px;
+    padding: 6px 10px;
+    border-radius: 18px;
+    font-size: 11px;
+  }
+
+  .mobile-template-toggle {
+    top: 12px;
+    left: 12px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 9px;
+    font-size: 12px;
+  }
+
+  .system-header {
+    margin: 0;
+    max-width: none;
+    border-radius: 0 0 10px 10px;
+    padding: 60px 18px 18px;
+  }
+
+  .system-header .title-main {
+    font-size: 22px;
+    line-height: 1.25;
+    margin-bottom: 10px;
+    padding: 0 4px;
+  }
+
+  .system-header .title-desc {
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .container {
+    display: block;
+    padding: 0 10px;
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  .template-sidebar {
+    left: 0;
+    width: min(86vw, 320px);
+    max-width: min(86vw, 320px);
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0 12px 12px 0;
+    transform: translateX(-105%);
+    transition: transform 0.25s ease;
+  }
+
+  .template-sidebar.mobile-active {
+    left: 0;
+    transform: translateX(0);
+  }
+
+  .main,
+  .main-content,
+  .tab-content,
+  .template-panel,
+  .tab-panel,
+  .fluegas-subpanel,
+  .occ-tab-content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: visible;
+    align-items: stretch;
+  }
+
+  .main {
+    margin: 0;
+    padding: 0;
+  }
+
+  .main-content {
+    padding: 0;
+  }
+
+  .tab-navigation {
+    position: sticky;
+    top: 8px;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    height: auto;
+    max-width: 100%;
+    margin: 12px 0;
+    padding: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+
+  .tab-btn {
+    flex: 0 0 auto;
+    min-width: 112px;
+    margin: 0;
+    padding: 10px 12px;
+    white-space: nowrap;
+    scroll-snap-align: start;
+  }
+
+  .tab-panel {
+    padding: 12px;
+  }
+
+  .card,
+  .result-box {
+    border-radius: 8px;
+  }
+
+  .card {
+    padding: 16px;
+    margin-bottom: 16px;
+    overflow: visible;
+  }
+
+  .card.note-card {
+    padding: 18px;
+  }
+
+  .card-title {
+    align-items: flex-start;
+    line-height: 1.45;
+  }
+
+  .meta-row,
+  .dimension-grid,
+  .flue-dimensions {
+    grid-template-columns: 1fr !important;
+  }
+
+  .field {
+    min-width: 0;
+  }
+
+  .field input,
+  .field select,
+  .vi-input,
+  input,
+  select {
+    min-width: 0;
+    max-width: 100%;
+    font-size: 16px;
+  }
+
+  .card-body,
+  .vel-wrap,
+  .simple-table-container,
+  .fg-sticky-wrap,
+  .table-scroll {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto !important;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    padding-bottom: 8px;
+  }
+
+  .card.vel-wrap {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 16px;
+  }
+
+  .vel-table,
+  .simple-table {
+    width: max-content;
+    min-width: max(620px, 100%);
+  }
+
+  .simple-table th,
+  .simple-table td {
+    white-space: nowrap;
+  }
+
+  .simple-table td:first-child,
+  .simple-table th:first-child {
+    white-space: normal;
+  }
+
+  #fg-measurement-table {
+    min-width: max-content;
+  }
+
+  #template-fluegas .simple-table,
+  #template-occupational .simple-table,
+  #template-noisecheck .simple-table,
+  #template-parshall .simple-table,
+  #template-ions .simple-table {
+    min-width: max(680px, 100%);
+  }
+
+  #occ-noise-table,
+  #occ-electric-table,
+  #occ-chem-table {
+    min-width: 980px;
+  }
+
+  .fluegas-subnav,
+  .module-subnav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .fluegas-subbtn,
+  .module-subbtn {
+    flex: 0 0 auto;
+    min-width: 96px;
+    white-space: nowrap;
+  }
+
+  .result-value {
+    font-size: 16px;
+    word-break: break-word;
+  }
+
+  .btn-row,
+  .tool-actions {
+    justify-content: stretch;
+  }
+
+  .btn,
+  .tool-action {
+    flex: 1 1 auto;
+    min-width: 110px;
+  }
+}
+
 /* ── Print ── */
 @media print {
   body { background: #fff !important; color: #000 !important; }
@@ -2036,6 +2282,87 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
 .report-actions{ margin-top:16px; }
 @media (max-width: 900px) {
   .template-grid-two, .template-grid-three { grid-template-columns:1fr; }
+}
+@media (max-width: 640px) {
+  html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+  .system-header { padding-top: 60px; }
+  .container { display: block; padding: 0 10px; max-width: 100%; overflow: visible; }
+  .main, .main-content, .tab-content, .tab-panel, .template-panel, .module-subpanel, .fluegas-subpanel, .occ-tab-content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: visible;
+  }
+  .tab-navigation, .fluegas-subnav, .module-subnav, .occ-tabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    gap: 6px;
+    scrollbar-width: thin;
+  }
+  .tab-btn, .fluegas-subbtn, .module-subbtn, .occ-tab-btn {
+    flex: 0 0 auto !important;
+    min-width: 108px;
+    white-space: nowrap;
+  }
+  .tab-panel { padding: 12px; }
+  .card { padding: 16px; margin-bottom: 16px; overflow: visible; }
+  .card.note-card { padding: 18px; }
+  .card.vel-wrap {
+    width: 100%;
+    margin: 0 0 16px;
+    padding: 16px;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .card-body, .simple-table-container, .fg-sticky-wrap, .vel-wrap {
+    max-width: 100%;
+    overflow-x: auto !important;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+  .vel-table, .simple-table {
+    width: max-content;
+    min-width: max(620px, 100%);
+  }
+  #fg-measurement-table { min-width: max-content; }
+  #occ-chem-table, #occ-noise-table, #occ-electric-table {
+    min-width: 980px !important;
+  }
+  .simple-table th, .simple-table td { white-space: nowrap; }
+  .simple-table td:first-child, .simple-table th:first-child { white-space: normal; }
+  .theme-toggle {
+    top: 12px;
+    right: 12px;
+    height: 36px;
+    padding: 6px 10px;
+    border-radius: 18px;
+    font-size: 11px;
+  }
+  .mobile-template-toggle {
+    top: 12px;
+    left: 12px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 9px;
+    font-size: 12px;
+  }
+  .template-sidebar {
+    left: 0;
+    width: min(86vw, 320px);
+    max-width: min(86vw, 320px);
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0 12px 12px 0;
+    transform: translateX(-105%);
+    transition: transform .25s ease;
+  }
+  .template-sidebar.mobile-active {
+    left: 0;
+    transform: translateX(0);
+  }
 }
 </style>
 </head>
@@ -2706,13 +3033,17 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
 </div>
 
 <div class="fluegas-subpanel" id="fluegas-tab-drift">
-  <div class="stats-setting-row" style="margin-top:12px">
-    <div class="stats-setting-item"><span class="stats-setting-label">SO₂示值误差限值（%）</span><input id="fg-drift-so2-ind-limit" oninput="calcFlueGas()" step="0.1" type="number" value="5"/></div>
-    <div class="stats-setting-item"><span class="stats-setting-label">NOx/O₂示值误差限值（%）</span><input id="fg-drift-common-ind-limit" oninput="calcFlueGas()" step="0.1" type="number" value="5"/></div>
-    <div class="stats-setting-item"><span class="stats-setting-label">漂移限值（%量程）</span><input id="fg-drift-drift-limit" oninput="calcFlueGas()" step="0.1" type="number" value="2.5"/></div>
-    <div class="stats-setting-item"><span class="stats-setting-label">响应时间限值（s）</span><input id="fg-drift-response-limit" oninput="calcFlueGas()" step="1" type="number" value="200"/></div>
+  <div class="card">
+    <div class="card-title">📐 示值误差与量程漂移参数</div>
+    <div class="stats-setting-row">
+      <div class="stats-setting-item"><span class="stats-setting-label">SO₂示值误差限值（%）</span><input id="fg-drift-so2-ind-limit" oninput="calcFlueGas()" step="0.1" type="number" value="5"/></div>
+      <div class="stats-setting-item"><span class="stats-setting-label">NOx/O₂示值误差限值（%）</span><input id="fg-drift-common-ind-limit" oninput="calcFlueGas()" step="0.1" type="number" value="5"/></div>
+      <div class="stats-setting-item"><span class="stats-setting-label">漂移限值（%量程）</span><input id="fg-drift-drift-limit" oninput="calcFlueGas()" step="0.1" type="number" value="2.5"/></div>
+      <div class="stats-setting-item"><span class="stats-setting-label">响应时间限值（s）</span><input id="fg-drift-response-limit" oninput="calcFlueGas()" step="1" type="number" value="200"/></div>
+    </div>
   </div>
-  <table class="simple-table" style="margin-top:12px">
+  <div class="card">
+    <table class="simple-table">
     <thead><tr><th>项目</th><th>类型</th><th>标准值/量程</th><th>测定值/漂移量</th><th>结果</th><th>限值</th><th>判定</th></tr></thead>
     <tbody>
       <tr><td rowspan="6">SO₂</td><td>示值误差1</td><td><input class="vi-input" id="fg-drift-so2-ind-ref1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-drift-so2-ind-cems1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-drift-so2-ind-err1">—</td><td rowspan="3" id="fg-drift-so2-ind-th">—</td><td id="fg-drift-so2-ind-judge1">—</td></tr>
@@ -2734,13 +3065,15 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
       <tr><td>零点漂移</td><td><input class="vi-input" id="fg-drift-o2-zero-range" oninput="calcFlueGas()" step="0.1" type="number" placeholder="量程"/></td><td><input class="vi-input" id="fg-drift-o2-zero" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-o2-zero-pct">—</td><td id="fg-drift-o2-zero-th">—</td><td id="fg-drift-o2-zero-judge">—</td></tr>
       <tr><td>量程漂移</td><td><input class="vi-input" id="fg-drift-o2-span-range" oninput="calcFlueGas()" step="0.1" type="number" placeholder="量程"/></td><td><input class="vi-input" id="fg-drift-o2-span" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-o2-span-pct">—</td><td id="fg-drift-o2-span-th">—</td><td id="fg-drift-o2-span-judge">—</td></tr>
     </tbody>
-  </table>
+    </table>
+  </div>
   <div class="result-box" style="margin-top:12px"><div class="result-label">综合提示</div><div class="result-value" id="fg-drift-summary" style="font-size:14px">—</div></div>
 </div>
 
 <div class="fluegas-subpanel" id="fluegas-tab-water">
-  <table class="simple-table" style="margin-top:12px">
-    <thead><tr><th>类别</th><th>序号</th><th>在线监测值</th><th>实验室/标准值</th><th>绝对误差</th><th>相对误差</th><th>判定</th></tr></thead>
+  <div class="card">
+    <table class="simple-table">
+      <thead><tr><th>类别</th><th>序号</th><th>在线监测值</th><th>实验室/标准值</th><th>绝对误差</th><th>相对误差</th><th>判定</th></tr></thead>
     <tbody>
       <tr><td rowspan="6">实际水样</td><td>1</td><td><input class="vi-input" id="fg-water-sample-online1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs1">—</td><td id="fg-water-sample-rel1">—</td><td id="fg-water-sample-judge1">—</td></tr>
       <tr><td>2</td><td><input class="vi-input" id="fg-water-sample-online2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs2">—</td><td id="fg-water-sample-rel2">—</td><td id="fg-water-sample-judge2">—</td></tr>
@@ -2754,7 +3087,8 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
       <tr><td>4</td><td><input class="vi-input" id="fg-water-qc-online4" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-qc-std4" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-qc-abs4">—</td><td id="fg-water-qc-rel4">—</td><td id="fg-water-qc-judge4">—</td></tr>
       <tr><td>5</td><td><input class="vi-input" id="fg-water-qc-online5" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-qc-std5" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-qc-abs5">—</td><td id="fg-water-qc-rel5">—</td><td id="fg-water-qc-judge5">—</td></tr>
     </tbody>
-  </table>
+    </table>
+  </div>
   <div class="result-box" style="margin-top:12px"><div class="result-label">综合提示</div><div class="result-value" id="fg-water-summary" style="font-size:14px">—</div></div>
 </div>
 
@@ -2887,6 +3221,20 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
     </tr>
   </tbody>
 </table>
+</div>
+</div>
+<div class="card">
+<div class="card-title">🏭 厂界噪声验算</div>
+<div class="meta-row">
+  <div class="field"><label>测点位置</label><input id="nc-factory-site" placeholder="如：东厂界1号点" oninput="calcFactoryNoise()"/></div>
+  <div class="field"><label>时段</label><select id="nc-factory-period" onchange="calcFactoryNoise()"><option>昼间</option><option>夜间</option></select></div>
+  <div class="field"><label>测得 Leq（dB）</label><input id="nc-factory-leq" oninput="calcFactoryNoise()" step="0.1" type="number"/></div>
+  <div class="field"><label>排放标准（dB）</label><input id="nc-factory-limit" oninput="calcFactoryNoise()" step="0.1" type="number" value="65"/></div>
+</div>
+<div class="template-grid-three" style="margin-top:16px;">
+  <div class="result-box"><div class="result-label">测得值</div><div class="result-value" id="nc-factory-result">—</div></div>
+  <div class="result-box"><div class="result-label">排放标准</div><div class="result-value" id="nc-factory-limit-val">—</div></div>
+  <div class="result-box"><div class="result-label">判定结果</div><div class="result-value" id="nc-factory-judge">—</div></div>
 </div>
 </div>
 </div><div class="template-panel" id="template-g219">
@@ -5090,6 +5438,9 @@ function selectTemplate(id){
     }
   }
   updateTemplateShell();
+  if (window.matchMedia && window.matchMedia('(max-width: 640px)').matches) {
+    document.querySelector('.template-sidebar')?.classList.remove('mobile-active');
+  }
 }
 
 
@@ -6138,6 +6489,24 @@ function addNoiseRow1200(){
     <td id="nc1200-t-min-${rowCount}">—</td>
   `;
   tbody.appendChild(newRow);
+}
+function calcFactoryNoise(){
+  const leq = num('nc-factory-leq');
+  const limit = num('nc-factory-limit');
+  const period = document.getElementById('nc-factory-period')?.value || '昼间';
+  
+  if(isNaN(leq) || isNaN(limit)){
+    setPlain('nc-factory-result', '—');
+    setPlain('nc-factory-limit-val', '—');
+    setPlain('nc-factory-judge', '—');
+    return;
+  }
+  
+  setPlain('nc-factory-result', `${leq.toFixed(1)} dB`);
+  setPlain('nc-factory-limit-val', `${limit.toFixed(1)} dB（${period}）`);
+  
+  const judge = leq <= limit ? '符合' : '不符合';
+  setPlain('nc-factory-judge', judge);
 }
 function removeNoiseRow1200(){
   const tbody = document.getElementById('noise-table-body-1200');
