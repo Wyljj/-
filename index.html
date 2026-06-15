@@ -20,8 +20,8 @@
   --border: #30363d;
   --border2: #484f58;
   --text: #e6edf3;
-  --text2: #8b949e;
-  --text3: #6e7681;
+  --text2: #a1a8b0;
+--text3: #8b949e;
   --accent: #58a6ff;
   --accent2: #1f6feb;
   --green: #3fb950;
@@ -46,7 +46,7 @@
   --border2: #8f9baa;
   --text: #0d1117;
   --text2: #3d4752;
-  --text3: #6a7585;
+  --text3: #52525b;
   --accent: #0057d9;
   --accent2: #004bbf;
   --green: #116329;
@@ -68,12 +68,6 @@
 [data-theme="light"] .template-sidebar,
 [data-theme="light"] .system-header {
   box-shadow: 0 2px 8px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.08);
-}
-[data-theme="light"] .card:hover,
-[data-theme="light"] .tab-panel:hover,
-[data-theme="light"] .template-sidebar:hover,
-[data-theme="light"] .system-header:hover {
-  box-shadow: 0 6px 20px rgba(0,0,0,0.13), 0 2px 6px rgba(0,0,0,0.09);
 }
 [data-theme="light"] .template-item {
   box-shadow: 0 1px 4px rgba(0,0,0,0.09);
@@ -183,6 +177,13 @@
   transform: translateY(-1px);
 }
 
+/* ── Shared hover effect for clickable elements ── */
+.elevated:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  border-color: var(--border2);
+  transform: translateY(-1px);
+}
+
 .theme-toggle .toggle-icon {
   font-size: 14px;
   line-height: 1;
@@ -266,7 +267,7 @@ body {
   text-align: left;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: flex-start;
   background-color: transparent;
   border-width: 0px;
@@ -279,8 +280,9 @@ body {
   font-weight: 700;
   color: var(--text);
   margin-bottom: 12px;
-  text-align: center;
+  text-align: left;
   line-height: 1.2;
+  width: 100%;
 }
 
 .system-header .title-desc {
@@ -288,6 +290,7 @@ body {
   color: var(--text2);
   line-height: 1.6;
   max-width: 1200px;
+  width: 100%;
   text-align: center;
   margin: 0 auto;
 }
@@ -306,11 +309,6 @@ body {
   margin: 20px 20px 20px 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-}
-
-.template-sidebar:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-  border-color: var(--border2);
 }
 
 .template-header {
@@ -657,11 +655,6 @@ textarea.input-warning {
   box-sizing: border-box;
 }
 
-.tab-panel:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-  border-color: var(--border2);
-}
-
 .tab-panel.active {
   display: block;
   animation: fadeInUp 0.4s ease;
@@ -694,18 +687,6 @@ textarea.input-warning {
   gap: 4px;
 }
 
-.title-main {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
-}
-
-.title-desc {
-  font-size: 11px;
-  color: var(--text3);
-  line-height: 1.4;
-  max-width: 600px;
-}
 .topbar-right { display: flex; align-items: center; gap: 10px; }
 .badge {
   font-family: var(--mono); font-size: 11px;
@@ -758,10 +739,6 @@ textarea.input-warning {
   transition: all 0.2s ease;
 }
 
-.card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-color: var(--border2);
-}
 .card-title {
   font-size: 13px; font-weight: 600; color: var(--text);
   margin-bottom: 14px;
@@ -843,28 +820,19 @@ textarea.input-warning {
 }
 
 .import-inline {
-  width: 100%;
-}
-
-/* 确保批量导入区域不会与表格重叠 */
-.import-inline {
   position: static;
   width: 100%;
-  margin-top: 16px;
+  margin-top: 38px;
   box-sizing: border-box;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
 }
 
 .vel-left {
   min-width: 0;
   overflow: visible;
-}
-
-.import-inline {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 14px;
-  margin-top: 38px;
 }
 
 .import-inline-title {
@@ -1078,10 +1046,6 @@ textarea.input-warning {
   transition: all 0.2s ease;
 }
 
-.chart-wrap:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-color: var(--border2);
-}
 .chart-wrap canvas { max-height: 260px; }
 
 /* ── History ── */
@@ -1132,10 +1096,6 @@ textarea.input-warning {
 .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .setting-group { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 24px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); transition: all 0.2s ease; }
 
-.setting-group:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-color: var(--border2);
-}
 .setting-group h3 { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 14px; text-align: left; }
 .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); text-align: center; }
 .setting-row:last-child { border-bottom: none; }
@@ -1153,10 +1113,6 @@ textarea.input-warning {
 .io-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .io-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 24px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); transition: all 0.2s ease; }
 
-.io-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-color: var(--border2);
-}
 .io-card h3 { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 10px; }
 .io-card p { font-size: 12px; color: var(--text3); margin-bottom: 14px; line-height: 1.7; }
 .textarea-import {
@@ -2438,7 +2394,6 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
 <div class="template-list">
 <div class="template-item active" data-template="monitoring" onclick="selectTemplate('monitoring')">
 <div class="template-title">🧪 监测断面计算</div>
-<div class="template-desc">已接入 · 在线计算</div>
 <div class="template-info">
 <div class="info-item">💨 流速相对方差 σᵣ</div>
 <div class="info-item">📏 矩形排气筒/烟道当量直径 D</div>
@@ -2446,7 +2401,6 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
 </div>
 <div class="template-item" data-template="fluegas" onclick="selectTemplate('fluegas')">
 <div class="template-title">🌫️ 有组织废气计算表</div>
-<div class="template-desc">已添加模板目录</div>
 <div class="template-info">
 <div class="info-item">含湿量 / 标干流量</div>
 <div class="info-item">含氧量折算 / 颗粒物</div>
@@ -2454,7 +2408,6 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
 </div>
 <div class="template-item" data-template="noisecheck" onclick="selectTemplate('noisecheck')">
 <div class="template-title">📢 噪声验算公式</div>
-<div class="template-desc">已添加模板目录</div>
 <div class="template-info">
 <div class="info-item">Leq 验算</div>
 <div class="info-item">道路噪声</div>
@@ -2462,7 +2415,6 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
 </div>
     <div class="template-item" data-template="parshall" onclick="selectTemplate('parshall')">
 <div class="template-title">💧 巴歇尔槽流量计算</div>
-<div class="template-desc">已添加模板目录</div>
 <div class="template-info">
 <div class="info-item">巴歇尔槽流量</div>
 <div class="info-item">流量换算</div>
@@ -2470,7 +2422,6 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
 </div>
     <div class="template-item" data-template="ions" onclick="selectTemplate('ions')">
 <div class="template-title">⚗️ 阴阳离子平衡计算表</div>
-<div class="template-desc">已添加模板目录</div>
 <div class="template-info">
 <div class="info-item">水质离子平衡</div>
 <div class="info-item">误差计算</div>
@@ -2478,7 +2429,6 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
 </div>
     <div class="template-item" data-template="occupational" onclick="selectTemplate('occupational')">
 <div class="template-title">🧰 职业卫生计算模板</div>
-<div class="template-desc">已添加模板目录</div>
 <div class="template-info">
 <div class="info-item">化学因素</div>
 <div class="info-item">物理因素</div>
