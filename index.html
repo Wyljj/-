@@ -2855,9 +2855,6 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
     <div class="stats-setting-row">
       <div class="stats-setting-item"><span class="stats-setting-label">有效组数</span><input id="fg-noxcmp-valid-count" readonly type="text" value="—"/></div>
       <div class="stats-setting-item"><span class="stats-setting-label">t 置信系数</span><input id="fg-noxcmp-coeff" readonly type="text" value="—"/></div>
-      <div class="stats-setting-item"><span class="stats-setting-label">绝对误差限值（mg/m³）</span><input id="fg-noxcmp-abs-limit" oninput="calcFlueGas()" step="0.1" type="number" value="15"/></div>
-      <div class="stats-setting-item"><span class="stats-setting-label">相对误差限值（%）</span><input id="fg-noxcmp-rel-limit" oninput="calcFlueGas()" step="0.1" type="number" value="20"/></div>
-      <div class="stats-setting-item"><span class="stats-setting-label">相对准确度限值（%）</span><input id="fg-noxcmp-ra-limit" oninput="calcFlueGas()" step="0.1" type="number" value="20"/></div>
     </div>
     <div class="fluegas-comparison-table-wrap">
     <table class="simple-table">
@@ -2880,29 +2877,29 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
         </tr>
         <tr class="fg-cmp-summary-row"><td colspan="2">数据对差的平均值的绝对值</td><td colspan="3" id="fg-noxcmp-meanabs">—</td></tr>
         <tr class="fg-cmp-summary-row"><td colspan="2">数据对差的标准偏差</td><td colspan="3" id="fg-noxcmp-std">—</td></tr>
-        <tr class="fg-cmp-summary-row"><td colspan="2">相对误差</td><td colspan="3" id="fg-noxcmp-rel">—</td></tr>
-        <tr class="fg-cmp-summary-row"><td colspan="2">绝对误差</td><td colspan="3" id="fg-noxcmp-abs-err">—</td></tr>
+        <tr class="fg-cmp-summary-row"><td colspan="2">相对误差（41-103）</td><td colspan="3" id="fg-noxcmp-rel">—</td></tr>
+        <tr class="fg-cmp-summary-row"><td colspan="2">绝对误差（103-513）、（0-41）</td><td colspan="3" id="fg-noxcmp-abs-err">—</td></tr>
         <tr class="fg-cmp-summary-row"><td colspan="2">CC</td><td colspan="3" id="fg-noxcmp-uncertainty">—</td></tr>
-        <tr class="fg-cmp-summary-row"><td colspan="2">相对准确度</td><td colspan="3" id="fg-noxcmp-relacc">—</td></tr>
-        <tr class="fg-cmp-summary-row"><td colspan="2">当前分支</td><td colspan="3" id="fg-noxcmp-branch">—</td></tr>
-        <tr class="fg-cmp-summary-row"><td colspan="2">判定</td><td colspan="3" id="fg-noxcmp-judge">—</td></tr>
+        <tr class="fg-cmp-summary-row"><td colspan="2">相对准确度（＞513）</td><td colspan="3" id="fg-noxcmp-relacc">—</td></tr>
       </tbody>
     </table>
     </div>
     <div style="margin-top:12px; text-align:center">
-      <button class="btn-add" onclick="addNoxCmpRecord()">+增加记录</button>
-      <button class="btn-delete" onclick="deleteNoxCmpRecord()">-删除记录</button>
       <button class="btn-clear" onclick="clearNoxCmpData()">清空数据</button>
     </div>
   </div>
   <div style="margin-top:20px">
-    <div class="template-section-title">标准气体核查表</div>
+    <div class="template-section-title">标准气体</div>
     <div class="fluegas-comparison-table-wrap">
     <table class="simple-table" style="margin-top:12px">
-      <thead><tr><th>标准气</th><th>标准值</th><th>第1次测定</th><th>第1次误差</th><th>第2次测定</th><th>第2次误差</th><th>限值(%)</th><th>判定</th></tr></thead>
+      <thead>
+        <tr><th rowspan="2">名称</th><th rowspan="2">保证值</th><th colspan="2">参比方法测定结果</th><th colspan="2">相对误差（%）</th></tr>
+        <tr><th>采样前</th><th>采样后</th><th>采样前</th><th>采样后</th></tr>
+      </thead>
       <tbody>
-        <tr><td>低浓度标准气</td><td><input class="vi-input" id="fg-noxcmp-std1-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-std1-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-std1-e1">—</td><td><input class="vi-input" id="fg-noxcmp-std1-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-std1-e2">—</td><td><input class="vi-input" id="fg-noxcmp-std1-limit" oninput="calcFlueGas()" step="0.1" type="number" value="5"/></td><td id="fg-noxcmp-std1-judge">—</td></tr>
-        <tr><td>高浓度标准气</td><td><input class="vi-input" id="fg-noxcmp-std2-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-std2-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-std2-e1">—</td><td><input class="vi-input" id="fg-noxcmp-std2-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-std2-e2">—</td><td><input class="vi-input" id="fg-noxcmp-std2-limit" oninput="calcFlueGas()" step="0.1" type="number" value="5"/></td><td id="fg-noxcmp-std2-judge">—</td></tr>
+        <tr><td><input class="vi-input" id="fg-noxcmp-std1-name" type="text"/></td><td><input class="vi-input" id="fg-noxcmp-std1-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-std1-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-std1-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-std1-e1">—</td><td id="fg-noxcmp-std1-e2">—</td></tr>
+        <tr><td><input class="vi-input" id="fg-noxcmp-std2-name" type="text"/></td><td><input class="vi-input" id="fg-noxcmp-std2-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-std2-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-std2-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-std2-e1">—</td><td id="fg-noxcmp-std2-e2">—</td></tr>
+        <tr><td><input class="vi-input" id="fg-noxcmp-std3-name" type="text"/></td><td><input class="vi-input" id="fg-noxcmp-std3-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-std3-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-noxcmp-std3-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-noxcmp-std3-e1">—</td><td id="fg-noxcmp-std3-e2">—</td></tr>
       </tbody>
     </table>
     </div>
@@ -2915,9 +2912,6 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
     <div class="stats-setting-row">
       <div class="stats-setting-item"><span class="stats-setting-label">有效组数</span><input id="fg-so2cmp-valid-count" readonly type="text" value="—"/></div>
       <div class="stats-setting-item"><span class="stats-setting-label">t 置信系数</span><input id="fg-so2cmp-coeff" readonly type="text" value="—"/></div>
-      <div class="stats-setting-item"><span class="stats-setting-label">绝对误差限值（mg/m³）</span><input id="fg-so2cmp-abs-limit" oninput="calcFlueGas()" step="0.1" type="number" value="15"/></div>
-      <div class="stats-setting-item"><span class="stats-setting-label">相对误差限值（%）</span><input id="fg-so2cmp-rel-limit" oninput="calcFlueGas()" step="0.1" type="number" value="15"/></div>
-      <div class="stats-setting-item"><span class="stats-setting-label">相对准确度限值（%）</span><input id="fg-so2cmp-ra-limit" oninput="calcFlueGas()" step="0.1" type="number" value="20"/></div>
     </div>
     <div class="fluegas-comparison-table-wrap">
     <table class="simple-table">
@@ -2940,29 +2934,29 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
         </tr>
         <tr class="fg-cmp-summary-row"><td colspan="2">数据对差的平均值的绝对值</td><td colspan="3" id="fg-so2cmp-meanabs">—</td></tr>
         <tr class="fg-cmp-summary-row"><td colspan="2">数据对差的标准偏差</td><td colspan="3" id="fg-so2cmp-std">—</td></tr>
-        <tr class="fg-cmp-summary-row"><td colspan="2">绝对误差</td><td colspan="3" id="fg-so2cmp-abs-err">—</td></tr>
-        <tr class="fg-cmp-summary-row"><td colspan="2">相对误差</td><td colspan="3" id="fg-so2cmp-rel">—</td></tr>
-        <tr class="fg-cmp-summary-row"><td colspan="2">相对准确度</td><td colspan="3" id="fg-so2cmp-relacc">—</td></tr>
+        <tr class="fg-cmp-summary-row"><td colspan="2">绝对误差（＜57）、（143-715）</td><td colspan="3" id="fg-so2cmp-abs-err">—</td></tr>
+        <tr class="fg-cmp-summary-row"><td colspan="2">相对误差（57-143）</td><td colspan="3" id="fg-so2cmp-rel">—</td></tr>
+        <tr class="fg-cmp-summary-row"><td colspan="2">相对准确度（＞715）</td><td colspan="3" id="fg-so2cmp-relacc">—</td></tr>
         <tr class="fg-cmp-summary-row"><td colspan="2">CC</td><td colspan="3" id="fg-so2cmp-uncertainty">—</td></tr>
-        <tr class="fg-cmp-summary-row"><td colspan="2">当前分支</td><td colspan="3" id="fg-so2cmp-branch">—</td></tr>
-        <tr class="fg-cmp-summary-row"><td colspan="2">判定</td><td colspan="3" id="fg-so2cmp-judge">—</td></tr>
       </tbody>
     </table>
     </div>
     <div style="margin-top:12px; text-align:center">
-      <button class="btn-add" onclick="addSo2CmpRecord()">+增加记录</button>
-      <button class="btn-delete" onclick="deleteSo2CmpRecord()">-删除记录</button>
       <button class="btn-clear" onclick="clearSo2CmpData()">清空数据</button>
     </div>
   </div>
   <div style="margin-top:20px">
-    <div class="template-section-title">标准气体核查表</div>
+    <div class="template-section-title">标准气体</div>
     <div class="fluegas-comparison-table-wrap">
     <table class="simple-table" style="margin-top:12px">
-      <thead><tr><th>标准气</th><th>标准值</th><th>第1次测定</th><th>第1次误差</th><th>第2次测定</th><th>第2次误差</th><th>限值(%)</th><th>判定</th></tr></thead>
+      <thead>
+        <tr><th rowspan="2">名称</th><th rowspan="2">保证值</th><th colspan="2">参比方法测定结果</th><th colspan="2">相对误差（%）</th></tr>
+        <tr><th>采样前</th><th>采样后</th><th>采样前</th><th>采样后</th></tr>
+      </thead>
       <tbody>
-        <tr><td>低浓度标准气</td><td><input class="vi-input" id="fg-so2cmp-std1-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-std1-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-std1-e1">—</td><td><input class="vi-input" id="fg-so2cmp-std1-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-std1-e2">—</td><td><input class="vi-input" id="fg-so2cmp-std1-limit" oninput="calcFlueGas()" step="0.1" type="number" value="5"/></td><td id="fg-so2cmp-std1-judge">—</td></tr>
-        <tr><td>高浓度标准气</td><td><input class="vi-input" id="fg-so2cmp-std2-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-std2-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-std2-e1">—</td><td><input class="vi-input" id="fg-so2cmp-std2-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-std2-e2">—</td><td><input class="vi-input" id="fg-so2cmp-std2-limit" oninput="calcFlueGas()" step="0.1" type="number" value="5"/></td><td id="fg-so2cmp-std2-judge">—</td></tr>
+        <tr><td><input class="vi-input" id="fg-so2cmp-std1-name" type="text"/></td><td><input class="vi-input" id="fg-so2cmp-std1-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-std1-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-std1-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-std1-e1">—</td><td id="fg-so2cmp-std1-e2">—</td></tr>
+        <tr><td><input class="vi-input" id="fg-so2cmp-std2-name" type="text"/></td><td><input class="vi-input" id="fg-so2cmp-std2-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-std2-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-std2-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-std2-e1">—</td><td id="fg-so2cmp-std2-e2">—</td></tr>
+        <tr><td><input class="vi-input" id="fg-so2cmp-std3-name" type="text"/></td><td><input class="vi-input" id="fg-so2cmp-std3-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-std3-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-so2cmp-std3-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-so2cmp-std3-e1">—</td><td id="fg-so2cmp-std3-e2">—</td></tr>
       </tbody>
     </table>
     </div>
@@ -2975,8 +2969,6 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
     <div class="stats-setting-row">
       <div class="stats-setting-item"><span class="stats-setting-label">有效组数</span><input id="fg-o2cmp-valid-count" readonly type="text" value="—"/></div>
       <div class="stats-setting-item"><span class="stats-setting-label">t 置信系数</span><input id="fg-o2cmp-coeff" readonly type="text" value="—"/></div>
-      <div class="stats-setting-item"><span class="stats-setting-label">绝对误差限值（%）</span><input id="fg-o2cmp-abs-limit" oninput="calcFlueGas()" step="0.1" type="number" value="1"/></div>
-      <div class="stats-setting-item"><span class="stats-setting-label">相对准确度限值（%）</span><input id="fg-o2cmp-ra-limit" oninput="calcFlueGas()" step="0.1" type="number" value="15"/></div>
     </div>
     <div class="fluegas-comparison-table-wrap">
     <table class="simple-table">
@@ -3002,24 +2994,25 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
         <tr class="fg-cmp-summary-row"><td colspan="2">CC</td><td colspan="3" id="fg-o2cmp-uncertainty">—</td></tr>
         <tr class="fg-cmp-summary-row"><td colspan="2">绝对误差（≤5%）</td><td colspan="3" id="fg-o2cmp-abs-row">—</td></tr>
         <tr class="fg-cmp-summary-row"><td colspan="2">相对准确度（＞5%）</td><td colspan="3" id="fg-o2cmp-relacc">—</td></tr>
-        <tr class="fg-cmp-summary-row"><td colspan="2">当前分支</td><td colspan="3" id="fg-o2cmp-branch">—</td></tr>
-        <tr class="fg-cmp-summary-row"><td colspan="2">判定</td><td colspan="3" id="fg-o2cmp-judge">—</td></tr>
       </tbody>
     </table>
     </div>
     <div style="margin-top:12px; text-align:center">
-      <button class="btn-add" onclick="addO2CmpRecord()">+增加记录</button>
-      <button class="btn-delete" onclick="deleteO2CmpRecord()">-删除记录</button>
       <button class="btn-clear" onclick="clearO2CmpData()">清空数据</button>
     </div>
   </div>
   <div style="margin-top:20px">
-    <div class="template-section-title">标准气体核查表</div>
+    <div class="template-section-title">标准气体</div>
     <div class="fluegas-comparison-table-wrap">
     <table class="simple-table" style="margin-top:12px">
-      <thead><tr><th>标准气</th><th>标准值</th><th>第1次测定</th><th>第1次误差</th><th>第2次测定</th><th>第2次误差</th><th>限值(%)</th><th>判定</th></tr></thead>
+      <thead>
+        <tr><th rowspan="2">名称</th><th rowspan="2">保证值</th><th colspan="2">参比方法测定结果</th><th colspan="2">相对误差（%）</th></tr>
+        <tr><th>采样前</th><th>采样后</th><th>采样前</th><th>采样后</th></tr>
+      </thead>
       <tbody>
-        <tr><td>标准气</td><td><input class="vi-input" id="fg-o2cmp-std1-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-std1-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-std1-e1">—</td><td><input class="vi-input" id="fg-o2cmp-std1-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-std1-e2">—</td><td><input class="vi-input" id="fg-o2cmp-std1-limit" oninput="calcFlueGas()" step="0.1" type="number" value="5"/></td><td id="fg-o2cmp-std1-judge">—</td></tr>
+        <tr><td><input class="vi-input" id="fg-o2cmp-std1-name" type="text"/></td><td><input class="vi-input" id="fg-o2cmp-std1-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-std1-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-std1-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-std1-e1">—</td><td id="fg-o2cmp-std1-e2">—</td></tr>
+        <tr><td><input class="vi-input" id="fg-o2cmp-std2-name" type="text"/></td><td><input class="vi-input" id="fg-o2cmp-std2-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-std2-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-std2-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-std2-e1">—</td><td id="fg-o2cmp-std2-e2">—</td></tr>
+        <tr><td><input class="vi-input" id="fg-o2cmp-std3-name" type="text"/></td><td><input class="vi-input" id="fg-o2cmp-std3-ref" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-std3-v1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-o2cmp-std3-v2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-o2cmp-std3-e1">—</td><td id="fg-o2cmp-std3-e2">—</td></tr>
       </tbody>
     </table>
     </div>
@@ -3028,12 +3021,12 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
 
 <div class="fluegas-subpanel" id="fluegas-tab-drift">
   <div class="card">
-    <div class="card-title">📐 示值误差与量程漂移参数</div>
+    <div class="card-title">📐 示值误差、系统响应时间与漂移</div>
     <div class="stats-setting-row">
-      <div class="stats-setting-item"><span class="stats-setting-label">SO₂示值误差限值（%）</span><input id="fg-drift-so2-ind-limit" oninput="calcFlueGas()" step="0.1" type="number" value="5"/></div>
-      <div class="stats-setting-item"><span class="stats-setting-label">NOx/O₂示值误差限值（%）</span><input id="fg-drift-common-ind-limit" oninput="calcFlueGas()" step="0.1" type="number" value="5"/></div>
-      <div class="stats-setting-item"><span class="stats-setting-label">漂移限值（%量程）</span><input id="fg-drift-drift-limit" oninput="calcFlueGas()" step="0.1" type="number" value="2.5"/></div>
-      <div class="stats-setting-item"><span class="stats-setting-label">响应时间限值（s）</span><input id="fg-drift-response-limit" oninput="calcFlueGas()" step="1" type="number" value="200"/></div>
+      <div class="stats-setting-item"><span class="stats-setting-label">SO₂满量程</span><input id="fg-drift-so2-full-scale" min="0.01" oninput="calcFlueGas()" step="0.1" type="number" value="572"/></div>
+      <div class="stats-setting-item"><span class="stats-setting-label">NOx满量程</span><input id="fg-drift-nox-full-scale" min="0.01" oninput="calcFlueGas()" step="0.1" type="number" value="410"/></div>
+      <div class="stats-setting-item"><span class="stats-setting-label">颗粒物满量程</span><input id="fg-drift-pm-full-scale" min="0.01" oninput="calcFlueGas()" step="0.1" type="number" value="100"/></div>
+      <div class="stats-setting-item"><span class="stats-setting-label">含氧量满量程</span><input id="fg-drift-o2-full-scale" min="0.01" oninput="calcFlueGas()" step="0.1" type="number" value="25"/></div>
     </div>
     <div style="margin-top:12px; text-align:center">
       <button class="btn-clear" onclick="clearFlueGasDriftData()">清空数据</button>
@@ -3041,60 +3034,54 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
   </div>
   <div class="card">
     <table class="simple-table">
-    <thead><tr><th>项目</th><th>类型</th><th>标准值/量程</th><th>测定值/漂移量</th><th>结果</th><th>限值</th><th>判定</th></tr></thead>
+    <thead><tr><th colspan="2">项目名称</th><th>标准气体浓度（mg/m³）</th><th>CEMS检测结果</th><th>计算误差</th><th>执行标准</th><th>是否合格</th></tr></thead>
     <tbody>
       <tr><td rowspan="6">SO₂</td><td>示值误差1</td><td><input class="vi-input" id="fg-drift-so2-ind-ref1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-drift-so2-ind-cems1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-drift-so2-ind-err1">—</td><td rowspan="3" id="fg-drift-so2-ind-th">—</td><td id="fg-drift-so2-ind-judge1">—</td></tr>
       <tr><td>示值误差2</td><td><input class="vi-input" id="fg-drift-so2-ind-ref2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-drift-so2-ind-cems2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-drift-so2-ind-err2">—</td><td id="fg-drift-so2-ind-judge2">—</td></tr>
       <tr><td>示值误差3</td><td><input class="vi-input" id="fg-drift-so2-ind-ref3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-drift-so2-ind-cems3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-drift-so2-ind-err3">—</td><td id="fg-drift-so2-ind-judge3">—</td></tr>
       <tr><td>响应时间</td><td>—</td><td><input class="vi-input" id="fg-drift-so2-response" oninput="calcFlueGas()" step="1" type="number"/></td><td id="fg-drift-so2-response-result">—</td><td id="fg-drift-so2-response-th">—</td><td id="fg-drift-so2-response-judge">—</td></tr>
-      <tr><td>零点漂移</td><td><input class="vi-input" id="fg-drift-so2-zero-range" oninput="calcFlueGas()" step="0.1" type="number" placeholder="量程"/></td><td><input class="vi-input" id="fg-drift-so2-zero" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-so2-zero-pct">—</td><td id="fg-drift-so2-zero-th">—</td><td id="fg-drift-so2-zero-judge">—</td></tr>
-      <tr><td>量程漂移</td><td><input class="vi-input" id="fg-drift-so2-span-range" oninput="calcFlueGas()" step="0.1" type="number" placeholder="量程"/></td><td><input class="vi-input" id="fg-drift-so2-span" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-so2-span-pct">—</td><td id="fg-drift-so2-span-th">—</td><td id="fg-drift-so2-span-judge">—</td></tr>
+      <tr><td>零点漂移</td><td data-drift-full-scale-display="so2">满量程 572</td><td><input class="vi-input" id="fg-drift-so2-zero" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-so2-zero-pct">—</td><td id="fg-drift-so2-zero-th">—</td><td id="fg-drift-so2-zero-judge">—</td></tr>
+      <tr><td>量程漂移</td><td data-drift-full-scale-display="so2">满量程 572</td><td><input class="vi-input" id="fg-drift-so2-span" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-so2-span-pct">—</td><td id="fg-drift-so2-span-th">—</td><td id="fg-drift-so2-span-judge">—</td></tr>
       <tr><td rowspan="6">NOx</td><td>示值误差1</td><td><input class="vi-input" id="fg-drift-nox-ind-ref1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-drift-nox-ind-cems1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-drift-nox-ind-err1">—</td><td rowspan="3" id="fg-drift-nox-ind-th">—</td><td id="fg-drift-nox-ind-judge1">—</td></tr>
       <tr><td>示值误差2</td><td><input class="vi-input" id="fg-drift-nox-ind-ref2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-drift-nox-ind-cems2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-drift-nox-ind-err2">—</td><td id="fg-drift-nox-ind-judge2">—</td></tr>
       <tr><td>示值误差3</td><td><input class="vi-input" id="fg-drift-nox-ind-ref3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-drift-nox-ind-cems3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-drift-nox-ind-err3">—</td><td id="fg-drift-nox-ind-judge3">—</td></tr>
       <tr><td>响应时间</td><td>—</td><td><input class="vi-input" id="fg-drift-nox-response" oninput="calcFlueGas()" step="1" type="number"/></td><td id="fg-drift-nox-response-result">—</td><td id="fg-drift-nox-response-th">—</td><td id="fg-drift-nox-response-judge">—</td></tr>
-      <tr><td>零点漂移</td><td><input class="vi-input" id="fg-drift-nox-zero-range" oninput="calcFlueGas()" step="0.1" type="number" placeholder="量程"/></td><td><input class="vi-input" id="fg-drift-nox-zero" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-nox-zero-pct">—</td><td id="fg-drift-nox-zero-th">—</td><td id="fg-drift-nox-zero-judge">—</td></tr>
-      <tr><td>量程漂移</td><td><input class="vi-input" id="fg-drift-nox-span-range" oninput="calcFlueGas()" step="0.1" type="number" placeholder="量程"/></td><td><input class="vi-input" id="fg-drift-nox-span" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-nox-span-pct">—</td><td id="fg-drift-nox-span-th">—</td><td id="fg-drift-nox-span-judge">—</td></tr>
+      <tr><td>零点漂移</td><td data-drift-full-scale-display="nox">满量程 410</td><td><input class="vi-input" id="fg-drift-nox-zero" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-nox-zero-pct">—</td><td id="fg-drift-nox-zero-th">—</td><td id="fg-drift-nox-zero-judge">—</td></tr>
+      <tr><td>量程漂移</td><td data-drift-full-scale-display="nox">满量程 410</td><td><input class="vi-input" id="fg-drift-nox-span" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-nox-span-pct">—</td><td id="fg-drift-nox-span-th">—</td><td id="fg-drift-nox-span-judge">—</td></tr>
       <tr><td rowspan="6">O₂</td><td>示值误差1</td><td><input class="vi-input" id="fg-drift-o2-ind-ref1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-drift-o2-ind-cems1" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-drift-o2-ind-err1">—</td><td rowspan="3" id="fg-drift-o2-ind-th">—</td><td id="fg-drift-o2-ind-judge1">—</td></tr>
       <tr><td>示值误差2</td><td><input class="vi-input" id="fg-drift-o2-ind-ref2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-drift-o2-ind-cems2" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-drift-o2-ind-err2">—</td><td id="fg-drift-o2-ind-judge2">—</td></tr>
       <tr><td>示值误差3</td><td><input class="vi-input" id="fg-drift-o2-ind-ref3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td><input class="vi-input" id="fg-drift-o2-ind-cems3" oninput="calcFlueGas()" step="0.1" type="number"/></td><td id="fg-drift-o2-ind-err3">—</td><td id="fg-drift-o2-ind-judge3">—</td></tr>
       <tr><td>响应时间</td><td>—</td><td><input class="vi-input" id="fg-drift-o2-response" oninput="calcFlueGas()" step="1" type="number"/></td><td id="fg-drift-o2-response-result">—</td><td id="fg-drift-o2-response-th">—</td><td id="fg-drift-o2-response-judge">—</td></tr>
-      <tr><td>零点漂移</td><td><input class="vi-input" id="fg-drift-o2-zero-range" oninput="calcFlueGas()" step="0.1" type="number" placeholder="量程"/></td><td><input class="vi-input" id="fg-drift-o2-zero" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-o2-zero-pct">—</td><td id="fg-drift-o2-zero-th">—</td><td id="fg-drift-o2-zero-judge">—</td></tr>
-      <tr><td>量程漂移</td><td><input class="vi-input" id="fg-drift-o2-span-range" oninput="calcFlueGas()" step="0.1" type="number" placeholder="量程"/></td><td><input class="vi-input" id="fg-drift-o2-span" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-o2-span-pct">—</td><td id="fg-drift-o2-span-th">—</td><td id="fg-drift-o2-span-judge">—</td></tr>
+      <tr><td>零点漂移</td><td data-drift-full-scale-display="o2">满量程 25</td><td><input class="vi-input" id="fg-drift-o2-zero" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-o2-zero-pct">—</td><td id="fg-drift-o2-zero-th">—</td><td id="fg-drift-o2-zero-judge">—</td></tr>
+      <tr><td>量程漂移</td><td data-drift-full-scale-display="o2">满量程 25</td><td><input class="vi-input" id="fg-drift-o2-span" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-o2-span-pct">—</td><td id="fg-drift-o2-span-th">—</td><td id="fg-drift-o2-span-judge">—</td></tr>
     </tbody>
     </table>
   </div>
-  <div class="result-box" style="margin-top:12px"><div class="result-label">综合提示</div><div class="result-value" id="fg-drift-summary" style="font-size:14px">—</div></div>
 </div>
 
 <div class="fluegas-subpanel" id="fluegas-tab-water">
   <div class="card">
     <div class="card-title">💧 水质在线比对</div>
-    <div class="stats-setting-row">
-      <div class="stats-setting-item"><span class="stats-setting-label">实际水样相对误差限值（%）</span><input id="fg-water-sample-limit" class="vi-input" oninput="calcFlueGas()" step="0.1" type="number" placeholder="输入限值"/></div>
-      <div class="stats-setting-item"><span class="stats-setting-label">质控样相对误差限值（%）</span><input id="fg-water-qc-limit" class="vi-input" oninput="calcFlueGas()" step="0.1" type="number" placeholder="输入限值"/></div>
-    </div>
     <div style="margin-bottom:12px; text-align:center">
       <button class="btn-clear" onclick="clearFlueGasWaterData()">清空数据</button>
     </div>
     <table class="simple-table">
-      <thead><tr><th>类别</th><th>序号</th><th>在线监测值</th><th>实验室/标准值</th><th>绝对误差</th><th>相对误差</th><th>判定</th></tr></thead>
+      <thead><tr><th>类别</th><th>样品/标样编号</th><th>采样/测试时间</th><th>在线仪器测定值</th><th>实验室/标准值</th><th>绝对误差</th><th>相对误差（%）</th><th>结果评定</th><th>备注</th></tr></thead>
     <tbody>
-      <tr><td rowspan="6">实际水样</td><td>1</td><td><input class="vi-input" id="fg-water-sample-online1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs1">—</td><td id="fg-water-sample-rel1">—</td><td id="fg-water-sample-judge1">—</td></tr>
-      <tr><td>2</td><td><input class="vi-input" id="fg-water-sample-online2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs2">—</td><td id="fg-water-sample-rel2">—</td><td id="fg-water-sample-judge2">—</td></tr>
-      <tr><td>3</td><td><input class="vi-input" id="fg-water-sample-online3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs3">—</td><td id="fg-water-sample-rel3">—</td><td id="fg-water-sample-judge3">—</td></tr>
-      <tr><td>4</td><td><input class="vi-input" id="fg-water-sample-online4" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab4" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs4">—</td><td id="fg-water-sample-rel4">—</td><td id="fg-water-sample-judge4">—</td></tr>
-      <tr><td>5</td><td><input class="vi-input" id="fg-water-sample-online5" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab5" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs5">—</td><td id="fg-water-sample-rel5">—</td><td id="fg-water-sample-judge5">—</td></tr>
-      <tr><td>6</td><td><input class="vi-input" id="fg-water-sample-online6" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab6" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs6">—</td><td id="fg-water-sample-rel6">—</td><td id="fg-water-sample-judge6">—</td></tr>
-      <tr><td rowspan="5">质控样</td><td>1</td><td><input class="vi-input" id="fg-water-qc-online1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-qc-std1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-qc-abs1">—</td><td id="fg-water-qc-rel1">—</td><td id="fg-water-qc-judge1">—</td></tr>
-      <tr><td>2</td><td><input class="vi-input" id="fg-water-qc-online2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-qc-std2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-qc-abs2">—</td><td id="fg-water-qc-rel2">—</td><td id="fg-water-qc-judge2">—</td></tr>
-      <tr><td>3</td><td><input class="vi-input" id="fg-water-qc-online3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-qc-std3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-qc-abs3">—</td><td id="fg-water-qc-rel3">—</td><td id="fg-water-qc-judge3">—</td></tr>
-      <tr><td>4</td><td><input class="vi-input" id="fg-water-qc-online4" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-qc-std4" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-qc-abs4">—</td><td id="fg-water-qc-rel4">—</td><td id="fg-water-qc-judge4">—</td></tr>
-      <tr><td>5</td><td><input class="vi-input" id="fg-water-qc-online5" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-qc-std5" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-qc-abs5">—</td><td id="fg-water-qc-rel5">—</td><td id="fg-water-qc-judge5">—</td></tr>
+      <tr><td rowspan="6">实际水样测定</td><td><input class="vi-input" id="fg-water-sample-no1" type="text"/></td><td><input class="vi-input" id="fg-water-sample-time1" type="text"/></td><td><input class="vi-input" id="fg-water-sample-online1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs1">—</td><td id="fg-water-sample-rel1">—</td><td><input class="vi-input" id="fg-water-sample-result1" type="text"/></td><td><input class="vi-input" id="fg-water-sample-note1" type="text"/></td></tr>
+      <tr><td><input class="vi-input" id="fg-water-sample-no2" type="text"/></td><td><input class="vi-input" id="fg-water-sample-time2" type="text"/></td><td><input class="vi-input" id="fg-water-sample-online2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs2">—</td><td id="fg-water-sample-rel2">—</td><td><input class="vi-input" id="fg-water-sample-result2" type="text"/></td><td><input class="vi-input" id="fg-water-sample-note2" type="text"/></td></tr>
+      <tr><td><input class="vi-input" id="fg-water-sample-no3" type="text"/></td><td><input class="vi-input" id="fg-water-sample-time3" type="text"/></td><td><input class="vi-input" id="fg-water-sample-online3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs3">—</td><td id="fg-water-sample-rel3">—</td><td><input class="vi-input" id="fg-water-sample-result3" type="text"/></td><td><input class="vi-input" id="fg-water-sample-note3" type="text"/></td></tr>
+      <tr><td><input class="vi-input" id="fg-water-sample-no4" type="text"/></td><td><input class="vi-input" id="fg-water-sample-time4" type="text"/></td><td><input class="vi-input" id="fg-water-sample-online4" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab4" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs4">—</td><td id="fg-water-sample-rel4">—</td><td><input class="vi-input" id="fg-water-sample-result4" type="text"/></td><td><input class="vi-input" id="fg-water-sample-note4" type="text"/></td></tr>
+      <tr><td><input class="vi-input" id="fg-water-sample-no5" type="text"/></td><td><input class="vi-input" id="fg-water-sample-time5" type="text"/></td><td><input class="vi-input" id="fg-water-sample-online5" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab5" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs5">—</td><td id="fg-water-sample-rel5">—</td><td><input class="vi-input" id="fg-water-sample-result5" type="text"/></td><td><input class="vi-input" id="fg-water-sample-note5" type="text"/></td></tr>
+      <tr><td><input class="vi-input" id="fg-water-sample-no6" type="text"/></td><td><input class="vi-input" id="fg-water-sample-time6" type="text"/></td><td><input class="vi-input" id="fg-water-sample-online6" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-sample-lab6" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-sample-abs6">—</td><td id="fg-water-sample-rel6">—</td><td><input class="vi-input" id="fg-water-sample-result6" type="text"/></td><td><input class="vi-input" id="fg-water-sample-note6" type="text"/></td></tr>
+      <tr><td rowspan="5">质控样品测定</td><td><input class="vi-input" id="fg-water-qc-no1" type="text"/></td><td><input class="vi-input" id="fg-water-qc-time1" type="text"/></td><td><input class="vi-input" id="fg-water-qc-online1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-qc-std1" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-qc-abs1">—</td><td id="fg-water-qc-rel1">—</td><td><input class="vi-input" id="fg-water-qc-result1" type="text"/></td><td><input class="vi-input" id="fg-water-qc-note1" type="text"/></td></tr>
+      <tr><td><input class="vi-input" id="fg-water-qc-no2" type="text"/></td><td><input class="vi-input" id="fg-water-qc-time2" type="text"/></td><td><input class="vi-input" id="fg-water-qc-online2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-qc-std2" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-qc-abs2">—</td><td id="fg-water-qc-rel2">—</td><td><input class="vi-input" id="fg-water-qc-result2" type="text"/></td><td><input class="vi-input" id="fg-water-qc-note2" type="text"/></td></tr>
+      <tr><td><input class="vi-input" id="fg-water-qc-no3" type="text"/></td><td><input class="vi-input" id="fg-water-qc-time3" type="text"/></td><td><input class="vi-input" id="fg-water-qc-online3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-qc-std3" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-qc-abs3">—</td><td id="fg-water-qc-rel3">—</td><td><input class="vi-input" id="fg-water-qc-result3" type="text"/></td><td><input class="vi-input" id="fg-water-qc-note3" type="text"/></td></tr>
+      <tr><td><input class="vi-input" id="fg-water-qc-no4" type="text"/></td><td><input class="vi-input" id="fg-water-qc-time4" type="text"/></td><td><input class="vi-input" id="fg-water-qc-online4" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-qc-std4" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-qc-abs4">—</td><td id="fg-water-qc-rel4">—</td><td><input class="vi-input" id="fg-water-qc-result4" type="text"/></td><td><input class="vi-input" id="fg-water-qc-note4" type="text"/></td></tr>
+      <tr><td><input class="vi-input" id="fg-water-qc-no5" type="text"/></td><td><input class="vi-input" id="fg-water-qc-time5" type="text"/></td><td><input class="vi-input" id="fg-water-qc-online5" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-qc-std5" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-qc-abs5">—</td><td id="fg-water-qc-rel5">—</td><td><input class="vi-input" id="fg-water-qc-result5" type="text"/></td><td><input class="vi-input" id="fg-water-qc-note5" type="text"/></td></tr>
     </tbody>
     </table>
   </div>
-  <div class="result-box" style="margin-top:12px"><div class="result-label">综合提示</div><div class="result-value" id="fg-water-summary" style="font-size:14px">—</div></div>
 </div>
 
 </div>
@@ -3761,6 +3748,9 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
       <table class="simple-table" id="occ-chem-table" style="min-width:1200px;">
         <thead>
           <tr>
+            <th colspan="15" class="occ-chem-fixed">化学因素（标黄的不能动）</th>
+          </tr>
+          <tr>
             <th style="width:50px; min-width:50px; max-width:50px;">序号</th>
             <th style="width:80px;">采样点</th>
             <th style="width:70px;">工种</th>
@@ -3823,24 +3813,21 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td colspan="15" style="background-color: rgba(34, 197, 94, 0.15); font-weight:bold;">情况二：同个工种多个场所</td>
           </tr>
           <tr>
-            <td colspan="15" style="background-color: rgba(34, 197, 94, 0.08); font-weight:bold;">工种一</td>
-          </tr>
-          <tr>
             <td>6</td>
             <td><input class="vi-input" id="occ-c2w1-sp1" type="text" placeholder="采样点"/></td>
-            <td rowspan="5"><input class="vi-input" id="occ-c2w1-w" type="text" placeholder="工种"/></td>
+            <td rowspan="15"><input class="vi-input" id="occ-c2-w" type="text" placeholder="工种"/></td>
             <td rowspan="5"><input class="vi-input" id="occ-c2w1-t" oninput="calcOccupational()" step="0.1" type="number" placeholder="接触时间"/></td>
             <td><input class="vi-input" id="occ-c2w1-cste1" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
-            <td rowspan="5" id="occ-c2w1-ctwa">—</td>
-            <td rowspan="5"><input class="vi-input" id="occ-c2w1-stel" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-STEL"/></td>
-            <td rowspan="5" id="occ-c2w1-stel-judge">—</td>
-            <td rowspan="5"><input class="vi-input" id="occ-c2w1-twa-limit" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-TWA"/></td>
-            <td rowspan="5" id="occ-c2w1-twa-judge">—</td>
-            <td rowspan="5" id="occ-c2w1-cpe">—</td>
-            <td rowspan="5" id="occ-c2w1-3twa">—</td>
-            <td rowspan="5" id="occ-c2w1-5twa">—</td>
-            <td rowspan="5" id="occ-c2w1-peak-judge">—</td>
-            <td rowspan="5" id="occ-c2w1-final-judge">—</td>
+            <td rowspan="15" id="occ-c2-total-ctwa">—</td>
+            <td rowspan="15"><input class="vi-input" id="occ-c2-stel" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-STEL"/></td>
+            <td rowspan="15" id="occ-c2-total-stel-judge">—</td>
+            <td rowspan="15"><input class="vi-input" id="occ-c2-twa-limit" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-TWA"/></td>
+            <td rowspan="15" id="occ-c2-total-twa-judge">—</td>
+            <td rowspan="15" id="occ-c2-total-cpe">—</td>
+            <td rowspan="15" id="occ-c2-total-3twa">—</td>
+            <td rowspan="15" id="occ-c2-total-5twa">—</td>
+            <td rowspan="15" id="occ-c2-total-peak-judge">—</td>
+            <td rowspan="15" id="occ-c2-total-final-judge">—</td>
           </tr>
           <tr>
             <td>7</td>
@@ -3863,24 +3850,10 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td><input class="vi-input" id="occ-c2w1-cste5" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
           </tr>
           <tr>
-            <td colspan="15" style="background-color: rgba(34, 197, 94, 0.08); font-weight:bold;">工种二</td>
-          </tr>
-          <tr>
             <td>11</td>
             <td><input class="vi-input" id="occ-c2w2-sp1" type="text" placeholder="采样点"/></td>
-            <td rowspan="5"><input class="vi-input" id="occ-c2w2-w" type="text" placeholder="工种"/></td>
             <td rowspan="5"><input class="vi-input" id="occ-c2w2-t" oninput="calcOccupational()" step="0.1" type="number" placeholder="接触时间"/></td>
             <td><input class="vi-input" id="occ-c2w2-cste1" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
-            <td rowspan="5" id="occ-c2w2-ctwa">—</td>
-            <td rowspan="5"><input class="vi-input" id="occ-c2w2-stel" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-STEL"/></td>
-            <td rowspan="5" id="occ-c2w2-stel-judge">—</td>
-            <td rowspan="5"><input class="vi-input" id="occ-c2w2-twa-limit" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-TWA"/></td>
-            <td rowspan="5" id="occ-c2w2-twa-judge">—</td>
-            <td rowspan="5" id="occ-c2w2-cpe">—</td>
-            <td rowspan="5" id="occ-c2w2-3twa">—</td>
-            <td rowspan="5" id="occ-c2w2-5twa">—</td>
-            <td rowspan="5" id="occ-c2w2-peak-judge">—</td>
-            <td rowspan="5" id="occ-c2w2-final-judge">—</td>
           </tr>
           <tr>
             <td>12</td>
@@ -3903,24 +3876,10 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td><input class="vi-input" id="occ-c2w2-cste5" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
           </tr>
           <tr>
-            <td colspan="15" style="background-color: rgba(34, 197, 94, 0.08); font-weight:bold;">工种三</td>
-          </tr>
-          <tr>
             <td>16</td>
             <td><input class="vi-input" id="occ-c2w3-sp1" type="text" placeholder="采样点"/></td>
-            <td rowspan="5"><input class="vi-input" id="occ-c2w3-w" type="text" placeholder="工种"/></td>
             <td rowspan="5"><input class="vi-input" id="occ-c2w3-t" oninput="calcOccupational()" step="0.1" type="number" placeholder="接触时间"/></td>
             <td><input class="vi-input" id="occ-c2w3-cste1" oninput="calcOccupational()" step="0.01" type="number" placeholder="CSTE"/></td>
-            <td rowspan="5" id="occ-c2w3-ctwa">—</td>
-            <td rowspan="5"><input class="vi-input" id="occ-c2w3-stel" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-STEL"/></td>
-            <td rowspan="5" id="occ-c2w3-stel-judge">—</td>
-            <td rowspan="5"><input class="vi-input" id="occ-c2w3-twa-limit" oninput="calcOccupational()" step="0.1" type="number" placeholder="PC-TWA"/></td>
-            <td rowspan="5" id="occ-c2w3-twa-judge">—</td>
-            <td rowspan="5" id="occ-c2w3-cpe">—</td>
-            <td rowspan="5" id="occ-c2w3-3twa">—</td>
-            <td rowspan="5" id="occ-c2w3-5twa">—</td>
-            <td rowspan="5" id="occ-c2w3-peak-judge">—</td>
-            <td rowspan="5" id="occ-c2w3-final-judge">—</td>
           </tr>
           <tr>
             <td>17</td>
@@ -5124,7 +5083,24 @@ function setv(id,val,dp=4,suffix=''){ const el=document.getElementById(id); if(!
 function setPlain(id,val){ const el=document.getElementById(id); if(el) el.textContent = val; }
 function formatNum(val, dp=2, suffix=''){ return (val===null||val===undefined||Number.isNaN(val)) ? '—' : `${Number(val).toFixed(dp)}${suffix}`; }
 function avg(arr){ const v=arr.filter(x=>!Number.isNaN(x)); return v.length? v.reduce((a,b)=>a+b,0)/v.length : NaN; }
-function energyAvg(arr){ const v=arr.filter(x=>!Number.isNaN(x)); if(!v.length) return NaN; return 10*Math.log10(v.reduce((a,b)=>a+Math.pow(10,0.1*b),0)/v.length); }
+function calculateNoiseEnergyAverage(values){
+  const valid = (values || []).map(Number).filter(Number.isFinite);
+  return valid.length ? 10 * Math.log10(valid.reduce((sum, value) => sum + Math.pow(10, 0.1 * value), 0) / valid.length) : NaN;
+}
+function calculateNoiseDailyExposure(laeq, hours){
+  return Number.isFinite(laeq) && Number.isFinite(hours) && hours > 0 ? 10 * Math.log10(hours / 8) + laeq : NaN;
+}
+function calculateNoiseWeeklyExposure(lex8, days){
+  return Number.isFinite(lex8) && Number.isFinite(days) && days > 0 ? 10 * Math.log10(Math.pow(10, 0.1 * lex8) * days / 5) : NaN;
+}
+function calculateElectricSingleExposure(report, hours){
+  return Number.isFinite(report) && Number.isFinite(hours) && hours >= 0 ? report * Math.sqrt(hours / 8) : NaN;
+}
+function calculateElectricMultipleExposure(entries){
+  const valid = (entries || []).filter(entry => entry && Number.isFinite(entry.report) && Number.isFinite(entry.time) && entry.time >= 0);
+  return valid.length ? Math.sqrt(valid.reduce((sum, entry) => sum + entry.time * entry.report * entry.report, 0) / 8) : NaN;
+}
+function energyAvg(arr){ return calculateNoiseEnergyAverage(arr); }
 function stdev(arr){ const v=arr.filter(x=>!Number.isNaN(x)); if(v.length<2) return NaN; const m=avg(v); return Math.sqrt(v.reduce((a,b)=>a+(b-m)*(b-m),0)/(v.length-1)); }
 function parseNums(text){ return String(text||'').split(/[\s,，;；\n]+/).map(s=>parseFloat(s)).filter(v=>!isNaN(v)); }
 
@@ -5611,10 +5587,26 @@ function fluegasCompare(prefix, limitId, mode='rel', dp=2, unit='', coeffId=''){
   return { refAvg, cemsAvg, absErr, relErr, limit, judge: fluegasJudge(metric, limit, mode), uncertainty };
 }
 
-function fluegasCompareStats(prefix, dp=2, unit='', coeffId=''){
+function calculateExcelGasComparisonStats(refs, cems){
+  const pairs = refs.map((ref, index) => [ref, cems[index]]).filter(pair => Number.isFinite(pair[0]) && Number.isFinite(pair[1]));
+  const refValues = pairs.map(pair => pair[0]);
+  const cemsValues = pairs.map(pair => pair[1]);
+  const diffs = pairs.map(pair => pair[1] - pair[0]);
+  const refAvg = refValues.length ? refValues.reduce((sum, value) => sum + value, 0) / refValues.length : NaN;
+  const cemsAvg = cemsValues.length ? cemsValues.reduce((sum, value) => sum + value, 0) / cemsValues.length : NaN;
+  const meanDiff = diffs.length ? diffs.reduce((sum, value) => sum + value, 0) / diffs.length : NaN;
+  const absMeanDiff = Math.abs(meanDiff);
+  const diffStd = diffs.length > 1 ? Math.sqrt(diffs.reduce((sum, value) => sum + Math.pow(value - meanDiff, 2), 0) / (diffs.length - 1)) : NaN;
+  const coeff = getStudentTConfidence(pairs.length);
+  const cc = Number.isNaN(diffStd) || coeff === null ? NaN : coeff * diffStd / Math.sqrt(pairs.length);
+  const relativeError = Number.isFinite(refAvg) && refAvg !== 0 ? absMeanDiff / refAvg * 100 : NaN;
+  const relativeAccuracy = Number.isFinite(refAvg) && refAvg !== 0 && Number.isFinite(cc) ? (absMeanDiff + cc) / refAvg * 100 : NaN;
+  return { n: pairs.length, coeff, refAvg, cemsAvg, meanDiff, absMeanDiff, diffStd, cc, relativeError, relativeAccuracy };
+}
+
+function fluegasCompareStats(prefix, dp=2, unit=''){
   const refs = [];
   const cems = [];
-  const diffs = [];
   let i = 1;
   while (true) {
     const refElement = document.getElementById(`${prefix}-r${i}`);
@@ -5629,7 +5621,6 @@ function fluegasCompareStats(prefix, dp=2, unit='', coeffId=''){
     if (!Number.isNaN(refValue) && !Number.isNaN(cemsValue)) {
       refs.push(refValue);
       cems.push(cemsValue);
-      diffs.push(cemsValue - refValue);
       setPlain(`${prefix}-d${i}`, formatNum(cemsValue - refValue, dp, unit));
     } else {
       setPlain(`${prefix}-d${i}`, '—');
@@ -5637,109 +5628,62 @@ function fluegasCompareStats(prefix, dp=2, unit='', coeffId=''){
     i++;
   }
 
-  const refAvg = avg(refs);
-  const cemsAvg = avg(cems);
-  const meanDiff = avg(diffs);
-  const absMeanDiff = Math.abs(meanDiff);
-  const diffStd = stdev(diffs);
-  const effectiveCount = diffs.length;
-  const coeff = coeffId ? getStudentTConfidence(effectiveCount) : 1;
-  const cc = (!Number.isNaN(diffStd) && coeff !== null && effectiveCount > 0) ? coeff * diffStd / Math.sqrt(effectiveCount) : NaN;
-  const relErr = (!Number.isNaN(absMeanDiff) && !Number.isNaN(refAvg) && refAvg !== 0) ? absMeanDiff / refAvg * 100 : NaN;
-  const relAccuracy = (!Number.isNaN(absMeanDiff) && !Number.isNaN(cc) && !Number.isNaN(refAvg) && refAvg !== 0) ? (absMeanDiff + cc) / refAvg * 100 : NaN;
-
-  if (coeffId) {
-    setInputDisplayValue(`${prefix}-valid-count`, effectiveCount > 0 ? String(effectiveCount) : '—');
-    setInputDisplayValue(coeffId, coeff === null ? '—' : coeff.toFixed(3));
-  }
-  setPlain(`${prefix}-ravg`, formatNum(refAvg, dp, unit));
-  setPlain(`${prefix}-cavg`, formatNum(cemsAvg, dp, unit));
-  setPlain(`${prefix}-abs`, formatNum(meanDiff, dp, unit));
-  setPlain(`${prefix}-meanabs`, formatNum(absMeanDiff, dp, unit));
-  setPlain(`${prefix}-abs-err`, formatNum(absMeanDiff, dp, unit));
-  setPlain(`${prefix}-abs-row`, formatNum(absMeanDiff, dp, unit));
-  setPlain(`${prefix}-rel`, formatNum(relErr, 2, '%'));
-  setPlain(`${prefix}-std`, formatNum(diffStd, dp, unit));
-  setPlain(`${prefix}-uncertainty`, formatNum(cc, dp, unit));
-  setPlain(`${prefix}-relacc`, formatNum(relAccuracy, 2, '%'));
-
-  return { n: diffs.length, refAvg, cemsAvg, meanDiff, absMeanDiff, diffStd, cc, relErr, relAccuracy };
-}
-
-function setFluegasBranchResult(prefix, stats, branch){
-  const metricText = branch.mode === 'abs' ? formatNum(branch.metric, 2, branch.unit || '') : formatNum(branch.metric, 2, '%');
-  const limitText = branch.mode === 'abs' ? formatNum(branch.limit, 2, branch.unit || '') : formatNum(branch.limit, 1, '%');
-  const judge = fluegasJudge(branch.metric, branch.limit, branch.mode);
-  setPlain(`${prefix}-branch`, branch.label);
-  setPlain(`${prefix}-judge`, judge === '—' ? '—' : `${judge}（${branch.label}：${metricText}，限值 ${limitText}）`);
-  return judge;
+  const stats = calculateExcelGasComparisonStats(refs, cems);
+  setInputDisplayValue(`${prefix}-valid-count`, stats.n > 0 ? String(stats.n) : '—');
+  setInputDisplayValue(`${prefix}-coeff`, stats.coeff === null ? '—' : stats.coeff.toFixed(3));
+  setPlain(`${prefix}-ravg`, formatNum(stats.refAvg, dp, unit));
+  setPlain(`${prefix}-cavg`, formatNum(stats.cemsAvg, dp, unit));
+  setPlain(`${prefix}-abs`, formatNum(stats.meanDiff, dp, unit));
+  setPlain(`${prefix}-meanabs`, formatNum(stats.absMeanDiff, dp, unit));
+  setPlain(`${prefix}-abs-err`, formatNum(stats.absMeanDiff, dp, unit));
+  setPlain(`${prefix}-abs-row`, formatNum(stats.absMeanDiff, dp, unit));
+  setPlain(`${prefix}-rel`, formatNum(stats.relativeError, 2, '%'));
+  setPlain(`${prefix}-std`, formatNum(stats.diffStd, dp, unit));
+  setPlain(`${prefix}-uncertainty`, formatNum(stats.cc, dp, unit));
+  setPlain(`${prefix}-relacc`, formatNum(stats.relativeAccuracy, 2, '%'));
+  return stats;
 }
 
 function clearStandardGasComparison(prefix, rows){
   for (let i = 1; i <= rows; i++) {
-    [`${prefix}-std${i}-ref`, `${prefix}-std${i}-v1`, `${prefix}-std${i}-v2`].forEach(id => {
+    [`${prefix}-std${i}-name`, `${prefix}-std${i}-ref`, `${prefix}-std${i}-v1`, `${prefix}-std${i}-v2`].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
     setPlain(`${prefix}-std${i}-e1`, '—');
     setPlain(`${prefix}-std${i}-e2`, '—');
-    setPlain(`${prefix}-std${i}-judge`, '—');
   }
 }
 
 function calcStandardGasComparison(prefix, rows){
-  const judges = [];
   for (let i = 1; i <= rows; i++) {
     const ref = num(`${prefix}-std${i}-ref`);
     const v1 = num(`${prefix}-std${i}-v1`);
     const v2 = num(`${prefix}-std${i}-v2`);
-    const limit = num(`${prefix}-std${i}-limit`);
     const e1 = (!Number.isNaN(ref) && ref !== 0 && !Number.isNaN(v1)) ? (v1 - ref) / ref * 100 : NaN;
     const e2 = (!Number.isNaN(ref) && ref !== 0 && !Number.isNaN(v2)) ? (v2 - ref) / ref * 100 : NaN;
-    const active = [e1, e2].filter(v => !Number.isNaN(v));
-    const judge = (!Number.isNaN(limit) && active.length) ? (active.every(v => Math.abs(v) <= limit) ? '合格' : '不合格') : '—';
     setPlain(`${prefix}-std${i}-e1`, formatNum(e1, 2, '%'));
     setPlain(`${prefix}-std${i}-e2`, formatNum(e2, 2, '%'));
-    setPlain(`${prefix}-std${i}-judge`, judge);
-    judges.push(judge);
   }
-  return judges;
 }
 
-function calcGasComparisonBranch(kind, prefix){
-  const stats = fluegasCompareStats(prefix, 2, kind === 'o2' ? '%' : 'mg/m³', `${prefix}-coeff`);
-  if (Number.isNaN(stats.refAvg) || stats.n === 0) {
-    setPlain(`${prefix}-branch`, '—');
-    setPlain(`${prefix}-judge`, '—');
-    return '—';
-  }
-  if (kind === 'nox') {
-    if (stats.refAvg > 513) {
-      return setFluegasBranchResult(prefix, stats, { label: '相对准确度（>513 mg/m³）', metric: stats.relAccuracy, limit: num(`${prefix}-ra-limit`), mode: 'rel' });
-    }
-    if (stats.refAvg >= 41 && stats.refAvg <= 103) {
-      return setFluegasBranchResult(prefix, stats, { label: '相对误差（41-103 mg/m³）', metric: stats.relErr, limit: num(`${prefix}-rel-limit`), mode: 'rel' });
-    }
-    return setFluegasBranchResult(prefix, stats, { label: '绝对误差（0-41 或 103-513 mg/m³）', metric: stats.absMeanDiff, limit: num(`${prefix}-abs-limit`), mode: 'abs', unit: 'mg/m³' });
-  }
-  if (kind === 'so2') {
-    if (stats.refAvg > 715) {
-      return setFluegasBranchResult(prefix, stats, { label: '相对准确度（>715 mg/m³）', metric: stats.relAccuracy, limit: num(`${prefix}-ra-limit`), mode: 'rel' });
-    }
-    if (stats.refAvg >= 57 && stats.refAvg <= 143) {
-      return setFluegasBranchResult(prefix, stats, { label: '相对误差（57-143 mg/m³）', metric: stats.relErr, limit: num(`${prefix}-rel-limit`), mode: 'rel' });
-    }
-    return setFluegasBranchResult(prefix, stats, { label: '绝对误差（<57 或 143-715 mg/m³）', metric: stats.absMeanDiff, limit: num(`${prefix}-abs-limit`), mode: 'abs', unit: 'mg/m³' });
-  }
-  if (stats.refAvg <= 5) {
-    return setFluegasBranchResult(prefix, stats, { label: '绝对误差（≤5%）', metric: stats.absMeanDiff, limit: num(`${prefix}-abs-limit`), mode: 'abs', unit: '%' });
-  }
-  return setFluegasBranchResult(prefix, stats, { label: '相对准确度（>5%）', metric: stats.relAccuracy, limit: num(`${prefix}-ra-limit`), mode: 'rel' });
+function readDriftFullScale(gas){
+  const value = num(`fg-drift-${gas}-full-scale`);
+  return !Number.isNaN(value) && value > 0 ? value : NaN;
 }
 
-function calcDriftItem(gas, indLimit, driftLimit, responseLimit){
+function formatSignedPercent(value){
+  return Number.isNaN(value) ? '—' : `±${value.toFixed(1)}%`;
+}
+
+function calcDriftItem(gas, indLimit, driftLimit=2.5, responseLimit=200){
+  const fullScale = readDriftFullScale(gas);
+  const fullScaleText = Number.isNaN(fullScale) ? '满量程 —' : `满量程 ${fullScale}`;
+  document.querySelectorAll(`[data-drift-full-scale-display="${gas}"]`).forEach(el => {
+    el.textContent = fullScaleText;
+  });
   const judges = [];
-  setPlain(`fg-drift-${gas}-ind-th`, formatNum(indLimit, 1, '%'));
+  setPlain(`fg-drift-${gas}-ind-th`, formatSignedPercent(indLimit));
   for (let i = 1; i <= 3; i++) {
     const ref = num(`fg-drift-${gas}-ind-ref${i}`);
     const cems = num(`fg-drift-${gas}-ind-cems${i}`);
@@ -5759,57 +5703,29 @@ function calcDriftItem(gas, indLimit, driftLimit, responseLimit){
 
   ['zero', 'span'].forEach(type => {
     const raw = num(`fg-drift-${gas}-${type}`);
-    const range = num(`fg-drift-${gas}-${type}-range`);
-    const pct = (!Number.isNaN(raw) && !Number.isNaN(range) && range !== 0) ? raw / range * 100 : NaN;
+    const pct = (!Number.isNaN(raw) && !Number.isNaN(fullScale)) ? raw / fullScale * 100 : NaN;
     const judge = fluegasJudge(pct, driftLimit, 'rel');
     setPlain(`fg-drift-${gas}-${type}-pct`, formatNum(pct, 2, '%'));
-    setPlain(`fg-drift-${gas}-${type}-th`, formatNum(driftLimit, 1, '%'));
+    setPlain(`fg-drift-${gas}-${type}-th`, formatSignedPercent(driftLimit));
     setPlain(`fg-drift-${gas}-${type}-judge`, judge);
     judges.push(judge);
   });
   return judges;
 }
 
-function normalizeDriftRangeInputs(){
-  ['so2', 'nox', 'o2'].forEach(gas => {
-    ['zero', 'span'].forEach(type => {
-      const id = `fg-drift-${gas}-${type}-range`;
-      const el = document.getElementById(id);
-      if (!el || el.tagName === 'INPUT') return;
-      const input = document.createElement('input');
-      input.className = 'vi-input';
-      input.id = id;
-      input.type = 'number';
-      input.step = '0.1';
-      input.placeholder = '量程';
-      input.oninput = calcFlueGas;
-      el.removeAttribute('id');
-      el.textContent = '';
-      el.appendChild(input);
-    });
-  });
-}
-
 function calcWaterOnlineComparison(){
-  const judges = [];
-  const calcRows = (prefix, valueLabelId, rows, limitId) => {
-    const limit = num(limitId);
+  const calcRows = (prefix, valueLabelId, rows) => {
     for (let i = 1; i <= rows; i++) {
       const online = num(`${prefix}-online${i}`);
       const ref = num(`${prefix}-${valueLabelId}${i}`);
       const absErr = (!Number.isNaN(online) && !Number.isNaN(ref)) ? online - ref : NaN;
       const relErr = (!Number.isNaN(absErr) && !Number.isNaN(ref) && ref !== 0) ? absErr / ref * 100 : NaN;
-      const judge = fluegasJudge(relErr, limit, 'rel');
       setPlain(`${prefix}-abs${i}`, formatNum(absErr, 2));
       setPlain(`${prefix}-rel${i}`, formatNum(relErr, 2, '%'));
-      setPlain(`${prefix}-judge${i}`, judge);
-      judges.push(judge);
     }
   };
-  calcRows('fg-water-sample', 'lab', 6, 'fg-water-sample-limit');
-  calcRows('fg-water-qc', 'std', 5, 'fg-water-qc-limit');
-  const active = judges.filter(j => j !== '—');
-  setPlain('fg-water-summary', active.length === 0 ? '请补充在线水质比对数据。' : (active.every(j => j === '合格') ? '水质在线比对全部合格。' : '水质在线比对存在超限项。'));
+  calcRows('fg-water-sample', 'lab', 6);
+  calcRows('fg-water-qc', 'std', 5);
 }
 function fluegasDual(refId, cemsId, limitId, absId, relId, judgeId, dp=2, unit=''){
   const ref = num(refId), cems = num(cemsId), limit = num(limitId);
@@ -5819,6 +5735,13 @@ function fluegasDual(refId, cemsId, limitId, absId, relId, judgeId, dp=2, unit='
   setPlain(relId, formatNum(relErr, 2, '%'));
   setPlain(judgeId, fluegasJudge(relErr, limit, 'rel'));
   return { absErr, relErr, judge: fluegasJudge(relErr, limit, 'rel') };
+}
+function calculateDustPmAbsoluteErrors(refAvg, cemsAvg){
+  if (Number.isNaN(refAvg) || Number.isNaN(cemsAvg)) return { medium: NaN, low: NaN };
+  return {
+    medium: cemsAvg - refAvg,
+    low: refAvg - cemsAvg
+  };
 }
 const FLUE_GAS_ROW_CONFIG = {
   'o2': { kind: 'input', inputId: 'fg-o2-{n}', step: '0.1', width: 'var(--fg-data-w)', fontSize: '12px' },
@@ -6102,7 +6025,6 @@ function clearFlueGasData() {
 setTimeout(updateFlueGasResponsiveWidths, 0);
 
 function calcFlueGas(){
-  normalizeDriftRangeInputs();
   const base = num('fg-base-o2');
   const table = document.getElementById('fg-measurement-table');
   const measurementCount = getFlueGasMeasurementCount();
@@ -6191,12 +6113,12 @@ function calcFlueGas(){
   setPlain('fg-dust-pm-rel-very-low', formatNum(pmRelErr, 2, '%'));
   setPlain('fg-dust-pm-judge-very-low', isNaN(pmRelErr) ? '—' : (pmAvg >= 20 && pmAvg < 50 ? (Math.abs(pmRelErr) <= 30 ? '合格' : '不合格') : '—'));
   
-  const pmAbsErr = dustPm.absErr;
-  setPlain('fg-dust-pm-abs-medium', formatNum(pmAbsErr, 2, 'mg/m³'));
-  setPlain('fg-dust-pm-judge-abs-medium', isNaN(pmAbsErr) ? '—' : (pmAvg >= 10 && pmAvg < 20 ? (Math.abs(pmAbsErr) <= 6 ? '合格' : '不合格') : '—'));
+  const pmAbsErrors = calculateDustPmAbsoluteErrors(dustPm.refAvg, dustPm.cemsAvg);
+  setPlain('fg-dust-pm-abs-medium', formatNum(pmAbsErrors.medium, 2, 'mg/m³'));
+  setPlain('fg-dust-pm-judge-abs-medium', isNaN(pmAbsErrors.medium) ? '—' : (pmAvg >= 10 && pmAvg < 20 ? (Math.abs(pmAbsErrors.medium) <= 6 ? '合格' : '不合格') : '—'));
   
-  setPlain('fg-dust-pm-abs-low', formatNum(pmAbsErr, 2, 'mg/m³'));
-  setPlain('fg-dust-pm-judge-abs-low', isNaN(pmAbsErr) ? '—' : (pmAvg <= 10 ? (Math.abs(pmAbsErr) <= 5 ? '合格' : '不合格') : '—'));
+  setPlain('fg-dust-pm-abs-low', formatNum(pmAbsErrors.low, 2, 'mg/m³'));
+  setPlain('fg-dust-pm-judge-abs-low', isNaN(pmAbsErrors.low) ? '—' : (pmAvg <= 10 ? (Math.abs(pmAbsErrors.low) <= 5 ? '合格' : '不合格') : '—'));
   
   // 流速误差判定
   const dustFlowAvg = dustFlow.refAvg;
@@ -6250,22 +6172,16 @@ function calcFlueGas(){
   setPlain('fg-dust-moist-ravg', formatNum(dustMoist.refAvg, 2, '%'));
   setPlain('fg-dust-moist-cavg', formatNum(dustMoist.cemsAvg, 2, '%'));
 
-  calcGasComparisonBranch('nox', 'fg-noxcmp');
-  calcGasComparisonBranch('so2', 'fg-so2cmp');
-  calcGasComparisonBranch('o2', 'fg-o2cmp');
-  calcStandardGasComparison('fg-noxcmp', 2);
-  calcStandardGasComparison('fg-so2cmp', 2);
-  calcStandardGasComparison('fg-o2cmp', 1);
+  fluegasCompareStats('fg-noxcmp', 2, 'mg/m³');
+  fluegasCompareStats('fg-so2cmp', 2, 'mg/m³');
+  fluegasCompareStats('fg-o2cmp', 2, '%');
+  calcStandardGasComparison('fg-noxcmp', 3);
+  calcStandardGasComparison('fg-so2cmp', 3);
+  calcStandardGasComparison('fg-o2cmp', 3);
 
-  const driftLimit = num('fg-drift-drift-limit');
-  const responseLimit = num('fg-drift-response-limit');
-  const driftJudges = [
-    ...calcDriftItem('so2', num('fg-drift-so2-ind-limit'), driftLimit, responseLimit),
-    ...calcDriftItem('nox', num('fg-drift-common-ind-limit'), driftLimit, responseLimit),
-    ...calcDriftItem('o2', num('fg-drift-common-ind-limit'), driftLimit, responseLimit)
-  ];
-  const activeDriftJudges = driftJudges.filter(j => j !== '—');
-  setPlain('fg-drift-summary', activeDriftJudges.length === 0 ? '请补全漂移与示值误差数据。' : (activeDriftJudges.every(v=>v==='合格') ? '漂移、响应时间和示值误差均在允许范围内。' : '存在至少一项超出允许范围。'));
+  calcDriftItem('so2', 2.5);
+  calcDriftItem('nox', 5);
+  calcDriftItem('o2', 5);
 
   calcWaterOnlineComparison();
 }
@@ -6330,7 +6246,7 @@ function clearNoxCmpData() {
     const result = row.querySelector('[id^="fg-noxcmp-d"]');
     if (result) result.textContent = '—';
   });
-  clearStandardGasComparison('fg-noxcmp', 2);
+  clearStandardGasComparison('fg-noxcmp', 3);
   
   calcFlueGas();
 }
@@ -6381,7 +6297,7 @@ function clearSo2CmpData() {
     const result = row.querySelector('[id^="fg-so2cmp-d"]');
     if (result) result.textContent = '—';
   });
-  clearStandardGasComparison('fg-so2cmp', 2);
+  clearStandardGasComparison('fg-so2cmp', 3);
 
   calcFlueGas();
 }
@@ -6432,7 +6348,7 @@ function clearO2CmpData() {
     const result = row.querySelector('[id^="fg-o2cmp-d"]');
     if (result) result.textContent = '—';
   });
-  clearStandardGasComparison('fg-o2cmp', 1);
+  clearStandardGasComparison('fg-o2cmp', 3);
 
   calcFlueGas();
 }
@@ -7039,6 +6955,39 @@ function calcCems(){
   refreshCemsReport();
 }
 
+function formatChemicalDisplay(value, dp=4){
+  if (value === null || value === undefined || Number.isNaN(value)) return '—';
+  return Number(value).toFixed(dp).replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1');
+}
+function calculateChemicalWorkplace(concs, t, stel, twaLimit){
+  const values = (concs || []).map(v => Number(v)).filter(v => !Number.isNaN(v));
+  const avgConc = values.length ? values.reduce((a,b)=>a+b,0) / values.length : NaN;
+  const cpe = values.length ? Math.max(...values) : NaN;
+  const ctwa = (!Number.isNaN(avgConc) && !Number.isNaN(Number(t))) ? avgConc * Number(t) / 8 : NaN;
+  const threeTwa = !Number.isNaN(Number(twaLimit)) ? Number(twaLimit) * 3 : NaN;
+  const fiveTwa = !Number.isNaN(Number(twaLimit)) ? Number(twaLimit) * 5 : NaN;
+  const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(Number(stel))) ? (cpe < Number(stel) ? '符合' : '不符合') : '—';
+  const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(Number(twaLimit))) ? (ctwa < Number(twaLimit) ? '符合' : '不符合') : '—';
+  const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa) && !Number.isNaN(fiveTwa)) ? (cpe <= threeTwa || cpe <= fiveTwa ? '符合' : '不符合') : '—';
+  const finalJudge = (stelJudge === '符合' && twaJudge === '符合' && peakJudge === '符合') ? '符合' :
+                     (stelJudge !== '—' || twaJudge !== '—' || peakJudge !== '—') ? '不符合' : '—';
+  return { avgConc, cpe, ctwa, threeTwa, fiveTwa, stelJudge, twaJudge, peakJudge, finalJudge };
+}
+function calculateChemicalCase2Total(workplaces, stel, twaLimit){
+  const active = (workplaces || []).filter(w => w && !Number.isNaN(Number(w.ctwa)));
+  const ctwa = active.length ? active.reduce((sum, w) => sum + Number(w.ctwa), 0) : NaN;
+  const cpeVals = (workplaces || []).map(w => Number(w && w.cpe)).filter(v => !Number.isNaN(v));
+  const cpe = cpeVals.length ? Math.max(...cpeVals) : NaN;
+  const threeTwa = !Number.isNaN(Number(twaLimit)) ? Number(twaLimit) * 3 : NaN;
+  const fiveTwa = !Number.isNaN(Number(twaLimit)) ? Number(twaLimit) * 5 : NaN;
+  const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(Number(stel))) ? (cpe < Number(stel) ? '符合' : '不符合') : '—';
+  const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(Number(twaLimit))) ? (ctwa < Number(twaLimit) ? '符合' : '不符合') : '—';
+  const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa) && !Number.isNaN(fiveTwa)) ? (cpe <= threeTwa || cpe <= fiveTwa ? '符合' : '不符合') : '—';
+  const finalJudge = (stelJudge === '符合' && twaJudge === '符合' && peakJudge === '符合') ? '符合' :
+                     (stelJudge !== '—' || twaJudge !== '—' || peakJudge !== '—') ? '不符合' : '—';
+  return { ctwa, cpe, threeTwa, fiveTwa, stelJudge, twaJudge, peakJudge, finalJudge };
+}
+
 function calcOccupational(){
   // 情况一计算函数：一个工种一个场所
   // C_TWA = AVERAGE(CSTE_1到CSTE_5) × 接触时间 / 8
@@ -7063,7 +7012,7 @@ function calcOccupational(){
     
     const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(stel)) ? (cpe < stel ? '符合' : '不符合') : '—';
     const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(twaLimit)) ? (ctwa < twaLimit ? '符合' : '不符合') : '—';
-    const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa) && !Number.isNaN(fiveTwa)) ? (cpe < threeTwa && cpe < fiveTwa ? '符合' : '不符合') : '—';
+    const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa) && !Number.isNaN(fiveTwa)) ? (cpe <= threeTwa || cpe <= fiveTwa ? '符合' : '不符合') : '—';
     const finalJudge = (stelJudge === '符合' && twaJudge === '符合' && peakJudge === '符合') ? '符合' : 
                        (stelJudge !== '—' || twaJudge !== '—' || peakJudge !== '—') ? '不符合' : '—';
     
@@ -7078,11 +7027,11 @@ function calcOccupational(){
   };
   
   // 情况二计算函数：同个工种多个场所
-  // 单场所 C_TWA = AVERAGE(CSTE_1到CSTE_5) × 接触时间 / 8
+  // 每个场所贡献值 = AVERAGE(CSTE_1到CSTE_5) × 该场所接触时间 / 8
   const calcChemCase2 = (prefix) => {
     const t = num(`${prefix}-t`);
-    const stel = num(`${prefix}-stel`);
-    const twaLimit = num(`${prefix}-twa-limit`);
+    const stel = num('occ-c2-stel');
+    const twaLimit = num('occ-c2-twa-limit');
     
     const concs = [];
     
@@ -7092,37 +7041,29 @@ function calcOccupational(){
         concs.push(cste);
       }
     }
-    
-    const avgConc = concs.length ? avg(concs) : NaN;
-    const cpe = concs.length ? Math.max(...concs) : NaN;
-    const ctwa = (!Number.isNaN(avgConc) && !Number.isNaN(t)) ? avgConc * t / 8 : NaN;
-    const threeTwa = !Number.isNaN(twaLimit) ? twaLimit * 3 : NaN;
-    const fiveTwa = !Number.isNaN(twaLimit) ? twaLimit * 5 : NaN;
-    
-    const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(stel)) ? (cpe < stel ? '符合' : '不符合') : '—';
-    const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(twaLimit)) ? (ctwa < twaLimit ? '符合' : '不符合') : '—';
-    const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa) && !Number.isNaN(fiveTwa)) ? (cpe < threeTwa && cpe < fiveTwa ? '符合' : '不符合') : '—';
-    const finalJudge = (stelJudge === '符合' && twaJudge === '符合' && peakJudge === '符合') ? '符合' : 
-                       (stelJudge !== '—' || twaJudge !== '—' || peakJudge !== '—') ? '不符合' : '—';
-    
-    setPlain(`${prefix}-ctwa`, !Number.isNaN(ctwa) ? ctwa.toFixed(4) : '—');
-    setPlain(`${prefix}-stel-judge`, stelJudge);
-    setPlain(`${prefix}-twa-judge`, twaJudge);
-    setPlain(`${prefix}-cpe`, !Number.isNaN(cpe) ? cpe.toFixed(1) : '—');
-    setPlain(`${prefix}-3twa`, !Number.isNaN(threeTwa) ? threeTwa.toFixed(0) : '—');
-    setPlain(`${prefix}-5twa`, !Number.isNaN(fiveTwa) ? fiveTwa.toFixed(0) : '—');
-    setPlain(`${prefix}-peak-judge`, peakJudge);
-    setPlain(`${prefix}-final-judge`, finalJudge);
-    return { prefix, t, avgConc, cpe, stel, twaLimit, ctwa, concs };
+
+    return { prefix, t, concs, ...calculateChemicalWorkplace(concs, t, stel, twaLimit) };
   };
   
   // 情况一：一个工种一个场所
   calcChemCase1('occ-c1');
   
-  // 情况二：同个工种多个场所（3个工种）
-  calcChemCase2('occ-c2w1');
-  calcChemCase2('occ-c2w2');
-  calcChemCase2('occ-c2w3');
+  // 情况二：同个工种的 3 个场所，各自使用独立接触时间
+  const c2Workplaces = [
+    calcChemCase2('occ-c2w1'),
+    calcChemCase2('occ-c2w2'),
+    calcChemCase2('occ-c2w3')
+  ];
+  const c2TwaLimit = num('occ-c2-twa-limit');
+  const c2Total = calculateChemicalCase2Total(c2Workplaces, num('occ-c2-stel'), c2TwaLimit);
+  setPlain('occ-c2-total-ctwa', formatChemicalDisplay(c2Total.ctwa, 5));
+  setPlain('occ-c2-total-stel-judge', c2Total.stelJudge);
+  setPlain('occ-c2-total-twa-judge', c2Total.twaJudge);
+  setPlain('occ-c2-total-cpe', formatChemicalDisplay(c2Total.cpe, 1));
+  setPlain('occ-c2-total-3twa', formatChemicalDisplay(c2Total.threeTwa, 0));
+  setPlain('occ-c2-total-5twa', formatChemicalDisplay(c2Total.fiveTwa, 0));
+  setPlain('occ-c2-total-peak-judge', c2Total.peakJudge);
+  setPlain('occ-c2-total-final-judge', c2Total.finalJudge);
 
   for (let i = 1; i <= 4; i++) {
     const tempValue = num(`occ-sample-${i}-temp`);
@@ -7151,12 +7092,8 @@ function calcOccupational(){
     if (judge === '不符合') el.classList.add('occ-judge-fail');
   };
   const noiseJudge = (value, limit) => (!Number.isNaN(value) && !Number.isNaN(limit)) ? (value < limit ? '符合' : '不符合') : '—';
-  const dailyLex = (laeq, hours) => (!Number.isNaN(laeq) && !Number.isNaN(hours) && hours > 0)
-    ? 10 * Math.log10(hours / 8) + laeq
-    : NaN;
-  const weeklyLex = (lex8, days) => (!Number.isNaN(lex8) && !Number.isNaN(days) && days > 0)
-    ? 10 * Math.log10(Math.pow(10, 0.1 * lex8) * days / 5)
-    : NaN;
+  const dailyLex = calculateNoiseDailyExposure;
+  const weeklyLex = calculateNoiseWeeklyExposure;
 
   const hours=num('occ-noise-time'), days=num('occ-noise-days'), limit=num('occ-noise-limit');
   const vals=noiseVals('occ-noise-s1');
@@ -7231,23 +7168,21 @@ function calcOccupational(){
   const e1Report = electricReport('occ-electric-c1', 'occ-electric-c1-report');
   const e1Time = num('occ-electric-c1-time');
   const e1Limit = num('occ-electric-c1-limit');
-  const e1Weighted = (!Number.isNaN(e1Report) && !Number.isNaN(e1Time) && e1Time >= 0) ? e1Report * Math.sqrt(e1Time / 8) : NaN;
+  const e1Weighted = calculateElectricSingleExposure(e1Report, e1Time);
   const e1Judge = electricJudge(e1Weighted, e1Limit);
   setPlain('occ-electric-c1-weighted', fmtNoise(e1Weighted, 9));
   setJudge('occ-electric-c1-judge', e1Judge);
 
-  let e2Sum = 0;
-  let e2Active = 0;
+  const e2Entries = [];
   for (let i = 1; i <= 3; i++) {
     const prefix = `occ-electric-c2g${i}`;
     const report = electricReport(prefix, `${prefix}-report`);
     const t = num(`${prefix}-time`);
     if (!Number.isNaN(report) && !Number.isNaN(t) && t >= 0) {
-      e2Sum += t * report * report;
-      e2Active++;
+      e2Entries.push({ report, time: t });
     }
   }
-  const e2Weighted = e2Active ? Math.sqrt(e2Sum / 8) : NaN;
+  const e2Weighted = calculateElectricMultipleExposure(e2Entries);
   const e2Limit = num('occ-electric-c2-limit');
   const e2Judge = electricJudge(e2Weighted, e2Limit);
   setPlain('occ-electric-c2-weighted', fmtNoise(e2Weighted, 9));
