@@ -2131,12 +2131,18 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
   text-align:left;
   font-weight:700;
 }
-#occ-noise-table .occ-result-cell {
-  color: var(--accent);
-  font-family: var(--mono);
-  background: rgba(210, 153, 34, 0.10);
+#occ-noise-table .result-cell {
+  text-align: center;
+  font-weight: bold;
+  color: var(--text);
+  cursor: default;
+  user-select: none;
 }
 #occ-noise-table .occ-muted-cell { color: var(--text3); background: rgba(139, 148, 158, 0.06); }
+#occ-noise-table > tbody > tr:nth-child(2) > td.occ-muted-cell { background-color: transparent; }
+#occ-noise-table > tbody > tr:nth-child(3) > td.occ-muted-cell { background-color: transparent; }
+#occ-noise-table > tbody > tr:nth-child(11) > td.occ-muted-cell { background-color: transparent; }
+#occ-noise-table > tbody > tr:nth-child(15) > td.occ-muted-cell { background-color: transparent; }
 #occ-noise-table .occ-judge-ok { color: var(--green); }
 #occ-noise-table .occ-judge-fail { color: var(--red); }
 #occ-electric-table { min-width: 1320px; table-layout: fixed; margin-top: 18px; }
@@ -2156,10 +2162,42 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
   text-align:left;
   font-weight:700;
 }
-#occ-electric-table .occ-electric-measure { background: rgba(210, 153, 34, 0.10); }
-#occ-electric-table .occ-result-cell { color: var(--accent); font-family: var(--mono); background: rgba(210, 153, 34, 0.10); }
+#occ-electric-table .result-cell { text-align: center; font-weight: bold; color: var(--text); cursor: default; user-select: none; }
+#occ-electric-table td:not(:has(input)) { user-select: none; cursor: default; }
 #occ-electric-table .occ-judge-ok { color: var(--green); }
 #occ-electric-table .occ-judge-fail { color: var(--red); }
+
+/* 所有计算模块：禁止悬停高亮和文本光标（参考有组织废气表设计） */
+.simple-table td,
+.summary-table td,
+.simple-table input,
+.summary-table input {
+  cursor: default !important;
+}
+.simple-table tbody tr:hover td,
+.summary-table tbody tr:hover td {
+  background: inherit;
+}
+.simple-table td:not(:has(input)),
+.summary-table td:not(:has(input)) {
+  user-select: none;
+}
+
+/* 化学因素表标题行：白色文字、无字间距、18px、紫色淡背景 */
+table#occ-chem-table > thead > tr:nth-child(1) > th.occ-chem-fixed {
+  color: #ffffff;
+  letter-spacing: 0px;
+  font-size: 18px;
+  line-height: 18px;
+  background-color: rgba(168, 85, 247, 0.03);
+}
+
+/* 采样体积换算标题：白色文字、18px、紫色淡背景 */
+div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-child(1) > th {
+  color: #ffffff;
+  font-size: 18px;
+  background-color: rgba(168, 85, 247, 0.03);
+}
 
 
 .fluegas-subnav{
@@ -3748,7 +3786,7 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
       <table class="simple-table" id="occ-chem-table" style="min-width:1200px;">
         <thead>
           <tr>
-            <th colspan="15" class="occ-chem-fixed">化学因素（标黄的不能动）</th>
+            <th colspan="15" class="occ-chem-fixed">化学因素</th>
           </tr>
           <tr>
             <th style="width:50px; min-width:50px; max-width:50px;">序号</th>
@@ -3770,7 +3808,7 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
         </thead>
         <tbody>
           <tr>
-            <td colspan="15" style="background-color: rgba(59, 130, 246, 0.15); font-weight:bold;">情况一：一个工种一个场所</td>
+            <td colspan="15" style="font-weight:bold;">情况一：一个工种一个场所</td>
           </tr>
           <tr>
             <td>1</td>
@@ -3949,11 +3987,11 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td><input class="vi-input" id="occ-noise-s1-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-s1-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-s1-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td class="occ-result-cell" id="occ-noise-s1-laeq">—</td>
-            <td class="occ-result-cell" id="occ-noise-s1-lex8">—</td>
+            <td class="result-cell" id="occ-noise-s1-laeq">—</td>
+            <td class="result-cell" id="occ-noise-s1-lex8">—</td>
             <td class="occ-muted-cell">—</td>
             <td><input class="vi-input" id="occ-noise-limit" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td id="occ-noise-s1-judge">—</td>
+            <td class="result-cell" id="occ-noise-s1-judge">—</td>
           </tr>
           <tr>
             <td>2</td>
@@ -3963,16 +4001,16 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td><input class="vi-input" id="occ-noise-s2-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-s2-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-s2-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td class="occ-result-cell" id="occ-noise-s2-laeq">—</td>
+            <td class="result-cell" id="occ-noise-s2-laeq">—</td>
             <td class="occ-muted-cell">—</td>
-            <td class="occ-result-cell" id="occ-noise-s2-lexw">—</td>
+            <td class="result-cell" id="occ-noise-s2-lexw">—</td>
             <td><input class="vi-input" id="occ-noise-s2-limit" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td id="occ-noise-s2-judge">—</td>
+            <td class="result-cell" id="occ-noise-s2-judge">—</td>
           </tr>
           <tr class="occ-noise-subsection">
             <td colspan="3">每周实际工作天数</td>
             <td><input class="vi-input" id="occ-noise-days" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td colspan="9" id="occ-noise-single-note">—</td>
+            <td colspan="9" class="result-cell" id="occ-noise-single-note">—</td>
           </tr>
           <tr class="occ-noise-section"><td colspan="13">测点单次测量结果能量平均</td></tr>
           <tr>
@@ -3983,34 +4021,34 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td><input class="vi-input" id="occ-noise-p1-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-p1-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-p1-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td colspan="3" class="occ-result-cell" id="occ-noise-p1-avg">—</td><td colspan="5"></td>
+            <td colspan="3" class="result-cell" id="occ-noise-p1-avg">—</td><td colspan="5"></td>
           </tr>
           <tr>
             <td></td><td>第二个点</td>
             <td><input class="vi-input" id="occ-noise-p2-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-p2-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-p2-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td colspan="3" class="occ-result-cell" id="occ-noise-p2-avg">—</td><td colspan="5"></td>
+            <td colspan="3" class="result-cell" id="occ-noise-p2-avg">—</td><td colspan="5"></td>
           </tr>
           <tr>
             <td></td><td>第三个点</td>
             <td><input class="vi-input" id="occ-noise-p3-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-p3-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-p3-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td colspan="3" class="occ-result-cell" id="occ-noise-p3-avg">—</td><td colspan="5"></td>
+            <td colspan="3" class="result-cell" id="occ-noise-p3-avg">—</td><td colspan="5"></td>
           </tr>
-          <tr class="occ-noise-section"><td colspan="13">相同工作岗位多个工作场所：情况一 5d/w，=8h/d 或 ≠8h/d</td></tr>
+          <tr class="occ-noise-section"><td colspan="13" style="text-align:center;">相同工作岗位多个工作场所：情况一 5d/w，=8h/d 或 ≠8h/d</td></tr>
           <tr>
             <td>1</td><td>第一工作场所</td><td><input class="vi-input" id="occ-noise-md1-name"/></td>
             <td><input class="vi-input" id="occ-noise-md1-time" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-md1-v1" oninput="calcOccupational()" step="0.000001" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-md1-v2" oninput="calcOccupational()" step="0.000001" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-md1-v3" oninput="calcOccupational()" step="0.000001" type="number"/></td>
-            <td class="occ-result-cell" id="occ-noise-md1-laeq">—</td>
-            <td rowspan="3" class="occ-result-cell" id="occ-noise-md-lex8">—</td>
+            <td class="result-cell" id="occ-noise-md1-laeq">—</td>
+            <td rowspan="3" class="result-cell" id="occ-noise-md-lex8">—</td>
             <td rowspan="3" class="occ-muted-cell">—</td>
             <td rowspan="3"><input class="vi-input" id="occ-noise-md-limit" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td rowspan="3" id="occ-noise-md-judge">—</td>
+            <td rowspan="3" class="result-cell" id="occ-noise-md-judge">—</td>
           </tr>
           <tr>
             <td>2</td><td>第二工作场所</td><td><input class="vi-input" id="occ-noise-md2-name"/></td>
@@ -4018,7 +4056,7 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td><input class="vi-input" id="occ-noise-md2-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-md2-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-md2-v3" oninput="calcOccupational()" step="0.000001" type="number"/></td>
-            <td class="occ-result-cell" id="occ-noise-md2-laeq">—</td>
+            <td class="result-cell" id="occ-noise-md2-laeq">—</td>
           </tr>
           <tr>
             <td>3</td><td>第三工作场所</td><td><input class="vi-input" id="occ-noise-md3-name"/></td>
@@ -4026,20 +4064,20 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td><input class="vi-input" id="occ-noise-md3-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-md3-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-md3-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td class="occ-result-cell" id="occ-noise-md3-laeq">—</td>
+            <td class="result-cell" id="occ-noise-md3-laeq">—</td>
           </tr>
-          <tr class="occ-noise-section"><td colspan="13">相同工作岗位多个工作场所：情况二 ≠5d/w</td></tr>
+          <tr class="occ-noise-section"><td colspan="13" style="text-align:center;">相同工作岗位多个工作场所：情况二 ≠5d/w</td></tr>
           <tr>
             <td>1</td><td>第一工作场所</td><td><input class="vi-input" id="occ-noise-mw1-name"/></td>
             <td><input class="vi-input" id="occ-noise-mw1-time" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-mw1-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-mw1-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-mw1-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td class="occ-result-cell" id="occ-noise-mw1-laeq">—</td>
+            <td class="result-cell" id="occ-noise-mw1-laeq">—</td>
             <td rowspan="3" class="occ-muted-cell">—</td>
-            <td rowspan="3" class="occ-result-cell" id="occ-noise-mw-lexw">—</td>
+            <td rowspan="3" class="result-cell" id="occ-noise-mw-lexw">—</td>
             <td rowspan="3"><input class="vi-input" id="occ-noise-mw-limit" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td rowspan="3" id="occ-noise-mw-judge">—</td>
+            <td rowspan="3" class="result-cell" id="occ-noise-mw-judge">—</td>
           </tr>
           <tr>
             <td>2</td><td>第二工作场所</td><td><input class="vi-input" id="occ-noise-mw2-name"/></td>
@@ -4047,7 +4085,7 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td><input class="vi-input" id="occ-noise-mw2-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-mw2-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-mw2-v3" oninput="calcOccupational()" step="0.000001" type="number"/></td>
-            <td class="occ-result-cell" id="occ-noise-mw2-laeq">—</td>
+            <td class="result-cell" id="occ-noise-mw2-laeq">—</td>
           </tr>
           <tr>
             <td>3</td><td>第三工作场所</td><td><input class="vi-input" id="occ-noise-mw3-name"/></td>
@@ -4055,12 +4093,12 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td><input class="vi-input" id="occ-noise-mw3-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-mw3-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-mw3-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td class="occ-result-cell" id="occ-noise-mw3-laeq">—</td>
+            <td class="result-cell" id="occ-noise-mw3-laeq">—</td>
           </tr>
           <tr class="occ-noise-subsection">
             <td colspan="3">每周实际工作天数</td>
             <td><input class="vi-input" id="occ-noise-mw-days" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td colspan="9" id="occ-noise-multi-note">—</td>
+            <td colspan="9" class="result-cell" id="occ-noise-multi-note">—</td>
           </tr>
         </tbody>
       </table>
@@ -4090,10 +4128,10 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td class="occ-electric-measure">头</td>
             <td></td>
             <td><input class="vi-input" id="occ-electric-c1-head" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td rowspan="3" class="occ-result-cell" id="occ-electric-c1-report">—</td>
-            <td rowspan="3" class="occ-result-cell" id="occ-electric-c1-weighted">—</td>
+            <td rowspan="3" class="result-cell" id="occ-electric-c1-report">—</td>
+            <td rowspan="3" class="result-cell" id="occ-electric-c1-weighted">—</td>
             <td rowspan="3"><input class="vi-input" id="occ-electric-c1-limit" oninput="calcOccupational()" step="1" type="number"/></td>
-            <td rowspan="3" id="occ-electric-c1-judge">—</td>
+            <td rowspan="3" class="result-cell" id="occ-electric-c1-judge">—</td>
           </tr>
           <tr>
             <td class="occ-electric-measure">胸</td>
@@ -4112,10 +4150,10 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td rowspan="3"><input class="vi-input" id="occ-electric-c2g1-time" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td class="occ-electric-measure">头</td><td></td>
             <td><input class="vi-input" id="occ-electric-c2g1-head" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td rowspan="3" class="occ-result-cell" id="occ-electric-c2g1-report">—</td>
-            <td rowspan="9" class="occ-result-cell" id="occ-electric-c2-weighted">—</td>
+            <td rowspan="3" class="result-cell" id="occ-electric-c2g1-report">—</td>
+            <td rowspan="9" class="result-cell" id="occ-electric-c2-weighted">—</td>
             <td rowspan="9"><input class="vi-input" id="occ-electric-c2-limit" oninput="calcOccupational()" step="1" type="number"/></td>
-            <td rowspan="9" id="occ-electric-c2-judge">—</td>
+            <td rowspan="9" class="result-cell" id="occ-electric-c2-judge">—</td>
           </tr>
           <tr>
             <td class="occ-electric-measure">胸</td><td></td>
@@ -4130,7 +4168,7 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td rowspan="3"><input class="vi-input" id="occ-electric-c2g2-time" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td class="occ-electric-measure">头</td><td></td>
             <td><input class="vi-input" id="occ-electric-c2g2-head" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td rowspan="3" class="occ-result-cell" id="occ-electric-c2g2-report">—</td>
+            <td rowspan="3" class="result-cell" id="occ-electric-c2g2-report">—</td>
           </tr>
           <tr>
             <td class="occ-electric-measure">胸</td><td></td>
@@ -4145,7 +4183,7 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
             <td rowspan="3"><input class="vi-input" id="occ-electric-c2g3-time" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td class="occ-electric-measure">头</td><td></td>
             <td><input class="vi-input" id="occ-electric-c2g3-head" oninput="calcOccupational()" step="0.1" type="number"/></td>
-            <td rowspan="3" class="occ-result-cell" id="occ-electric-c2g3-report">—</td>
+            <td rowspan="3" class="result-cell" id="occ-electric-c2g3-report">—</td>
           </tr>
           <tr>
             <td class="occ-electric-measure">胸</td><td></td>
