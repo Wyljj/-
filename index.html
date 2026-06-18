@@ -4196,12 +4196,6 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
         </tbody>
       </table>
     </div>
-    <div class="template-grid-two" style="margin-top:14px">
-      <div class="result-box"><div class="result-label">LAeq,Te</div><div class="result-value" id="occ-laeq">—</div></div>
-      <div class="result-box"><div class="result-label">单场所 LEX,8h / LEX,w</div><div class="result-value" id="occ-lex">—</div></div>
-      <div class="result-box"><div class="result-label">多场所 LEX,8h / LEX,w</div><div class="result-value" id="occ-noise-m-summary">—</div></div>
-      <div class="result-box"><div class="result-label">噪声综合判定</div><div class="result-value" id="occ-noise-overall" style="font-size:16px">—</div></div>
-    </div>
   </div>
 </div>
 
@@ -7193,7 +7187,7 @@ function calcOccupational(){
   const mw = calcMultiNoise('mw', mwDays, mwLimit, 'occ-noise-mw-lexw', 'occ-noise-mw-judge', true);
   setPlain('occ-noise-multi-note', !Number.isNaN(mwDays) ? `按每周 ${mwDays} 天折算多场所 LEX,w` : '请录入每周实际工作天数');
 
-  document.getElementById('occ-lex').textContent = `${fmtNoise(lex8)} / ${fmtNoise(s2Lexw)} · 情况一${singleJudge}，情况二${s2Judge}`;
+  setPlain('occ-lex', `${fmtNoise(lex8)} / ${fmtNoise(s2Lexw)} · 情况一${singleJudge}，情况二${s2Judge}`);
   setPlain('occ-noise-m-summary', `${fmtNoise(md.daily)} / ${fmtNoise(mw.weeklyValue)} · 情况一${md.judge}，情况二${mw.judge}`);
 
   const electricVals = (prefix) => ['head','chest','abdomen'].map(part => num(`${prefix}-${part}`)).filter(v => !Number.isNaN(v));
