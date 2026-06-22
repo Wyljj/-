@@ -1421,8 +1421,9 @@ textarea.input-warning {
   .import-inline { margin-top: 12px; width: 100%; }
   .textarea-import { font-size: 12px; height: 80px; width: 100%; }
 
-  /* ── 卡片化视图开关 ── */
-  .view-toggle-bar { display: flex; }
+  /* ── 卡片化视图：移动端隐藏 ── */
+  .view-toggle-bar { display: none !important; }
+  .fg-card-view { display: none !important; }
 
   /* ── 多列折叠 ── */
   .calc-grid { grid-template-columns: 1fr !important; }
@@ -1480,6 +1481,19 @@ textarea.input-warning {
   #template-fluegas .field input {
     width: 100%;
     box-sizing: border-box;
+  }
+  
+  /* ── 取消表格项目列固定 ── */
+  #fg-measurement-table .fg-sticky-double,
+  #fg-measurement-table .fg-sticky-project,
+  #fg-measurement-table .fg-sticky-sub {
+    position: static !important;
+    left: auto !important;
+    z-index: auto !important;
+    min-width: auto !important;
+    max-width: auto !important;
+    width: auto !important;
+    box-shadow: none !important;
   }
 }
 
