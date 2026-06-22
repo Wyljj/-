@@ -2102,11 +2102,11 @@ tbody#parshall-lookup-body > tr:nth-child(25) { border-bottom: 2px solid #000000
 .parshall-btn-row { display: flex; flex-direction: row; align-items: center; justify-content: center; margin-bottom: 12px; gap: 12px; }
 .parshall-add-btn { background-color: #3b82f6 !important; color: #ffffff !important; border-radius: 8px !important; padding: 8px 16px !important; border: none !important; }
 .parshall-remove-btn, .parshall-clear-btn { background-color: transparent !important; color: #ef4444 !important; border-radius: 8px !important; padding: 8px 16px !important; border: 1px solid #ef4444 !important; }
-table.simple-table:not(#fg-measurement-table):not(#occ-chem-table):not(#occ-noise-table) td:first-child { text-align:center; white-space: normal; word-break: break-word; width: 220px !important; flex-shrink: 0; }
+table.simple-table:not(#fg-measurement-table):not(#occ-chem-table):not(#occ-noise-table):not(#occ-individual-noise-table) td:first-child { text-align:center; white-space: normal; word-break: break-word; width: 220px !important; flex-shrink: 0; }
 table#occ-chem-table th:first-child, table#occ-chem-table td:first-child { width: 100px !important; min-width: 100px; max-width: 100px; }
-table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:nth-child(2) { width: 56px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; white-space: nowrap; word-break: keep-all; }
-table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:nth-child(n+3):not(:last-child) { width: 30px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; }
-table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-child { width: 30px !important; font-size: 13px !important; font-weight: bold; }
+table.simple-table:not(#fg-measurement-table):not(#occ-noise-table):not(#occ-individual-noise-table) td:nth-child(2) { width: 56px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; white-space: nowrap; word-break: keep-all; }
+table.simple-table:not(#fg-measurement-table):not(#occ-noise-table):not(#occ-individual-noise-table) td:nth-child(n+3):not(:last-child) { width: 30px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; }
+table.simple-table:not(#fg-measurement-table):not(#occ-noise-table):not(#occ-individual-noise-table) td:last-child { width: 30px !important; font-size: 13px !important; font-weight: bold; }
 #occ-noise-table { min-width: 1500px; table-layout: fixed; }
 #occ-noise-table th,
 #occ-noise-table td { width: auto !important; min-width: 74px; }
@@ -2119,10 +2119,15 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table) td:last-chil
   background:var(--bg2);
   letter-spacing:0;
 }
+#occ-individual-noise-table .occ-noise-title {
+  color:#ffffff;
+  background-color:transparent;
+  font-size:18px;
+}
 #occ-noise-table .occ-noise-section td {
   background: rgba(88, 166, 255, 0.14);
   color: var(--text);
-  text-align:left;
+  text-align:center;
   font-weight:700;
 }
 #occ-noise-table .occ-noise-subsection td {
@@ -2739,9 +2744,9 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
     </table>
     </div>
     <div class="btn-row" style="margin-top:12px;">
-      <button class="btn primary" onclick="addFlueGasMeasurement()">+ 添加实测次数</button>
-      <button class="btn danger" onclick="removeFlueGasMeasurement()">- 删除实测次数</button>
-      <button class="btn" onclick="clearFlueGasData()">清空数据</button>
+      <button class="btn primary" onclick="addFlueGasMeasurement()">➕ 添加行</button>
+      <button class="btn danger" onclick="removeFlueGasMeasurement()">➖ 删除行</button>
+      <button class="btn danger" onclick="clearFlueGasData()">🗑️ 清空数据</button>
     </div>
     <div class="helper-text" style="margin-top:12px">折算公式：C折 = (21-基准氧)/(21-实测氧) × C实；排放速率：R = C实 × Q / 1000000。</div>
   </div>
@@ -2821,9 +2826,9 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
     </table>
     </div>
     <div class="btn-row" style="margin-top:12px">
-      <button class="btn primary" onclick="addFlueGasDustMeasurement()">+ 添加记录</button>
-      <button class="btn danger" onclick="removeFlueGasDustMeasurement()">- 删除记录</button>
-      <button class="btn" onclick="clearFlueGasDustData()">清空数据</button>
+      <button class="btn primary" onclick="addFlueGasDustMeasurement()">➕ 添加行</button>
+      <button class="btn danger" onclick="removeFlueGasDustMeasurement()">➖ 删除行</button>
+      <button class="btn danger" onclick="clearFlueGasDustData()">🗑️ 清空数据</button>
     </div>
   </div>
   <div style="margin-top:20px">
@@ -2932,8 +2937,8 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
       </tbody>
     </table>
     </div>
-    <div style="margin-top:12px; text-align:center">
-      <button class="btn-clear" onclick="clearNoxCmpData()">清空数据</button>
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn danger" onclick="clearNoxCmpData()">🗑️ 清空数据</button>
     </div>
   </div>
   <div style="margin-top:20px">
@@ -2989,8 +2994,8 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
       </tbody>
     </table>
     </div>
-    <div style="margin-top:12px; text-align:center">
-      <button class="btn-clear" onclick="clearSo2CmpData()">清空数据</button>
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn danger" onclick="clearSo2CmpData()">🗑️ 清空数据</button>
     </div>
   </div>
   <div style="margin-top:20px">
@@ -3045,8 +3050,8 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
       </tbody>
     </table>
     </div>
-    <div style="margin-top:12px; text-align:center">
-      <button class="btn-clear" onclick="clearO2CmpData()">清空数据</button>
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn danger" onclick="clearO2CmpData()">🗑️ 清空数据</button>
     </div>
   </div>
   <div style="margin-top:20px">
@@ -3076,11 +3081,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
       <div class="stats-setting-item"><span class="stats-setting-label">颗粒物满量程</span><input id="fg-drift-pm-full-scale" min="0.01" oninput="calcFlueGas()" step="0.1" type="number" value="100"/></div>
       <div class="stats-setting-item"><span class="stats-setting-label">含氧量满量程</span><input id="fg-drift-o2-full-scale" min="0.01" oninput="calcFlueGas()" step="0.1" type="number" value="25"/></div>
     </div>
-    <div style="margin-top:12px; text-align:center">
-      <button class="btn-clear" onclick="clearFlueGasDriftData()">清空数据</button>
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn danger" onclick="clearFlueGasDriftData()">🗑️ 清空数据</button>
     </div>
   </div>
   <div class="card">
+    <div class="simple-table-container">
     <table class="simple-table">
     <thead><tr><th colspan="2">项目名称</th><th>标准气体浓度（mg/m³）</th><th>CEMS检测结果</th><th>计算误差</th><th>执行标准</th><th>是否合格</th></tr></thead>
     <tbody>
@@ -3104,15 +3110,17 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
       <tr><td>量程漂移</td><td data-drift-full-scale-display="o2">满量程 25</td><td><input class="vi-input" id="fg-drift-o2-span" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-drift-o2-span-pct">—</td><td id="fg-drift-o2-span-th">—</td><td id="fg-drift-o2-span-judge">—</td></tr>
     </tbody>
     </table>
+    </div>
   </div>
 </div>
 
 <div class="fluegas-subpanel" id="fluegas-tab-water">
   <div class="card">
     <div class="card-title">💧 水质在线比对</div>
-    <div style="margin-bottom:12px; text-align:center">
-      <button class="btn-clear" onclick="clearFlueGasWaterData()">清空数据</button>
+    <div class="btn-row" style="margin-bottom:12px;">
+      <button class="btn danger" onclick="clearFlueGasWaterData()">🗑️ 清空数据</button>
     </div>
+    <div class="simple-table-container">
     <table class="simple-table">
       <thead><tr><th>类别</th><th>样品/标样编号</th><th>采样/测试时间</th><th>在线仪器测定值</th><th>实验室/标准值</th><th>绝对误差</th><th>相对误差（%）</th><th>结果评定</th><th>备注</th></tr></thead>
     <tbody>
@@ -3129,6 +3137,7 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
       <tr><td><input class="vi-input" id="fg-water-qc-no5" type="text"/></td><td><input class="vi-input" id="fg-water-qc-time5" type="text"/></td><td><input class="vi-input" id="fg-water-qc-online5" oninput="calcFlueGas()" step="0.01" type="number"/></td><td><input class="vi-input" id="fg-water-qc-std5" oninput="calcFlueGas()" step="0.01" type="number"/></td><td id="fg-water-qc-abs5">—</td><td id="fg-water-qc-rel5">—</td><td><input class="vi-input" id="fg-water-qc-result5" type="text"/></td><td><input class="vi-input" id="fg-water-qc-note5" type="text"/></td></tr>
     </tbody>
     </table>
+    </div>
   </div>
 </div>
 
@@ -3952,9 +3961,18 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
         </tbody>
       </table>
     </div>
+    <div class="simple-table-container">
+      <table class="simple-table" style="margin-top:12px">
+        <thead><tr><th colspan="8">FR折减因子计算</th></tr><tr><th>需要折算</th><th>H</th><th></th><th></th><th></th><th>R</th><th>GBZ2.1限值</th><th>PC-TWA</th></tr></thead>
+        <tbody>
+          <tr><td>每天＞8h</td><td><input class="vi-input" id="occ-fr-daily-h" oninput="calcOccupational()" step="0.1" type="number" placeholder="每天工作时间"/></td><td>8</td><td>24</td><td>16</td><td id="occ-fr-daily-r">—</td><td><input class="vi-input" id="occ-fr-daily-limit" oninput="calcOccupational()" step="0.1" type="number" placeholder="GBZ2.1限值"/></td><td id="occ-fr-daily-pctwa">—</td></tr>
+          <tr><td>每周＞40h或5d</td><td><input class="vi-input" id="occ-fr-weekly-h" oninput="calcOccupational()" step="0.1" type="number" placeholder="每周工作时间"/></td><td>40</td><td>168</td><td>128</td><td id="occ-fr-weekly-r">—</td><td><input class="vi-input" id="occ-fr-weekly-limit" oninput="calcOccupational()" step="0.1" type="number" placeholder="GBZ2.1限值"/></td><td id="occ-fr-weekly-pctwa">—</td></tr>
+        </tbody>
+      </table>
+    </div>
     <div style="overflow-x:auto;">
       <table class="simple-table" style="margin-top:12px">
-        <thead><tr><th colspan="9">采样体积换算</th></tr><tr><th>序号</th><th>温度A(℃)</th><th>流量C</th><th>采样时间D</th><th>校正系数E</th><th>压力B</th><th>常数G</th><th>标况体积H</th><th>采样体积J</th></tr></thead>
+        <thead><tr><th colspan="9" style="line-height:29px;color:#ffffff;background-color:rgba(34, 197, 94, 0.15);font-size:18px;">采样体积换算</th></tr><tr><th>序号</th><th>温度A(℃)</th><th>流量C</th><th>采样时间D</th><th>校正系数E</th><th>压力B</th><th>常数G</th><th>标况体积H</th><th>采样体积J</th></tr></thead>
         <tbody>
           <tr><td>1</td><td><input class="vi-input" id="occ-sample-1-temp" oninput="calcOccupational()" step="0.1" type="number"/></td><td><input class="vi-input" id="occ-sample-1-flow" oninput="calcOccupational()" step="0.001" type="number"/></td><td><input class="vi-input" id="occ-sample-1-time" oninput="calcOccupational()" step="0.1" type="number"/></td><td><input class="vi-input" id="occ-sample-1-factor" oninput="calcOccupational()" step="0.001" type="number"/></td><td><input class="vi-input" id="occ-sample-1-pressure" oninput="calcOccupational()" step="0.1" type="number"/></td><td><input class="vi-input" id="occ-sample-1-const" oninput="calcOccupational()" step="0.1" type="number"/></td><td id="occ-sample-1-stdvol">—</td><td id="occ-sample-1-volume">—</td></tr>
           <tr><td>2</td><td><input class="vi-input" id="occ-sample-2-temp" oninput="calcOccupational()" step="0.1" type="number"/></td><td><input class="vi-input" id="occ-sample-2-flow" oninput="calcOccupational()" step="0.001" type="number"/></td><td><input class="vi-input" id="occ-sample-2-time" oninput="calcOccupational()" step="0.1" type="number"/></td><td><input class="vi-input" id="occ-sample-2-factor" oninput="calcOccupational()" step="0.001" type="number"/></td><td><input class="vi-input" id="occ-sample-2-pressure" oninput="calcOccupational()" step="0.1" type="number"/></td><td><input class="vi-input" id="occ-sample-2-const" oninput="calcOccupational()" step="0.1" type="number"/></td><td id="occ-sample-2-stdvol">—</td><td id="occ-sample-2-volume">—</td></tr>
@@ -4113,6 +4131,67 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
         </tbody>
       </table>
     </div>
+    <div class="simple-table-container" style="overflow-x:auto;">
+      <table class="simple-table" id="occ-individual-noise-table">
+        <thead>
+          <tr><th colspan="7" class="occ-noise-title">个体噪声检测结果与判定 [dB(A)]</th></tr>
+          <tr><th style="width:40px;">序号</th><th>个体噪声 LAeq,T</th><th>接触时间 h</th><th>工作天数 d</th><th>LEX,8h</th><th>LEX,w</th><th>判定</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><input class="vi-input" id="occ-ind-noise-1-laeq" oninput="calcOccupational()" step="0.1" type="number" placeholder="LAeq,T"/></td>
+            <td><input class="vi-input" id="occ-ind-noise-1-time" oninput="calcOccupational()" step="0.1" type="number" placeholder="接触时间"/></td>
+            <td><input class="vi-input" id="occ-ind-noise-1-days" oninput="calcOccupational()" step="0.1" type="number" placeholder="工作天数"/></td>
+            <td class="result-cell" id="occ-ind-noise-1-lex8">—</td>
+            <td class="result-cell" id="occ-ind-noise-1-lexw">—</td>
+            <td class="result-cell" id="occ-ind-noise-1-judge">—</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><input class="vi-input" id="occ-ind-noise-2-laeq" oninput="calcOccupational()" step="0.1" type="number" placeholder="LAeq,T"/></td>
+            <td><input class="vi-input" id="occ-ind-noise-2-time" oninput="calcOccupational()" step="0.1" type="number" placeholder="接触时间"/></td>
+            <td><input class="vi-input" id="occ-ind-noise-2-days" oninput="calcOccupational()" step="0.1" type="number" placeholder="工作天数"/></td>
+            <td class="result-cell" id="occ-ind-noise-2-lex8">—</td>
+            <td class="result-cell" id="occ-ind-noise-2-lexw">—</td>
+            <td class="result-cell" id="occ-ind-noise-2-judge">—</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><input class="vi-input" id="occ-ind-noise-3-laeq" oninput="calcOccupational()" step="0.1" type="number" placeholder="LAeq,T"/></td>
+            <td><input class="vi-input" id="occ-ind-noise-3-time" oninput="calcOccupational()" step="0.1" type="number" placeholder="接触时间"/></td>
+            <td><input class="vi-input" id="occ-ind-noise-3-days" oninput="calcOccupational()" step="0.1" type="number" placeholder="工作天数"/></td>
+            <td class="result-cell" id="occ-ind-noise-3-lex8">—</td>
+            <td class="result-cell" id="occ-ind-noise-3-lexw">—</td>
+            <td class="result-cell" id="occ-ind-noise-3-judge">—</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><input class="vi-input" id="occ-ind-noise-4-laeq" oninput="calcOccupational()" step="0.1" type="number" placeholder="LAeq,T"/></td>
+            <td><input class="vi-input" id="occ-ind-noise-4-time" oninput="calcOccupational()" step="0.1" type="number" placeholder="接触时间"/></td>
+            <td><input class="vi-input" id="occ-ind-noise-4-days" oninput="calcOccupational()" step="0.1" type="number" placeholder="工作天数"/></td>
+            <td class="result-cell" id="occ-ind-noise-4-lex8">—</td>
+            <td class="result-cell" id="occ-ind-noise-4-lexw">—</td>
+            <td class="result-cell" id="occ-ind-noise-4-judge">—</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><input class="vi-input" id="occ-ind-noise-5-laeq" oninput="calcOccupational()" step="0.1" type="number" placeholder="LAeq,T"/></td>
+            <td><input class="vi-input" id="occ-ind-noise-5-time" oninput="calcOccupational()" step="0.1" type="number" placeholder="接触时间"/></td>
+            <td><input class="vi-input" id="occ-ind-noise-5-days" oninput="calcOccupational()" step="0.1" type="number" placeholder="工作天数"/></td>
+            <td class="result-cell" id="occ-ind-noise-5-lex8">—</td>
+            <td class="result-cell" id="occ-ind-noise-5-lexw">—</td>
+            <td class="result-cell" id="occ-ind-noise-5-judge">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn primary" onclick="addIndNoiseRow()">➕ 添加行</button>
+      <button class="btn danger" onclick="removeIndNoiseRow()">➖ 删除行</button>
+      <button class="btn danger" onclick="clearIndNoiseData()">🗑️ 清空数据</button>
+    </div>
+
     <div class="simple-table-container" style="overflow-x:auto;">
       <table class="simple-table" id="occ-electric-table">
         <thead>
@@ -7032,6 +7111,38 @@ function calculateChemicalCase2Total(workplaces, stel, twaLimit){
   return { ctwa, cpe, threeTwa, fiveTwa, stelJudge, twaJudge, peakJudge, finalJudge };
 }
 
+function addIndNoiseRow() {
+  const tbody = document.querySelector('#occ-individual-noise-table tbody');
+  const rows = tbody.querySelectorAll('tr');
+  const rowCount = rows.length;
+  const newRow = document.createElement('tr');
+  newRow.innerHTML = `
+    <td>${rowCount + 1}</td>
+    <td><input class="vi-input" id="occ-ind-noise-${rowCount + 1}-laeq" oninput="calcOccupational()" step="0.1" type="number" placeholder="LAeq,T"/></td>
+    <td><input class="vi-input" id="occ-ind-noise-${rowCount + 1}-time" oninput="calcOccupational()" step="0.1" type="number" placeholder="接触时间"/></td>
+    <td><input class="vi-input" id="occ-ind-noise-${rowCount + 1}-days" oninput="calcOccupational()" step="0.1" type="number" placeholder="工作天数"/></td>
+    <td class="result-cell" id="occ-ind-noise-${rowCount + 1}-lex8">—</td>
+    <td class="result-cell" id="occ-ind-noise-${rowCount + 1}-lexw">—</td>
+    <td class="result-cell" id="occ-ind-noise-${rowCount + 1}-judge">—</td>
+  `;
+  tbody.appendChild(newRow);
+}
+
+function removeIndNoiseRow() {
+  const tbody = document.querySelector('#occ-individual-noise-table tbody');
+  const rows = tbody.querySelectorAll('tr');
+  if (rows.length > 1) {
+    tbody.removeChild(rows[rows.length - 1]);
+  }
+}
+
+function clearIndNoiseData() {
+  const inputs = document.querySelectorAll('#occ-individual-noise-table .vi-input');
+  const results = document.querySelectorAll('#occ-individual-noise-table .result-cell');
+  inputs.forEach(input => input.value = '');
+  results.forEach(result => result.textContent = '—');
+}
+
 function calcOccupational(){
   // 情况一计算函数：一个工种一个场所
   // C_TWA = AVERAGE(CSTE_1到CSTE_5) × 接触时间 / 8
@@ -7235,6 +7346,108 @@ function calcOccupational(){
   const activeJudges = [singleJudge, s2Judge, md.judge, mw.judge, e1Judge, e2Judge].filter(j => j !== '—');
   const overall = activeJudges.length ? (activeJudges.every(j => j === '符合') ? '当前已评物理因素项目均符合' : '存在物理因素项目不符合') : '请录入物理因素检测数据';
   setPlain('occ-noise-overall', overall);
+
+  const dailyH = num('occ-fr-daily-h');
+  const dailyLimit = num('occ-fr-daily-limit');
+  const rfDaily = (!Number.isNaN(dailyH) && dailyH > 0) ? (8 / dailyH) * ((24 - dailyH) / 16) : NaN;
+  const dailyPctwa = (!Number.isNaN(rfDaily) && !Number.isNaN(dailyLimit)) ? rfDaily * dailyLimit : NaN;
+  setPlain('occ-fr-daily-r', !Number.isNaN(rfDaily) ? rfDaily.toFixed(6) : '—');
+  setPlain('occ-fr-daily-pctwa', !Number.isNaN(dailyPctwa) ? dailyPctwa.toFixed(4) : '—');
+
+  const weeklyH = num('occ-fr-weekly-h');
+  const weeklyLimit = num('occ-fr-weekly-limit');
+  const rfWeekly = (!Number.isNaN(weeklyH) && weeklyH > 0) ? (40 / weeklyH) * ((168 - weeklyH) / 128) : NaN;
+  const weeklyPctwa = (!Number.isNaN(rfWeekly) && !Number.isNaN(weeklyLimit)) ? rfWeekly * weeklyLimit : NaN;
+  setPlain('occ-fr-weekly-r', !Number.isNaN(rfWeekly) ? rfWeekly.toFixed(6) : '—');
+  setPlain('occ-fr-weekly-pctwa', !Number.isNaN(weeklyPctwa) ? weeklyPctwa.toFixed(4) : '—');
+
+  const calcIndividualNoise = (index) => {
+    const laeq = num(`occ-ind-noise-${index}-laeq`);
+    const time = num(`occ-ind-noise-${index}-time`);
+    const days = num(`occ-ind-noise-${index}-days`);
+    const lex8 = (!Number.isNaN(laeq) && !Number.isNaN(time) && time > 0) ? laeq + 10 * Math.log10(time / 8) : NaN;
+    const lexw = (!Number.isNaN(lex8) && !Number.isNaN(days) && days > 0) ? lex8 + 10 * Math.log10(days / 5) : NaN;
+    const judge = (!Number.isNaN(lexw)) ? (lexw <= 85 ? '合格' : '不合格') : '—';
+    setPlain(`occ-ind-noise-${index}-lex8`, !Number.isNaN(lex8) ? lex8.toFixed(2) : '—');
+    setPlain(`occ-ind-noise-${index}-lexw`, !Number.isNaN(lexw) ? lexw.toFixed(2) : '—');
+    const el = document.getElementById(`occ-ind-noise-${index}-judge`);
+    if (el) {
+      el.textContent = judge;
+      el.classList.remove('occ-judge-ok', 'occ-judge-fail');
+      if (judge === '合格') el.classList.add('occ-judge-ok');
+      if (judge === '不合格') el.classList.add('occ-judge-fail');
+    }
+  };
+
+  const indNoiseRows = document.querySelectorAll('#occ-individual-noise-table tbody tr');
+  for (let i = 1; i <= indNoiseRows.length; i++) {
+    calcIndividualNoise(i);
+  }
+
+  let totalEnergy = 0;
+  let totalTime = 0;
+  for (let i = 1; i <= 3; i++) {
+    const laeq = num(`occ-ind-multi-${i}-laeq`);
+    const time = num(`occ-ind-multi-${i}-time`);
+    const energy = (!Number.isNaN(laeq) && !Number.isNaN(time) && time > 0) ? time * Math.pow(10, 0.1 * laeq) : NaN;
+    setPlain(`occ-ind-multi-${i}-energy`, !Number.isNaN(energy) ? energy.toFixed(2) : '—');
+    if (!Number.isNaN(energy)) {
+      totalEnergy += energy;
+      totalTime += time;
+    }
+  }
+  const multiLex8 = totalEnergy > 0 ? 10 * Math.log10(totalEnergy / 8) : NaN;
+  setPlain('occ-ind-multi-lex8', !Number.isNaN(multiLex8) ? multiLex8.toFixed(2) : '—');
+
+  const calcWbgt = (prefix) => {
+    const wet = num(`${prefix}-wet`);
+    const black = num(`${prefix}-black`);
+    const dry = num(`${prefix}-dry`);
+    const type = document.getElementById(`${prefix}-type`)?.value || 'outdoor';
+    let wbgt;
+    if (type === 'outdoor') {
+      wbgt = (!Number.isNaN(wet) && !Number.isNaN(black) && !Number.isNaN(dry)) ? wet * 0.7 + black * 0.2 + dry * 0.1 : NaN;
+    } else {
+      wbgt = (!Number.isNaN(wet) && !Number.isNaN(black)) ? wet * 0.7 + black * 0.3 : NaN;
+    }
+    return wbgt;
+  };
+
+  const headWbgt = calcWbgt('occ-heat-head');
+  const abdomenWbgt = calcWbgt('occ-heat-abdomen');
+  const ankleWbgt = calcWbgt('occ-heat-ankle');
+
+  setPlain('occ-heat-head-wbgt', !Number.isNaN(headWbgt) ? headWbgt.toFixed(1) : '—');
+  setPlain('occ-heat-abdomen-wbgt', !Number.isNaN(abdomenWbgt) ? abdomenWbgt.toFixed(1) : '—');
+  setPlain('occ-heat-ankle-wbgt', !Number.isNaN(ankleWbgt) ? ankleWbgt.toFixed(1) : '—');
+
+  const weightedWbgt = (!Number.isNaN(headWbgt) && !Number.isNaN(abdomenWbgt) && !Number.isNaN(ankleWbgt))
+    ? (headWbgt + 2 * abdomenWbgt + ankleWbgt) / 4 : NaN;
+  setPlain('occ-heat-weighted', !Number.isNaN(weightedWbgt) ? weightedWbgt.toFixed(1) : '—');
+
+  const loc1Wbgt = calcWbgt('occ-heat-loc1');
+  const loc2Wbgt = calcWbgt('occ-heat-loc2');
+  const loc3Wbgt = calcWbgt('occ-heat-loc3');
+
+  setPlain('occ-heat-loc1-wbgt', !Number.isNaN(loc1Wbgt) ? loc1Wbgt.toFixed(1) : '—');
+  setPlain('occ-heat-loc2-wbgt', !Number.isNaN(loc2Wbgt) ? loc2Wbgt.toFixed(1) : '—');
+  setPlain('occ-heat-loc3-wbgt', !Number.isNaN(loc3Wbgt) ? loc3Wbgt.toFixed(1) : '—');
+
+  const loc1Time = num('occ-heat-loc1-time');
+  const loc2Time = num('occ-heat-loc2-time');
+  const loc3Time = num('occ-heat-loc3-time');
+
+  const loc1Tw = (!Number.isNaN(loc1Wbgt) && !Number.isNaN(loc1Time)) ? loc1Wbgt * loc1Time : NaN;
+  const loc2Tw = (!Number.isNaN(loc2Wbgt) && !Number.isNaN(loc2Time)) ? loc2Wbgt * loc2Time : NaN;
+  const loc3Tw = (!Number.isNaN(loc3Wbgt) && !Number.isNaN(loc3Time)) ? loc3Wbgt * loc3Time : NaN;
+
+  setPlain('occ-heat-loc1-tw', !Number.isNaN(loc1Tw) ? loc1Tw.toFixed(2) : '—');
+  setPlain('occ-heat-loc2-tw', !Number.isNaN(loc2Tw) ? loc2Tw.toFixed(2) : '—');
+  setPlain('occ-heat-loc3-tw', !Number.isNaN(loc3Tw) ? loc3Tw.toFixed(2) : '—');
+
+  const totalTimeW = loc1Time + loc2Time + loc3Time;
+  const totalWbgt = (totalTimeW > 0) ? (loc1Tw + loc2Tw + loc3Tw) / totalTimeW : NaN;
+  setPlain('occ-heat-total-wbgt', !Number.isNaN(totalWbgt) ? totalWbgt.toFixed(1) : '—');
 }
 function calcO6Panel(){
   const M = (a,b)=> ((Number.isNaN(a)?0:a) + (Number.isNaN(b)?0:b)*(1/3)) / 6;
