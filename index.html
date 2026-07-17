@@ -6558,7 +6558,7 @@ function calcWeather(){
 }
 function calcIons(){
   const v = id=>{ const n=num(id); return Number.isNaN(n)?0:n; };
-  const cat = v('ion-na')/23 + v('ion-k')/39 + v('ion-ca')/20 + v('ion-mg')/12 + v('ion-nh4')/18 + v('ion-fe')/18.7 + v('ion-mn')/27.5;
+  const cat = v('ion-na')/23 + v('ion-k')/39 + v('ion-ca')/20 + v('ion-mg')/12 + v('ion-nh4')/18 + v('ion-fe')/18.6 + v('ion-mn')/27.5;
   const an = v('ion-so4')/48 + v('ion-cl')/35.5 + v('ion-hco3')/61 + v('ion-co3')/30 + v('ion-sio3')/38 + v('ion-no3')/62 + v('ion-f')/19;
   const balance = (cat+an)!==0 ? (an-cat)/(an+cat)*100 : NaN;
   const hardCalc = (v('ion-ca')/20 + v('ion-mg')/12 + v('ion-fe')/18.6 + v('ion-mn')/27.5)*50;
