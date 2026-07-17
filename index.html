@@ -1006,97 +1006,6 @@ textarea.input-warning {
 .stats-setting-row input:focus,
 .stats-setting-row select:focus { outline: none; border-color: var(--accent); }
 
-/* ── 采样体积换算 ── */
-.sample-calc-card {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 10px; padding: 20px; margin-top: 12px;
-}
-.sample-calc-title {
-  font-size: 18px; font-weight: 700; color: #fff; text-align: center;
-  margin-bottom: 16px; padding: 8px; border-radius: 8px;
-  background-color: rgba(34, 197, 94, 0.15);
-}
-.sample-calc-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-}
-.sample-calc-section {
-  background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 8px; padding: 16px;
-}
-.sample-calc-section.full { grid-column: 1 / -1; }
-.sample-calc-section-title {
-  font-size: 12px; font-weight: 600; color: var(--accent);
-  margin-bottom: 12px; letter-spacing: 0.04em; text-transform: uppercase;
-}
-.sample-flow-row {
-  display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end;
-}
-.sample-param-row {
-  display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end;
-}
-.sample-time-row {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end;
-}
-.sample-field { display: flex; flex-direction: column; gap: 4px; }
-.sample-field label {
-  font-size: 11px; color: var(--text3); text-align: left;
-}
-.sample-field input {
-  width: 100%; height: 32px; padding: 0 10px; text-align: center;
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 6px; color: var(--text); font-family: var(--mono); font-size: 13px;
-  transition: border-color .15s;
-}
-.sample-field input:focus { outline: none; border-color: var(--accent2); }
-.sample-unit-select {
-  height: 32px; padding: 0 8px; min-width: 90px;
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 6px; color: var(--text); font-family: var(--sans); font-size: 12px;
-  cursor: pointer;
-}
-.sample-unit-select:focus { outline: none; border-color: var(--accent2); }
-.sample-inline-stat {
-  display: flex; align-items: center; gap: 8px; margin-top: 10px;
-  padding: 8px 12px; background: var(--bg); border-radius: 6px;
-}
-.sample-inline-stat .s-label { font-size: 11px; color: var(--text3); }
-.sample-inline-stat .s-value { font-family: var(--mono); font-size: 14px; color: var(--accent); font-weight: 500; }
-.sample-warning {
-  display: none; margin-top: 10px; padding: 10px 14px;
-  background: var(--yellow-bg); border: 1px solid var(--yellow);
-  border-radius: 8px; color: var(--yellow); font-size: 12px;
-  line-height: 1.6;
-}
-.sample-warning-icon { font-size: 14px; margin-right: 4px; }
-.sample-results {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-}
-.sample-result-box {
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 8px; padding: 14px 12px; text-align: center;
-}
-.sample-result-box .r-label { font-size: 10px; color: var(--text3); margin-bottom: 6px; letter-spacing: 0.03em; text-transform: uppercase; }
-.sample-result-box .r-value { font-family: var(--mono); font-size: 16px; color: var(--text); font-weight: 600; }
-.sample-result-box .r-unit { font-size: 10px; color: var(--text3); margin-top: 2px; }
-.sample-process {
-  font-size: 12px; color: var(--text3); line-height: 2;
-  padding: 12px; background: var(--bg); border-radius: 6px;
-  font-family: var(--mono);
-}
-.sample-process .p-step { color: var(--text2); }
-.sample-process .p-val { color: var(--accent); }
-.sample-process .p-result { color: var(--green); font-weight: 600; }
-.sample-process .p-condition { color: var(--text3); font-size: 11px; margin-top: 8px; }
-@media (max-width: 900px) {
-  .sample-calc-grid { grid-template-columns: 1fr; }
-  .sample-flow-row, .sample-param-row { grid-template-columns: 1fr 1fr 1fr; }
-  .sample-results { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 640px) {
-  .sample-flow-row, .sample-param-row { grid-template-columns: 1fr 1fr; }
-  .sample-results { grid-template-columns: 1fr; }
-}
-
 /* ── Buttons ── */
 .btn-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; text-align: center; }
 .btn {
@@ -6995,12 +6904,6 @@ function calcCems(){
   refreshCemsReport();
 }
 
-function calculateAverageFlow(before, after) {
-  const valid = [before, after].filter(v => !Number.isNaN(v) && v > 0);
-  if (valid.length === 0) return null;
-  return valid.reduce((a, b) => a + b, 0) / valid.length;
-}
-
 function calculateActualVolume(flowLPerMin, timeMin) {
   if (flowLPerMin === null || timeMin === null) return null;
   if (Number.isNaN(flowLPerMin) || Number.isNaN(timeMin)) return null;
@@ -7013,15 +6916,6 @@ function calculateStandardVolume(actualVolumeL, tempC, pressureKPa) {
   if (Number.isNaN(actualVolumeL) || Number.isNaN(tempC) || Number.isNaN(pressureKPa)) return null;
   if (tempC <= -273 || pressureKPa <= 0 || actualVolumeL <= 0) return null;
   return actualVolumeL * 293 * pressureKPa / ((273 + tempC) * 101.325);
-}
-
-function calculateFlowDeviation(before, after) {
-  if (before === null || after === null) return null;
-  if (Number.isNaN(before) || Number.isNaN(after)) return null;
-  if (before <= 0 || after <= 0) return null;
-  const avg = (before + after) / 2;
-  if (avg === 0) return null;
-  return Math.abs(before - after) / avg * 100;
 }
 
 function formatChemicalDisplay(value, dp=4){
