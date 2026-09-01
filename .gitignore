@@ -1,0 +1,7 @@
+~$*.*
+*.tmp
+Thumbs.db
+desktop.ini
+_syntax_check.js
+_check_*.png
+*.pyc
