@@ -3927,7 +3927,7 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td><input class="vi-input" id="occ-noise-s2-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-s2-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td class="result-cell" id="occ-noise-s2-laeq">—</td>
-            <td class="occ-muted-cell">—</td>
+            <td class="result-cell" id="occ-noise-s2-lex8">—</td>
             <td class="result-cell" id="occ-noise-s2-lexw">—</td>
             <td><input class="vi-input" id="occ-noise-s2-limit" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td class="result-cell" id="occ-noise-s2-judge">—</td>
@@ -3999,7 +3999,7 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td><input class="vi-input" id="occ-noise-mw1-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-mw1-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td class="result-cell" id="occ-noise-mw1-laeq">—</td>
-            <td rowspan="3" class="occ-muted-cell">—</td>
+            <td rowspan="3" class="result-cell" id="occ-noise-mw-lex8">—</td>
             <td rowspan="3" class="result-cell" id="occ-noise-mw-lexw">—</td>
             <td rowspan="3"><input class="vi-input" id="occ-noise-mw-limit" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td rowspan="3" class="result-cell" id="occ-noise-mw-judge">—</td>
@@ -7185,6 +7185,7 @@ function calcOccupational(){
   const s2Lexw=weeklyLex(s2Lex8, s2Days);
   const s2Judge=noiseJudge(s2Lexw, s2Limit);
   setPlain('occ-noise-s2-laeq', fmtNoiseLong(s2Laeq));
+  setPlain('occ-noise-s2-lex8', fmtNoiseLong(s2Lex8));
   setPlain('occ-noise-s2-lexw', fmtNoiseLong(s2Lexw));
   setJudge('occ-noise-s2-judge', s2Judge);
   setPlain('occ-noise-single-note', !Number.isNaN(s2Days) ? `按每周 ${s2Days} 天折算 LEX,w` : '请录入每周实际工作天数');
@@ -7210,8 +7211,9 @@ function calcOccupational(){
       }
     }
     const daily = totalEnergy > 0 ? 10 * Math.log10(totalEnergy / 8) : NaN;
-    const weeklyValue = (weekly && totalEnergy > 0 && totalTime > 0 && !Number.isNaN(daysValue) && daysValue > 0)
-      ? 10 * Math.log10(totalEnergy / totalTime * daysValue / 5)
+    /* GBZ 2.2-2007 公式链：LEX,8h = 10·lg[ΣTi·10^(0.1·LAeq,i)/8]；LEX,w = LEX,8h + 10·lg(Tw/5) */
+    const weeklyValue = (weekly && !Number.isNaN(daily) && !Number.isNaN(daysValue) && daysValue > 0)
+      ? daily + 10 * Math.log10(daysValue / 5)
       : NaN;
     const metric = weekly ? weeklyValue : daily;
     const judge = noiseJudge(metric, limitValue);
@@ -7225,6 +7227,7 @@ function calcOccupational(){
   const mwDays = num('occ-noise-mw-days');
   const mwLimit = num('occ-noise-mw-limit');
   const mw = calcMultiNoise('mw', mwDays, mwLimit, 'occ-noise-mw-lexw', 'occ-noise-mw-judge', true);
+  setPlain('occ-noise-mw-lex8', fmtNoiseLong(mw.daily));
   setPlain('occ-noise-multi-note', !Number.isNaN(mwDays) ? `按每周 ${mwDays} 天折算多场所 LEX,w` : '请录入每周实际工作天数');
 
   setPlain('occ-lex', `${fmtNoise(lex8)} / ${fmtNoise(s2Lexw)} · 情况一${singleJudge}，情况二${s2Judge}`);
@@ -7852,10 +7855,16 @@ function genOccNoiseWorkplace(){
       'LAeq,Te = 10·lg[ (10^(L₁/10) + 10^(L₂/10) + 10^(L₃/10)) / n ]',
       v2.map((v,i)=>cpLine('10^(L'+(i+1)+'/10) = '+cpFm(v,1)+'/10', cpFmt(terms[i]))).concat([cpLine('÷ n', cpFmt(v2.length))]),
       'LAeq,Te = '+cpFm(leq,4)+' dB(A)', E_NOTE));
-    steps.push(cpStep('④ LEX,w（周等效声级）折算',
-      'LEX,w = LAeq,Te + 10·lg(Te/8) + 10·lg(Tw/5)',
-      [cpLine('LAeq,Te', cpFm(leq,4)+' dB(A)'), cpLine('10·lg(Te/8)', cpFm(10*Math.log10(t2/8),4)+' dB'),
-       cpLine('Tw（每周实际工作天数）', cpFm(d2,1)+' d'), cpLine('标准基准：5 d/week', ''), cpLine('修正系数 Tw/5', cpFm(d2/5,3))],
+    steps.push(cpStep('④ LEX,8h 标准化（一天 8h 等效声级）',
+      'LEX,8h = LAeq,Te + 10·lg(Te / 8)',
+      [cpLine('LAeq,Te', cpFm(leq,4)+' dB(A)'), cpLine('Te（日接触时间）', cpFm(t2,2)+' h'), cpLine('10·lg(Te/8)', cpFm(10*Math.log10(t2/8),4)+' dB')],
+      'LEX,8h = '+cpFm(l8,4)+' dB(A)'));
+    steps.push(cpStep('⑤ LEX,w（周等效声级）',
+      'LEX,w = LEX,8h + 10·lg(Tw / 5)',
+      [cpLine('LEX,8h', cpFm(l8,4)+' dB(A)'),
+       cpLine('Tw（每周实际工作天数）', cpFm(d2,1)+' d'),
+       cpLine('标准基准：5 d/week', ''),
+       cpLine('修正系数 Tw/5', cpFm(d2,1)+' / 5 = '+cpFm(d2/5,3))],
       'LEX,w = '+cpFm(lw,4)+' dB(A)'));
     steps.push(cpVerdictCard('LEX,w（周等效声级）', lw, 'dB(A)', l2));
   }
@@ -7864,7 +7873,7 @@ function genOccNoiseWorkplace(){
   const pts=[];
   for(let i=1;i<=3;i++){ const vals=sv('occ-noise-p'+i); if(vals.length) pts.push({i, vals, v:cpNoiseEnergyAvg(vals)}); }
   if(pts.length){
-    steps.push(cpStep('⑤ 测点单次测量结果能量平均',
+    steps.push(cpStep('⑥ 测点单次测量结果能量平均',
       'LAeq = 10·lg[ (10^(L₁/10)+10^(L₂/10)+10^(L₃/10)) / n ]',
       pts.map(p=>cpLine('第'+cn(p.i)+'个点（'+p.vals.length+' 次测量）', cpFm(p.v,4)+' dB(A)')),
       '各测点能量平均已得出，供多场所计算引用'));
@@ -7885,7 +7894,12 @@ function genOccNoiseWorkplace(){
     const te=outs.reduce((a,x)=>a+x.t*Math.pow(10,0.1*x.leq),0);
     const st=outs.reduce((a,x)=>a+x.t,0);
     if(st>8) warns.push('多场所'+(weekly?'情况二':'情况一')+'：接触时间合计 '+st+' h 超过 8 h（工作日有效时间），请核对');
-    if(weekly){ const dw=num('occ-noise-mw-days'); return {outs, te, st, dw, lw:Number.isNaN(dw)?NaN:10*Math.log10(te/st*dw/5)}; }
+    if(weekly){
+      const dw=num('occ-noise-mw-days');
+      const l8=10*Math.log10(te/8);
+      const laeqTe=10*Math.log10(te/st);
+      return {outs, te, st, dw, laeqTe, l8, lw:Number.isNaN(dw)?NaN:(l8+10*Math.log10(dw/5))};
+    }
     return {outs, te, st, l8:10*Math.log10(te/8)};
   };
 
@@ -7893,11 +7907,11 @@ function genOccNoiseWorkplace(){
   const md=multi('md',false);
   if(md){
     const lim=num('occ-noise-md-limit');
-    steps.push(cpStep('⑥ 多场所情况一（5d/w）· 能量贡献计算',
+    steps.push(cpStep('⑦ 多场所情况一（5d/w）· 能量贡献计算',
       'Eᵢ = Tᵢ × 10^(0.1·LAeq,Tᵢ)',
       md.outs.map(x=>cpLine('场所'+cn(x.i), cpFm(x.t,2)+' × 10^(0.1×'+cpFm(x.leq,3)+') = '+cpFmt(x.t*Math.pow(10,0.1*x.leq)))),
       'ΣE = '+cpFmt(md.te)+'；ΣT = '+cpFmt(md.st)+' h', E_NOTE));
-    steps.push(cpStep('⑦ 能量累计与 8h 折算',
+    steps.push(cpStep('⑧ 能量累计与 8h 折算',
       'LEX,8h = 10·lg[ Σ(Tᵢ·10^(0.1·LAeq,i)) / 8 ] = 10·lg(ΣE / 8)',
       [cpLine('ΣE（累计能量）', cpFmt(md.te)), cpLine('÷ 8 h', cpFmt(md.te/8))],
       'LEX,8h = '+cpFm(md.l8,4)+' dB(A)', E_NOTE));
@@ -7911,22 +7925,28 @@ function genOccNoiseWorkplace(){
     const E= mw.te;
     const meanE= mw.te/mw.st;
     const scaled= meanE*mw.dw/5;
-    steps.push(cpStep('⑧ 多场所情况二（≠5d/w）· 能量贡献计算',
+    steps.push(cpStep('⑨ 多场所情况二（≠5d/w）· 能量贡献计算',
       'Eᵢ = Tᵢ × 10^(0.1·LAeq,Tᵢ)',
       mw.outs.map(x=>cpLine('场所'+cn(x.i), cpFm(x.t,2)+' × 10^(0.1×'+cpFm(x.leq,3)+') = '+cpFmt(x.t*Math.pow(10,0.1*x.leq)))),
       'ΣE = '+cpFmt(E)+'；ΣT = '+cpFmt(mw.st)+' h', E_NOTE));
-    steps.push(cpStep('⑨ 时间平均能量',
-      'Ē = ΣE ÷ ΣT',
-      [cpLine('ΣE（累计能量）', cpFmt(E)), cpLine('ΣT（总接触时间）', cpFmt(mw.st)+' h')],
-      'Ē（平均能量） = '+cpFmt(meanE), E_NOTE));
-    steps.push(cpStep('⑩ 周时间修正',
-      'LEX,w = 10·lg[ (ΣE÷ΣT) × (Tw/5) ]',
-      [cpLine('Ē（平均能量）', cpFmt(meanE)),
+    steps.push(cpStep('⑩ 实际工作日合成（LAeq,Te）',
+      'LAeq,Te = 10·lg( ΣE ÷ ΣT )',
+      [cpLine('ΣE（能量贡献和）', cpFmt(E)), cpLine('ΣT（实际接触时间合计）', cpFmt(mw.st)+' h')],
+      'LAeq,Te = '+cpFm(mw.laeqTe,4)+' dB(A)', E_NOTE));
+    steps.push(cpStep('⑪ 8h 标准化 LEX,8h（一天 8h 等效声级）',
+      'LEX,8h = LAeq,Te + 10·lg(ΣT / 8) = 10·lg( ΣE ÷ 8 )',
+      [cpLine('LAeq,Te', cpFm(mw.laeqTe,4)+' dB(A)'),
+       cpLine('ΣT（实际接触时间）', cpFmt(mw.st)+' h'),
+       cpLine('10·lg(ΣT/8)', cpFm(10*Math.log10(mw.st/8),4)+' dB'),
+       cpLine('ΣE ÷ 8', cpFmt(E/8))],
+      'LEX,8h = '+cpFm(mw.l8,4)+' dB(A)'));
+    steps.push(cpStep('⑫ LEX,w（周等效声级）',
+      'LEX,w = LEX,8h + 10·lg(Tw / 5)',
+      [cpLine('LEX,8h', cpFm(mw.l8,4)+' dB(A)'),
        cpLine('Tw（每周实际工作天数）', cpFm(mw.dw,1)+' d'),
        cpLine('标准基准：5 d/week', ''),
-       cpLine('修正系数 Tw/5', cpFm(mw.dw,1)+' / 5 = '+cpFm(mw.dw/5,3)),
-       cpLine('Ē × Tw/5', cpFmt(scaled))],
-      'LEX,w = 10·lg['+cpFmt(scaled)+'] = '+cpFm(mw.lw,4)+' dB(A)'));
+       cpLine('修正系数 Tw/5', cpFm(mw.dw,1)+' / 5 = '+cpFm(mw.dw/5,3))],
+      'LEX,w = '+cpFm(mw.lw,4)+' dB(A)'));
     steps.push(cpVerdictCard('LEX,w（周等效声级）', mw.lw, 'dB(A)', lim));
   }
 
