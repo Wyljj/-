@@ -3098,11 +3098,11 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
   <thead>
     <tr>
       <th style="width:100px">#</th>
-      <th style="width:130px">Leq(等效声级)(dB)</th>
-      <th style="width:130px">SEL(计算)(dB)</th>
-      <th style="width:130px">SEL(目标)(dB)</th>
-      <th style="width:90px">T(s)</th>
-      <th style="width:90px">T(min)</th>
+      <th style="width:150px">L<sub>Aeq,T</sub>(等效连续A声级)/ dB(A)</th>
+      <th style="width:150px">L<sub>AE</sub>(SEL，声暴露级)/ dB</th>
+      <th style="width:150px">目标 L<sub>AE</sub>(SEL)/ dB</th>
+      <th style="width:90px">T / s</th>
+      <th style="width:90px">T / min</th>
     </tr>
   </thead>
   <tbody id="noise-table-body-600">
@@ -3162,11 +3162,11 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
   <thead>
     <tr>
       <th style="width:100px">#</th>
-      <th style="width:130px">Leq(等效声级)(dB)</th>
-      <th style="width:130px">SEL(计算)(dB)</th>
-      <th style="width:130px">SEL(目标)(dB)</th>
-      <th style="width:90px">T(s)</th>
-      <th style="width:90px">T(min)</th>
+      <th style="width:150px">L<sub>Aeq,T</sub>(等效连续A声级)/ dB(A)</th>
+      <th style="width:150px">L<sub>AE</sub>(SEL，声暴露级)/ dB</th>
+      <th style="width:150px">目标 L<sub>AE</sub>(SEL)/ dB</th>
+      <th style="width:90px">T / s</th>
+      <th style="width:90px">T / min</th>
     </tr>
   </thead>
   <tbody id="noise-table-body-1200">
@@ -6546,8 +6546,8 @@ function calcNoiseRow600(rowIdx){
     const tSec = Math.pow(10, delta / 10);
     const el2 = document.getElementById(`nc600-t-sec-${rowIdx}`);
     const el3 = document.getElementById(`nc600-t-min-${rowIdx}`);
-    if(el2) el2.textContent = tSec.toFixed(2);
-    if(el3) el3.textContent = (tSec / 60).toFixed(4);
+    if(el2) el2.textContent = (tSec >= 0.01 || Number.isNaN(tSec)) ? tSec.toFixed(2) : tSec.toExponential(2);
+    if(el3) el3.textContent = ((tSec / 60) >= 0.0001 || Number.isNaN(tSec / 60)) ? (tSec / 60).toFixed(4) : (tSec / 60).toExponential(2);
   } else {
     const el2 = document.getElementById(`nc600-t-sec-${rowIdx}`);
     const el3 = document.getElementById(`nc600-t-min-${rowIdx}`);
@@ -6608,8 +6608,8 @@ function calcNoiseRow1200(rowIdx){
     const tSec = Math.pow(10, delta / 10);
     const el2 = document.getElementById(`nc1200-t-sec-${rowIdx}`);
     const el3 = document.getElementById(`nc1200-t-min-${rowIdx}`);
-    if(el2) el2.textContent = tSec.toFixed(2);
-    if(el3) el3.textContent = (tSec / 60).toFixed(4);
+    if(el2) el2.textContent = (tSec >= 0.01 || Number.isNaN(tSec)) ? tSec.toFixed(2) : tSec.toExponential(2);
+    if(el3) el3.textContent = ((tSec / 60) >= 0.0001 || Number.isNaN(tSec / 60)) ? (tSec / 60).toFixed(4) : (tSec / 60).toExponential(2);
   } else {
     const el2 = document.getElementById(`nc1200-t-sec-${rowIdx}`);
     const el3 = document.getElementById(`nc1200-t-min-${rowIdx}`);
@@ -8310,9 +8310,16 @@ window.addEventListener('load', function(){
 })();
 
 
+
+/* 科学计数法展示(仅用于显示):2.51 × 10^-9 */
+function cpSci(v, dp){
+  var e=Number(v).toExponential(dp||2);
+  var p=e.split('e');
+  return p[0]+' \\times 10^{'+p[1].replace('+','')+'}';
+}
 /* ── 噪声验算(600 s/1200 s):SEL 计算与测量时长反算 ── */
 function genNoiseCheckProcess(){
-  const steps=[], warns=[];
+  const steps=[];
   const groups=[['nc600','noise-table-body-600',600,'600 s'],['nc1200','noise-table-body-1200',1200,'1200 s']];
   groups.forEach(function(g){
     const prefix=g[0], bodyId=g[1], sec=g[2], tag=g[3];
@@ -8324,23 +8331,31 @@ function genNoiseCheckProcess(){
       const sel=leq+10*Math.log10(sec);
       steps.push(cpStep(tag+' · 第 '+(idx+1)+' 行 · SEL（声暴露级）', {
         math: [
-          'SEL = L_{eq} + 10\\lg\\frac{T}{T_0}',
-          'SEL = '+cpFm(leq,3)+' + 10\\lg\\frac{'+sec+'}{1} = '+cpFm(sel,3)+'\\ \\mathrm{dB}'
+          'L_{AE} = L_{Aeq,T} + 10\\lg\\frac{T}{T_0}',
+          'L_{AE} = '+cpFm(leq,3)+' + 10\\lg\\frac{'+sec+'}{1} = '+cpFm(sel,3)+'\\ \\mathrm{dB}'
         ],
-        note: 'T0 = 1 s；SEL 为测量时长 T 内的等效声级换算到 1 s 声暴露量对应的声级。'
+        subs: [
+          cpSub('参数说明', 'L_{AE}: A计权声暴露级(SEL); L_{Aeq,T}: 测量时间 T 内等效连续A声级; T: 测量时长(s); T_0: 基准时间 = 1\\ \\mathrm{s}')
+        ],
+        boxed: 'L_{AE} = '+cpFm(sel,3)+'\\ \\mathrm{dB}'
       }));
       if(!Number.isNaN(target)){
         const tSec=Math.pow(10,(target-leq)/10);
+        const tMin=tSec/60;
+        const tSecTxt=tSec>=0.01?cpFm(tSec,2):cpSci(tSec,2);
+        const tMinTxt=tMin>=0.0001?cpFm(tMin,4):cpSci(tMin,2);
         steps.push(cpStep(tag+' · 第 '+(idx+1)+' 行 · 目标 SEL 对应时长', {
           math: [
-            'T = 10^{\\frac{SEL_{目标} - L_{eq}}{10}}',
-            'T = 10^{\\frac{'+cpFm(target,3)+' - '+cpFm(leq,3)+'}{10}} = '+cpFm(tSec,2)+'\\ \\mathrm{s} = '+cpFm(tSec/60,4)+'\\ \\mathrm{min}'
-          ]
+            'T = T_0 \\cdot 10^{\\frac{L_{AE,\\mathrm{目标}} - L_{Aeq,T}}{10}}',
+            'T = 1 \\cdot 10^{\\frac{'+cpFm(target,3)+' - '+cpFm(leq,3)+'}{10}} = '+tSecTxt+'\\ \\mathrm{s} = '+tMinTxt+'\\ \\mathrm{min}'
+          ],
+          boxed: 'T = '+tSecTxt+'\\ \\mathrm{s} = '+tMinTxt+'\\ \\mathrm{min}',
+          note: '目标 SEL 对应时长的反算基于所求时间段内噪声等效声级保持一致的假设。对于明显非稳态、间歇性或随时间显著变化的噪声，应结合实际时间历程评价。'
         }));
       }
     });
   });
-  if(!steps.length) return cpHint('录入上方 600 s / 1200 s 表格的 Leq 与目标 SEL 后，此处自动展示 SEL 换算与时长反算过程。');
+  if(!steps.length) return cpHint('录入上方 600 s / 1200 s 表格的 LAeq,T(Leq) 与目标 SEL 后，此处自动展示 SEL 换算与时长反算过程。');
   return steps.join('');
 }
 function renderNoiseCheckProcess(){
@@ -9277,6 +9292,17 @@ function runNoiseGoldenTest(){
   push('单场所 84.2/85.0/84.6, 6h/d → LAeq≈84.61227178, LEX,8h≈83.36288442', (function(){ const l = cpNoiseEnergyAvg([84.2, 85.0, 84.6]); const e = calculateNoiseDailyExposure(l, 6); return Math.abs(l - 84.61227178) <= tol && Math.abs(e - 83.36288442) <= tol && occNoiseJudge(e, 85) === '符合'; })());
   push('单场所 88.1/87.7/88.4, 4h/d, 6d/w → LAeq≈88.07609175, LEX,8h≈85.06579180, LEX,w≈85.85760426', (function(){ const l = cpNoiseEnergyAvg([88.1, 87.7, 88.4]); const e = calculateNoiseDailyExposure(l, 4); const w = calculateNoiseWeeklyExposure(e, 6); return Math.abs(l - 88.07609175) <= tol && Math.abs(e - 85.06579180) <= tol && Math.abs(w - 85.85760426) <= tol && occNoiseJudge(w, 85) === '不符合'; })());
   push('测点 点1≈76.71592692 / 点2≈79.98219967 / 点3≈83.14576719', (function(){ const a = cpNoiseEnergyAvg([76.2, 77.1, 76.8]); const bb = cpNoiseEnergyAvg([80.0, 79.5, 80.4]); const cc = cpNoiseEnergyAvg([83.2, 82.7, 83.5]); return Math.abs(a - 76.71592692) <= tol && Math.abs(bb - 79.98219967) <= tol && Math.abs(cc - 83.14576719) <= tol; })());
+  /* ── SEL 换算回归(600 s/1200 s,T0=1 s) ── */
+  push('600s SEL: 1 + 10lg600 = 28.782 dB', Math.abs(1 + 10 * Math.log10(600) - 28.781512) <= tol);
+  push('600s 反算 T=1×10^((2-1)/10)=1.2589s', Math.abs(Math.pow(10, (2 - 1) / 10) - 1.258925) <= tol);
+  push('600s T=1.2589s → min=0.0210', Math.abs(1.258925 / 60 - 0.020982) <= tol);
+  push('600s T=0.07943s → 0.08s', Math.abs(Math.pow(10, (2 - 13) / 10) - 0.079433) <= tol);
+  push('1200s SEL: 6 + 10lg1200 = 36.792 dB', Math.abs(6 + 10 * Math.log10(1200) - 36.791812) <= tol);
+  push('1200s 反算 T=1×10^((8-6)/10)=1.5849s', Math.abs(Math.pow(10, (8 - 6) / 10) - 1.584893) <= tol);
+  push('1200s 反算 T=199.526s → 199.53s/3.3254min', Math.abs(Math.pow(10, (28 - 5) / 10) - 199.526231) <= tol && Math.abs(199.526231 / 60 - 3.325437) <= tol);
+  push('极小时间 T=10^(-8.6)=2.51×10^-9s(不显示0.00)', Math.abs(Math.pow(10, (2 - 88) / 10) - 2.511886e-9) <= 1e-12);
+  push('极小时间科学计数法 2.51×10^-9', cpSci(2.511886e-9, 2) === '2.51 \\times 10^{-9}');
+  push('极小分钟 4.19×10^-11', cpSci(2.511886e-9 / 60, 2) === '4.19 \\times 10^{-11}');
   /* ── 情况一 5 d/w:LEX,w = LEX,8h(标准周等效 n=5) ── */
   push('情况一 5d/w: 85/85/85, 8h/d → LAeq=LEX,8h=LEX,w=85.0000, 符合', (function(){ const l = cpNoiseEnergyAvg([85, 85, 85]); const e = calculateNoiseDailyExposure(l, 8); const w = calculateNoiseWeeklyExposure(e, 5); return Math.abs(l - 85) <= tol && Math.abs(e - 85) <= tol && Math.abs(w - 85) <= tol && occNoiseJudge(w, 85) === '符合'; })());
   push('情况一 5d/w: 84.2/85.0/84.6, 6h/d → LAeq=84.61227178, LEX,8h=LEX,w=83.36288442, 符合', (function(){ const l = cpNoiseEnergyAvg([84.2, 85.0, 84.6]); const e = calculateNoiseDailyExposure(l, 6); const w = calculateNoiseWeeklyExposure(e, 5); return Math.abs(l - 84.61227178) <= tol && Math.abs(e - 83.36288442) <= tol && Math.abs(w - 83.36288442) <= tol && occNoiseJudge(w, 85) === '符合'; })());
