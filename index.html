@@ -8975,19 +8975,30 @@ function renderOccChemProcess(){
 window.renderOccChemProcess=renderOccChemProcess;
 if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderOccChemProcess);
 
-/* ── 职业卫生 · 工频电场:8h 等效与多点合成 ── */
+/* ── 职业卫生 · 工频电场:读取录入值(头/胸/腹)取报告值 → 8h 等效(与主表同一公式) ── */
 function genOccElectricProcess(){
   const steps=[];
-  const c1=num('occ-electric-c1-report'), c1t=num('occ-electric-c1-time');
-  if(!Number.isNaN(c1) && !Number.isNaN(c1t) && c1t>0){
-    const e8=c1*Math.sqrt(c1t/8);
-    steps.push(cpStep('① 8 h 等效电场强度', {
-      math: ['E_{8h} = E \\times \\sqrt{\\frac{t}{8}}',
-        'E_{8h} = '+cpFm(c1,2)+' \\times \\sqrt{\\frac{'+cpFm(c1t,2)+'}{8}} = '+cpFm(e8,2)+'\\ \\mathrm{V/m}'],
-      subs: [ cpSub('判定', '限值 '+cpFm(num('occ-electric-c1-limit'),1)+' V/m → '+(e8<num('occ-electric-c1-limit')?'符合':'不符合')) ]
+  const groups=[['c1','第1小组'],['c2g1','第2小组·第1次'],['c2g2','第2小组·第2次'],['c2g3','第2小组·第3次']];
+  groups.forEach(function(g){
+    const prefix='occ-electric-'+g[0];
+    const vals=[num(prefix+'-head'),num(prefix+'-chest'),num(prefix+'-abdomen')].filter(v=>!Number.isNaN(v));
+    if(!vals.length) return;
+    const report=Math.max.apply(null,vals);
+    const t=num(prefix+'-time');
+    if(Number.isNaN(t)||t<=0) return;
+    const limit=num(prefix+'-limit');
+    const e8=report*Math.sqrt(t/8);
+    steps.push(cpStep('工频电场 8 h 等效 · '+g[1], {
+      math: [
+        'E_{报告} = \\max(E_{头}, E_{胸}, E_{腹})',
+        'E_{报告} = '+cpFm(vals[0],1)+' / '+cpFm(vals[1]!==undefined?vals[1]:0,1)+' / '+cpFm(vals[2]!==undefined?vals[2]:0,1)+' \\Rightarrow '+cpFm(report,1)+'\\ \\mathrm{V/m}',
+        'E_{8h} = E \\times \\sqrt{\\frac{t}{8}}',
+        'E_{8h} = '+cpFm(report,2)+' \\times \\sqrt{\\frac{'+cpFm(t,2)+'}{8}} = '+cpFm(e8,2)+'\\ \\mathrm{V/m}'
+      ],
+      subs: [ cpSub('判定', '限值 '+cpFm(limit,1)+' V/m → '+cpFm(e8,2)+' '+(!Number.isNaN(limit)?(e8<limit?'<':'≥')+' '+cpFm(limit,1)+' → '+(e8<limit?'符合':'不符合'):'请录入限值')) ]
     }));
-  }
-  return steps.length?steps.join(''):cpHint('录入工频电场测量值与接触时间后，此处自动展示 8 h 等效换算过程。');
+  });
+  return steps.length?steps.join(''):cpHint('录入工频电场头/胸/腹测量值与接触时间后，此处自动展示 8 h 等效换算过程。');
 }
 function renderOccElectricProcess(){
   const box=document.getElementById('occ-electric-process');
