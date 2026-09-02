@@ -3961,12 +3961,13 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
         <thead><tr><th colspan="8">FR折减因子计算</th></tr><tr><th>需要折算</th><th>H</th><th></th><th></th><th></th><th>R</th><th>GBZ2.1限值</th><th>PC-TWA</th></tr></thead>
         <tbody>
           <tr><td>每天＞8h</td><td><input class="vi-input" id="occ-fr-daily-h" oninput="calcOccupational()" step="0.1" type="number" placeholder="每天工作时间"/></td><td>8</td><td>24</td><td>16</td><td id="occ-fr-daily-r">—</td><td><input class="vi-input" id="occ-fr-daily-limit" oninput="calcOccupational()" step="0.1" type="number" placeholder="GBZ2.1限值"/></td><td id="occ-fr-daily-pctwa">—</td></tr>
-          <tr><td>每周＞40h或5d</td><td><input class="vi-input" id="occ-fr-weekly-h" oninput="calcOccupational()" step="0.1" type="number" placeholder="每周工作时间"/></td><td>40</td><td>168</td><td>128</td><td id="occ-fr-weekly-r">—</td><td><input class="vi-input" id="occ-fr-weekly-limit" oninput="calcOccupational()" step="0.1" type="number" placeholder="GBZ2.1限值"/></td><td id="occ-fr-weekly-pctwa">—</td></tr>
+          <tr><td>每周实际工作超过5 d且总工作时间超过40 h<br/>每周工作天数 D：<input class="vi-input" id="occ-fr-weekly-days" oninput="calcOccupational()" step="1" type="number" placeholder="D"/></td><td><input class="vi-input" id="occ-fr-weekly-h" oninput="calcOccupational()" step="0.1" type="number" placeholder="每周总工时H"/></td><td>40</td><td>168</td><td>128</td><td id="occ-fr-weekly-r">—</td><td><input class="vi-input" id="occ-fr-weekly-limit" oninput="calcOccupational()" step="0.1" type="number" placeholder="GBZ2.1限值"/></td><td id="occ-fr-weekly-pctwa">—</td></tr>
+          <tr><td colspan="8" class="p-note" id="occ-fr-note">—</td></tr>
         </tbody>
       </table>
     </div>
     <div class="occ-noise-process-box" id="occ-fr-process-box">
-  <div class="occ-noise-process-title">🧮 计算过程 · FR 折减因子（高频电磁场）</div>
+  <div class="occ-noise-process-title">🧮 计算过程 · FR 折减因子（化学有害因素延长工时）</div>
   <div class="occ-noise-process" id="occ-fr-process">
     <div class="cp-hint">录入高频电磁场工作时长与限值后，此处自动展示 TWA 折算（RF 折减因子）过程。</div>
   </div>
@@ -7156,8 +7157,8 @@ function calculateChemicalWorkplace(concs, t, stel, twaLimit){
   const ctwa = (!Number.isNaN(avgConc) && !Number.isNaN(Number(t))) ? avgConc * Number(t) / 8 : NaN;
   const threeTwa = !Number.isNaN(Number(twaLimit)) ? Number(twaLimit) * 3 : NaN;
   const fiveTwa = !Number.isNaN(Number(twaLimit)) ? Number(twaLimit) * 5 : NaN;
-  const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(Number(stel))) ? (cpe < Number(stel) ? '符合' : '不符合') : '—';
-  const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(Number(twaLimit))) ? (ctwa < Number(twaLimit) ? '符合' : '不符合') : '—';
+  const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(Number(stel))) ? (cpe <= Number(stel) ? '符合' : '不符合') : '—';
+  const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(Number(twaLimit))) ? (ctwa <= Number(twaLimit) ? '符合' : '不符合') : '—';
   const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa) && !Number.isNaN(fiveTwa)) ? (cpe <= threeTwa || cpe <= fiveTwa ? '符合' : '不符合') : '—';
   const finalJudge = (stelJudge === '符合' && twaJudge === '符合' && peakJudge === '符合') ? '符合' :
                      (stelJudge !== '—' || twaJudge !== '—' || peakJudge !== '—') ? '不符合' : '—';
@@ -7170,8 +7171,8 @@ function calculateChemicalCase2Total(workplaces, stel, twaLimit){
   const cpe = cpeVals.length ? Math.max(...cpeVals) : NaN;
   const threeTwa = !Number.isNaN(Number(twaLimit)) ? Number(twaLimit) * 3 : NaN;
   const fiveTwa = !Number.isNaN(Number(twaLimit)) ? Number(twaLimit) * 5 : NaN;
-  const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(Number(stel))) ? (cpe < Number(stel) ? '符合' : '不符合') : '—';
-  const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(Number(twaLimit))) ? (ctwa < Number(twaLimit) ? '符合' : '不符合') : '—';
+  const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(Number(stel))) ? (cpe <= Number(stel) ? '符合' : '不符合') : '—';
+  const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(Number(twaLimit))) ? (ctwa <= Number(twaLimit) ? '符合' : '不符合') : '—';
   const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa) && !Number.isNaN(fiveTwa)) ? (cpe <= threeTwa || cpe <= fiveTwa ? '符合' : '不符合') : '—';
   const finalJudge = (stelJudge === '符合' && twaJudge === '符合' && peakJudge === '符合') ? '符合' :
                      (stelJudge !== '—' || twaJudge !== '—' || peakJudge !== '—') ? '不符合' : '—';
@@ -7232,8 +7233,8 @@ function calcOccupational(){
     const threeTwa = !Number.isNaN(twaLimit) ? twaLimit * 3 : NaN;
     const fiveTwa = !Number.isNaN(twaLimit) ? twaLimit * 5 : NaN;
     
-    const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(stel)) ? (cpe < stel ? '符合' : '不符合') : '—';
-    const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(twaLimit)) ? (ctwa < twaLimit ? '符合' : '不符合') : '—';
+    const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(stel)) ? (cpe <= stel ? '符合' : '不符合') : '—';
+    const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(twaLimit)) ? (ctwa <= twaLimit ? '符合' : '不符合') : '—';
     const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa) && !Number.isNaN(fiveTwa)) ? (cpe <= threeTwa || cpe <= fiveTwa ? '符合' : '不符合') : '—';
     const finalJudge = (stelJudge === '符合' && twaJudge === '符合' && peakJudge === '符合') ? '符合' : 
                        (stelJudge !== '—' || twaJudge !== '—' || peakJudge !== '—') ? '不符合' : '—';
@@ -7431,19 +7432,37 @@ function calcOccupational(){
   const overall = activeJudges.length ? (activeJudges.every(j => j === '符合') ? '当前已评物理因素项目均符合' : '存在物理因素项目不符合') : '请录入物理因素检测数据';
   setPlain('occ-noise-overall', overall);
 
+  /* FR 折减因子:仅用于化学有害因素延长工时 PC-TWA;每日/每周分场景,条件校验,不自动叠乘 */
+  const frNotes=[];
   const dailyH = num('occ-fr-daily-h');
   const dailyLimit = num('occ-fr-daily-limit');
-  const rfDaily = (!Number.isNaN(dailyH) && dailyH > 0) ? (8 / dailyH) * ((24 - dailyH) / 16) : NaN;
-  const dailyPctwa = (!Number.isNaN(rfDaily) && !Number.isNaN(dailyLimit)) ? rfDaily * dailyLimit : NaN;
+  let rfDaily=NaN, dailyPctwa=NaN;
+  if(Number.isNaN(dailyH)) frNotes.push('未录入每日工作时间');
+  else if(dailyH<=0 || dailyH>=24) frNotes.push('每日工作时间 h = '+dailyH+' 非法（需 0 < h < 24），不产生有效限值结果');
+  else if(dailyH<=8){ rfDaily=1; frNotes.push('每日实际工作时间未超过8 h，无需进行延长工时折减（RF_d = 1）'); }
+  else rfDaily=(8/dailyH)*((24-dailyH)/16);
+  dailyPctwa=(!Number.isNaN(rfDaily)&&!Number.isNaN(dailyLimit))?rfDaily*dailyLimit:NaN;
   setPlain('occ-fr-daily-r', !Number.isNaN(rfDaily) ? rfDaily.toFixed(6) : '—');
   setPlain('occ-fr-daily-pctwa', !Number.isNaN(dailyPctwa) ? dailyPctwa.toFixed(4) : '—');
-
+  const weeklyD = num('occ-fr-weekly-days');
   const weeklyH = num('occ-fr-weekly-h');
   const weeklyLimit = num('occ-fr-weekly-limit');
-  const rfWeekly = (!Number.isNaN(weeklyH) && weeklyH > 0) ? (40 / weeklyH) * ((168 - weeklyH) / 128) : NaN;
-  const weeklyPctwa = (!Number.isNaN(rfWeekly) && !Number.isNaN(weeklyLimit)) ? rfWeekly * weeklyLimit : NaN;
+  let rfWeekly=NaN, weeklyPctwa=NaN;
+  const dValid=!Number.isNaN(weeklyD)&&Number.isInteger(weeklyD)&&weeklyD>=1&&weeklyD<=7;
+  const hValid=!Number.isNaN(weeklyH)&&weeklyH>0&&weeklyH<168;
+  if(!dValid||!hValid){
+    if(!Number.isNaN(weeklyD)||!Number.isNaN(weeklyH))
+      frNotes.push((dValid?'':'每周工作天数 D 需为 1～7 的整数；')+(hValid?'':'每周总工时 H 需满足 0 < H < 168；')+'数据非法，不产生有效限值结果');
+  } else if(weeklyD<=5 && weeklyH<=40){ rfWeekly=1; frNotes.push('标准周工作制度（D ≤ 5 且 H ≤ 40），无需周折减（RF_w = 1）'); }
+  else if(weeklyD>5 && weeklyH>40){ rfWeekly=(40/weeklyH)*((168-weeklyH)/128); }
+  else { rfWeekly=1; frNotes.push('当前工作制度不完全满足预设周折减场景（D>5 且 H>40），请核对工作制度或按标准条款确认适用方式【需人工确认】'); }
+  weeklyPctwa=(!Number.isNaN(rfWeekly)&&!Number.isNaN(weeklyLimit))?rfWeekly*weeklyLimit:NaN;
   setPlain('occ-fr-weekly-r', !Number.isNaN(rfWeekly) ? rfWeekly.toFixed(6) : '—');
   setPlain('occ-fr-weekly-pctwa', !Number.isNaN(weeklyPctwa) ? weeklyPctwa.toFixed(4) : '—');
+  const dailyOver=!Number.isNaN(dailyH)&&dailyH>8;
+  const weeklyTrig=dValid&&hValid&&weeklyD>5&&weeklyH>40;
+  if(dailyOver&&weeklyTrig) frNotes.push('当前同时满足每日与每周延长工时条件，需按标准规则确认折减方式（系统未自动叠乘 RF_d × RF_w）【需人工确认】');
+  setPlain('occ-fr-note', frNotes.join('；'));
 
   const calcIndividualNoise = (index) => {
     const laeq = num(`occ-ind-noise-${index}-laeq`);
@@ -8965,37 +8984,54 @@ function renderOccElectricProcess(){
 window.renderOccElectricProcess=renderOccElectricProcess;
 if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderOccElectricProcess);
 
-/* ── 职业卫生 · 高频电磁场(工作日内大于8h/每周40h) ── */
+/* ── 化学有害因素延长工时 FR 折减(只修 PC-TWA;条件校验;不叠乘;同一事实源) ── */
 function genOccFrProcess(){
   const steps=[];
-  const dh=num('occ-fr-daily-h'), dl=num('occ-fr-daily-limit');
-  const wh=num('occ-fr-weekly-h'), wl=num('occ-fr-weekly-limit');
-  if(Number.isNaN(dh)&&Number.isNaN(wh)) return cpHint('录入高频电磁场工作时长与限值后，此处自动展示 TWA 折算过程。');
-  if(!Number.isNaN(dh)&&dh>0&&!Number.isNaN(dl)){
-    const rf=(8/dh)*((24-dh)/16), pct=rf*dl;
-    steps.push(cpStep('① 每日（>8h）折算', {
-      math: ['RF_{日} = \\frac{8}{t} \\times \\frac{24 - t}{16}',
-        'RF_{日} = \\frac{8}{'+cpFm(dh,1)+'} \\times \\frac{24 - '+cpFm(dh,1)+'}{16} = '+cpFm(rf,4)],
-      subs: [ cpSub('PCTWA', 'PCTWA = '+cpFm(rf,4)+' \\times '+cpFm(dl,2)+' = '+cpFm(pct,4)) ]
+  const dailyH=num('occ-fr-daily-h'), dailyLimit=num('occ-fr-daily-limit');
+  const weeklyD=num('occ-fr-weekly-days'), weeklyH=num('occ-fr-weekly-h'), weeklyLimit=num('occ-fr-weekly-limit');
+  const dDaily=!Number.isNaN(dailyH)&&dailyH>0&&dailyH<24;
+  const dValid=!Number.isNaN(weeklyD)&&Number.isInteger(weeklyD)&&weeklyD>=1&&weeklyD<=7;
+  const hValid=!Number.isNaN(weeklyH)&&weeklyH>0&&weeklyH<168;
+  const rfDailyRule=(h)=>(h<=0||h>=24)?NaN:(h<=8?1:(8/h)*((24-h)/16));
+  const rfWeeklyRule=(H)=>(40/H)*((168-H)/128);
+  if(dDaily){
+    const rf=rfDailyRule(dailyH);
+    const pctwa=(!Number.isNaN(rf)&&!Number.isNaN(dailyLimit))?rf*dailyLimit:NaN;
+    steps.push(cpStep('① 每日延长工时折减（仅 PC-TWA）', {
+      math: [
+        'RF_d = \\frac{8}{h} \\cdot \\frac{24-h}{16}\\quad (8<h<24)',
+        (dDaily&&dailyH<=8) ? 'h = '+cpFm(dailyH,1)+' \\le 8 \\Rightarrow RF_d = 1（无需折减）' : 'RF_d = \\frac{8}{'+cpFm(dailyH,1)+'} \\cdot \\frac{24-'+cpFm(dailyH,1)+'}{16} = '+cpFm(rf,4)
+      ],
+      subs: [
+        cpSub('修正后 PC-TWA', 'PC\\text{-}TWA_{修正} = '+cpFm(dailyLimit,2)+' \\times '+cpFm(rf,4)+' = '+cpFm(pctwa,4)),
+        cpSub('适用范围', (dailyH<=8?'每日未超8 h，无需折减':'仅修正 PC-TWA；PC-STEL/MAC 保持原限值，不受 RF 修正'))
+      ]
     }));
   }
-  if(!Number.isNaN(wh)&&wh>0&&!Number.isNaN(wl)){
-    const rf=(40/wh)*((168-wh)/128), pct=rf*wl;
-    steps.push(cpStep('② 每周（>40h 或 5d）折算', {
-      math: ['RF_{周} = \\frac{40}{t} \\times \\frac{168 - t}{128}',
-        'RF_{周} = \\frac{40}{'+cpFm(wh,1)+'} \\times \\frac{168 - '+cpFm(wh,1)+'}{128} = '+cpFm(rf,4)],
-      subs: [ cpSub('PCTWA', 'PCTWA = '+cpFm(rf,4)+' \\times '+cpFm(wl,2)+' = '+cpFm(pct,4)) ]
+  if(dValid&&hValid){
+    const isStd=weeklyD<=5&&weeklyH<=40, isOver=weeklyD>5&&weeklyH>40;
+    const rf=isOver?rfWeeklyRule(weeklyH):1;
+    const pctwa=(!Number.isNaN(rf)&&!Number.isNaN(weeklyLimit))?rf*weeklyLimit:NaN;
+    const mathArr=[ 'RF_w = \\frac{40}{H} \\cdot \\frac{168-H}{128}\\quad (D>5 且 H>40)' ];
+    if(isOver) mathArr.push('RF_w = \\frac{40}{'+cpFm(weeklyH,1)+'} \\cdot \\frac{168-'+cpFm(weeklyH,1)+'}{128} = '+cpFm(rf,5));
+    else mathArr.push('D = '+weeklyD+'\\ \\mathrm{d}，H = '+cpFm(weeklyH,1)+'\\ \\mathrm{h} \\Rightarrow RF_w = 1（无需折减）');
+    steps.push(cpStep('② 每周延长工时折减（仅 PC-TWA）', {
+      math: mathArr,
+      subs: [
+        cpSub('修正后 PC-TWA', 'PC\\text{-}TWA_{修正} = '+cpFm(weeklyLimit,2)+' \\times '+cpFm(rf,5)+' = '+cpFm(pctwa,4)),
+        cpSub('场景判断', isStd ? '标准周制度（D≤5 且 H≤40）' : (isOver ? '延长周制度（D>5 且 H>40）' : 'D>5 但 H≤40（或 D≤5 但 H>40）：不完全满足预设周折减场景【需人工确认】')),
+        cpSub('PC-STEL/MAC', '保持原限值，不受 RF 修正')
+      ]
     }));
   }
+  const dailyOver=!Number.isNaN(dailyH)&&dailyH>8;
+  const weeklyTrig=dValid&&hValid&&weeklyD>5&&weeklyH>40;
+  if(dailyOver&&weeklyTrig){
+    steps.push(cpStep('③ 场景确认提示', { note: '当前同时满足每日与每周延长工时条件，需按标准规则确认折减方式（系统未自动叠乘 RF_d × RF_w）【需人工确认】' }));
+  }
+  if(!steps.length) return cpHint('录入每日/每周工作时间、周工作天数与 PC-TWA 限值后，此处自动展示 FR 折减因子计算过程（仅作用于 PC-TWA）。');
   return steps.join('');
 }
-function renderOccFrProcess(){
-  const box=document.getElementById('occ-fr-process');
-  if(!box) return;
-  try{ box.innerHTML=genOccFrProcess(); }
-  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
-}
-window.renderOccFrProcess=renderOccFrProcess;
 if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderOccFrProcess);
 
 /* ── 职业卫生 · 高温作业:WBGT 加权 ── */
@@ -9399,6 +9435,24 @@ function runNoiseGoldenTest(){
     push('P 标准12: 淹没度 0.18/0.30=60% ≤ 70% → 自由流满足', Math.abs(s5-60)<=tol && s5<=P12.sub*100);
     const s6=0.24/0.30*100;
     push('P 标准12: 淹没度 0.24/0.30=80% > 70% → 自由流公式不直接适用', Math.abs(s6-80)<=tol && s6>P12.sub*100);
+  })();
+
+  /* ── F 组 Golden Test:化学因素延长工时 FR / CTWA / 判定边界 ── */
+  (function(){
+    const rfDailyRule=(h)=>(h<=0||h>=24)?NaN:(h<=8?1:(8/h)*((24-h)/16));
+    const rfWeeklyRule=(H)=>(40/H)*((168-H)/128);
+    push('F 每日 h=8 → RF=1（不折减）', rfDailyRule(8)===1);
+    push('F 每日 h=12 → RF=0.5', Math.abs(rfDailyRule(12)-0.5)<=tol);
+    push('F 每日 h=10 → RF=0.7', Math.abs(rfDailyRule(10)-0.7)<=tol);
+    push('F 每日 h=2 → RF=1（禁止 5.5）', rfDailyRule(2)===1);
+    push('F 每日 h=0/24 → 非法(NaN)', Number.isNaN(rfDailyRule(0))&&Number.isNaN(rfDailyRule(24)));
+    push('F 每周 D=5,H=40 → RF=1', (5<=5&&40<=40));
+    push('F 每周 D=6,H=48 → RF=0.78125，修正 8×RF=6.25', Math.abs(rfWeeklyRule(48)-0.78125)<=tol && Math.abs(8*rfWeeklyRule(48)-6.25)<=tol);
+    push('F 每周 D=6,H=36 → 不直接折减【需人工确认】', (6>5&&36<=40));
+    push('F CTWA = 51×1/8 = 6.375', Math.abs(51*1/8-6.375)<=tol);
+    push('F 多场所 CTWA = (10×2+20×3+5×1)/8 = 10.625', Math.abs((10*2+20*3+5*1)/8-10.625)<=tol);
+    push('F 判定边界 CTWA=限值(6=6) → 符合(<=)', (6<=6));
+    push('F 3×PC-TWA=15 / 5×PC-TWA=25 仅为峰值控制参考值', 3*5===15 && 5*5===25);
   })();
   /* ── 情况一 5 d/w:LEX,w = LEX,8h(标准周等效 n=5) ── */
   push('情况一 5d/w: 85/85/85, 8h/d → LAeq=LEX,8h=LEX,w=85.0000, 符合', (function(){ const l = cpNoiseEnergyAvg([85, 85, 85]); const e = calculateNoiseDailyExposure(l, 8); const w = calculateNoiseWeeklyExposure(e, 5); return Math.abs(l - 85) <= tol && Math.abs(e - 85) <= tol && Math.abs(w - 85) <= tol && occNoiseJudge(w, 85) === '符合'; })());
