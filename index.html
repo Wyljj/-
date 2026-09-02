@@ -3969,7 +3969,7 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
     <div class="occ-noise-process-box" id="occ-fr-process-box">
   <div class="occ-noise-process-title">🧮 计算过程 · FR 折减因子（化学有害因素延长工时）</div>
   <div class="occ-noise-process" id="occ-fr-process">
-    <div class="cp-hint">录入高频电磁场工作时长与限值后，此处自动展示 TWA 折算（RF 折减因子）过程。</div>
+    <div class="cp-hint">录入化学有害因素延长工时及限值后，此处自动展示 RF 折减及 PC-TWA 修正过程。</div>
   </div>
 </div>
     <div style="overflow-x:auto;">
@@ -8989,37 +8989,60 @@ function genOccFrProcess(){
   const steps=[];
   const dailyH=num('occ-fr-daily-h'), dailyLimit=num('occ-fr-daily-limit');
   const weeklyD=num('occ-fr-weekly-days'), weeklyH=num('occ-fr-weekly-h'), weeklyLimit=num('occ-fr-weekly-limit');
-  const dDaily=!Number.isNaN(dailyH)&&dailyH>0&&dailyH<24;
   const dValid=!Number.isNaN(weeklyD)&&Number.isInteger(weeklyD)&&weeklyD>=1&&weeklyD<=7;
   const hValid=!Number.isNaN(weeklyH)&&weeklyH>0&&weeklyH<168;
   const rfDailyRule=(h)=>(h<=0||h>=24)?NaN:(h<=8?1:(8/h)*((24-h)/16));
   const rfWeeklyRule=(H)=>(40/H)*((168-H)/128);
-  if(dDaily){
-    const rf=rfDailyRule(dailyH);
-    const pctwa=(!Number.isNaN(rf)&&!Number.isNaN(dailyLimit))?rf*dailyLimit:NaN;
-    steps.push(cpStep('① 每日延长工时折减（仅 PC-TWA）', {
-      math: [
-        'RF_d = \\frac{8}{h} \\cdot \\frac{24-h}{16}\\quad (8<h<24)',
-        (dDaily&&dailyH<=8) ? 'h = '+cpFm(dailyH,1)+' \\le 8 \\Rightarrow RF_d = 1（无需折减）' : 'RF_d = \\frac{8}{'+cpFm(dailyH,1)+'} \\cdot \\frac{24-'+cpFm(dailyH,1)+'}{16} = '+cpFm(rf,4)
-      ],
-      subs: [
-        cpSub('修正后 PC-TWA', 'PC\\text{-}TWA_{修正} = '+cpFm(dailyLimit,2)+' \\times '+cpFm(rf,4)+' = '+cpFm(pctwa,4)),
-        cpSub('适用范围', (dailyH<=8?'每日未超8 h，无需折减':'仅修正 PC-TWA；PC-STEL/MAC 保持原限值，不受 RF 修正'))
-      ]
-    }));
+  const limitTxt=!Number.isNaN(dailyLimit)?cpFm(dailyLimit,2):null;
+  if(!Number.isNaN(dailyH)){
+    if(dailyH<=0||dailyH>=24){
+      steps.push(cpStep('① 每日工时判断', { note: '每日工作时间 h = '+cpFm(dailyH,1)+' 非法（需 0 < h < 24），不产生有效限值结果。' }));
+    } else if(dailyH<=8){
+      const haveL=limitTxt!==null;
+      steps.push(cpStep('① 每日工时判断', {
+        math: [ 'h = '+cpFm(dailyH,1)+' \\le 8', 'RF_d = 1' ],
+        note: '每日实际工作时间未超过8 h，无需进行延长工时折减。'
+      }));
+      if(haveL) steps.push(cpStep('② PC-TWA 折减结果', {
+        math: [
+          'PC\\text{-}TWA_{\\mathrm{修正}} = PC\\text{-}TWA_{\\mathrm{原}} \\times RF_d',
+          '= '+cpFm(dailyLimit,2)+' \\times 1 = '+cpFm(dailyLimit,2)
+        ],
+        boxed: 'PC\\text{-}TWA_{\\mathrm{修正}} = '+cpFm(dailyLimit,2)
+      }));
+    } else {
+      const rf=rfDailyRule(dailyH);
+      steps.push(cpStep('① 每日（>8h）折减', {
+        math: [
+          'RF_d = \\frac{8}{h} \\cdot \\frac{24-h}{16}',
+          'RF_d = \\frac{8}{'+cpFm(dailyH,1)+'} \\cdot \\frac{24-'+cpFm(dailyH,1)+'}{16} = '+cpFm(rf,4)
+        ],
+        boxed: 'RF_d = '+cpFm(rf,4)
+      }));
+      if(limitTxt===null){
+        steps.push(cpStep('② PC-TWA 折减结果', { note: '已录入每日工作时间，请继续录入 GBZ2.1 限值。' }));
+      } else {
+        const pctwa=rf*dailyLimit;
+        steps.push(cpStep('② PC-TWA 折减结果', {
+          math: [
+            'PC\\text{-}TWA_{\\mathrm{修正}} = PC\\text{-}TWA_{\\mathrm{原}} \\times RF_d',
+            '= '+cpFm(dailyLimit,2)+' \\times '+cpFm(rf,4)+' = '+cpFm(pctwa,4)
+          ],
+          boxed: 'PC\\text{-}TWA_{\\mathrm{修正}} = '+cpFm(pctwa,4)
+        }));
+      }
+    }
   }
   if(dValid&&hValid){
     const isStd=weeklyD<=5&&weeklyH<=40, isOver=weeklyD>5&&weeklyH>40;
     const rf=isOver?rfWeeklyRule(weeklyH):1;
-    const pctwa=(!Number.isNaN(rf)&&!Number.isNaN(weeklyLimit))?rf*weeklyLimit:NaN;
     const mathArr=[ 'RF_w = \\frac{40}{H} \\cdot \\frac{168-H}{128}\\quad (D>5 且 H>40)' ];
     if(isOver) mathArr.push('RF_w = \\frac{40}{'+cpFm(weeklyH,1)+'} \\cdot \\frac{168-'+cpFm(weeklyH,1)+'}{128} = '+cpFm(rf,5));
     else mathArr.push('D = '+weeklyD+'\\ \\mathrm{d}，H = '+cpFm(weeklyH,1)+'\\ \\mathrm{h} \\Rightarrow RF_w = 1（无需折减）');
-    steps.push(cpStep('② 每周延长工时折减（仅 PC-TWA）', {
+    steps.push(cpStep('③ 每周延长工时折减（仅 PC-TWA）', {
       math: mathArr,
       subs: [
-        cpSub('修正后 PC-TWA', 'PC\\text{-}TWA_{修正} = '+cpFm(weeklyLimit,2)+' \\times '+cpFm(rf,5)+' = '+cpFm(pctwa,4)),
-        cpSub('场景判断', isStd ? '标准周制度（D≤5 且 H≤40）' : (isOver ? '延长周制度（D>5 且 H>40）' : 'D>5 但 H≤40（或 D≤5 但 H>40）：不完全满足预设周折减场景【需人工确认】')),
+        cpSub('场景判断', isStd ? '标准周制度（D≤5 且 H≤40）' : (isOver ? '延长周制度（D>5 且 H>40）' : '不完全满足预设周折减场景【需人工确认】')),
         cpSub('PC-STEL/MAC', '保持原限值，不受 RF 修正')
       ]
     }));
@@ -9027,288 +9050,18 @@ function genOccFrProcess(){
   const dailyOver=!Number.isNaN(dailyH)&&dailyH>8;
   const weeklyTrig=dValid&&hValid&&weeklyD>5&&weeklyH>40;
   if(dailyOver&&weeklyTrig){
-    steps.push(cpStep('③ 场景确认提示', { note: '当前同时满足每日与每周延长工时条件，需按标准规则确认折减方式（系统未自动叠乘 RF_d × RF_w）【需人工确认】' }));
+    steps.push(cpStep('④ 场景确认提示', { note: '当前同时满足每日与每周延长工时条件，需按标准规则确认折减方式（系统未自动叠乘 RF_d × RF_w）【需人工确认】' }));
   }
-  if(!steps.length) return cpHint('录入每日/每周工作时间、周工作天数与 PC-TWA 限值后，此处自动展示 FR 折减因子计算过程（仅作用于 PC-TWA）。');
+  if(!steps.length) return cpHint('录入每日工作时间与限值后，此处自动展示 RF 折减及 PC-TWA 修正过程。');
   return steps.join('');
+}function renderOccFrProcess(){
+  const box=document.getElementById('occ-fr-process');
+  if(!box) return;
+  try{ box.innerHTML=genOccFrProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
 }
+window.renderOccFrProcess=renderOccFrProcess;
 if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderOccFrProcess);
-
-/* ── 职业卫生 · 高温作业:WBGT 加权 ── */
-function genOccHeatProcess(){
-  const steps=[];
-  const calc=function(prefix){
-    const wet=num(prefix+'-wet'), black=num(prefix+'-black'), dry=num(prefix+'-dry');
-    if(Number.isNaN(wet)&&Number.isNaN(black)) return NaN;
-    const type=(document.getElementById(prefix+'-type')||{}).value||'outdoor';
-    if(type==='outdoor') return (!Number.isNaN(wet)&&!Number.isNaN(black)&&!Number.isNaN(dry))?wet*0.7+black*0.2+dry*0.1:NaN;
-    return (!Number.isNaN(wet)&&!Number.isNaN(black))?wet*0.7+black*0.3:NaN;
-  };
-  const head=calc('occ-heat-head'), ab=calc('occ-heat-abdomen'), ankle=calc('occ-heat-ankle');
-  if(!Number.isNaN(head)||!Number.isNaN(ab)||!Number.isNaN(ankle)){
-    steps.push(cpStep('① 各部位 WBGT', {
-      math: ['WBGT = 0.7 T_{湿} + 0.2 T_{黑} + 0.1 T_{干}\\ (室外)',
-        'WBGT = 0.7 T_{湿} + 0.3 T_{黑}\\ (室内)'],
-      subs: [
-        cpSub('头', 'WBGT_{头} = '+cpFm(head,1)),
-        cpSub('腹', 'WBGT_{腹} = '+cpFm(ab,1)),
-        cpSub('踝', 'WBGT_{踝} = '+cpFm(ankle,1))
-      ]
-    }));
-    const w=(head+2*ab+ankle)/4;
-    steps.push(cpStep('② 岗位加权 WBGT', {
-      math: ['WBGT = \\frac{WBGT_{头} + 2 \\times WBGT_{腹} + WBGT_{踝}}{4}',
-        'WBGT = \\frac{'+cpFm(head,1)+' + 2 \\times '+cpFm(ab,1)+' + '+cpFm(ankle,1)+'}{4} = '+cpFm(w,1)+'\\ \\mathrm{^\\circ C}']
-    }));
-  }
-  return steps.length?steps.join(''):cpHint('录入高温作业各部位湿球/黑球/干球温度后，此处自动展示 WBGT 加权计算过程。');
-}
-function renderOccHeatProcess(){
-  const box=document.getElementById('occ-heat-process');
-  if(!box) return;
-  try{ box.innerHTML=genOccHeatProcess(); }
-  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
-}
-window.renderOccHeatProcess=renderOccHeatProcess;
-if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderOccHeatProcess);
-
-
-/* ② 颗粒物/流速/温度比对(与 fluegasCompare + 浓度区间限值一致) */
-function genFgDustProcess(){
-  const steps=[];
-  const defs=[
-    { key:'pm',   name:'颗粒物(烟尘)', mode:'rel',  dp:2, note:'限值: 参比均值>200→|δ|≤15%;100~200→≤20%;50~100→≤25%;20~50→≤30%;10~20 绝对误差≤6;≤10 绝对误差≤5' },
-    { key:'flow', name:'流速',         mode:'rel',  dp:2, note:'限值: 参比均值≤10 m/s→|δ|≤12%;>10 m/s→≤10%' },
-    { key:'temp', name:'温度',         mode:'abs',  dp:2, note:'限值: |ΔT|≤3 ℃' },
-    { key:'moist',name:'含湿量',       mode:'abs',  dp:2, note:'限值: 含湿量≤5%→|Δw|≤1.5%;>5%→|δ|≤25%' }
-  ];
-  defs.forEach(function(d){
-    const pr='fg-dust-'+d.key;
-    const valid=[];
-    for(let i=1;i<=30;i++){
-      const r=num(pr+'-r'+i), c=num(pr+'-c'+i);
-      if(!Number.isNaN(r)&&!Number.isNaN(c)) valid.push({r,c,i});
-    }
-    if(!valid.length) return;
-    const refAvg=fgAvgX(valid.map(v=>v.r)), cemsAvg=fgAvgX(valid.map(v=>v.c));
-    const absErr=cemsAvg-refAvg;
-    const relErr=(!Number.isNaN(absErr)&&refAvg!==0)?absErr/refAvg*100:NaN;
-    const lines=[ 'd_i = C_{\\mathrm{在线},i} - C_{\\mathrm{参比},i}' ];
-    valid.forEach(v=>{ lines.push('d_{'+v.i+'} = '+cpFm(v.c,2)+' - '+cpFm(v.r,2)+' = '+cpFm(v.c-v.r,2)); });
-    const metric=(d.mode==='abs')?absErr:relErr;
-    if(d.mode==='abs'){
-      lines.push('\\Delta = \\overline{C}_{\\mathrm{在线}} - \\overline{C}_{\\mathrm{参比}} = '+cpFm(cemsAvg,2)+' - '+cpFm(refAvg,2)+' = '+cpFm(metric,2));
-    } else {
-      lines.push('\\delta = \\frac{\\overline{C}_{\\mathrm{在线}} - \\overline{C}_{\\mathrm{参比}}}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(metric,2)+'\\%');
-    }
-    steps.push(cpStep('比对计算 · '+d.name, {
-      math: lines,
-      subs: [
-        cpSub('参比值整理', 'n = '+valid.length+'，\\overline{C}_{\\mathrm{参比}} = '+cpFm(refAvg,2)),
-        cpSub('在线值整理', '\\overline{C}_{\\mathrm{在线}} = '+cpFm(cemsAvg,2)),
-        cpSub('判定', d.note)
-      ]
-    }));
-  });
-  if(!steps.length) return fgHint('录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。');
-  return steps.join('');
-}
-function renderFgDustProcess(){
-  const box=document.getElementById('fg-dust-process');
-  if(!box) return;
-  try{ box.innerHTML=genFgDustProcess(); }
-  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
-}
-window.renderFgDustProcess=renderFgDustProcess;
-if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderFgDustProcess);
-
-/* ③④⑤ 氮氧化物/二氧化硫/含氧量比对(与 fluegasCompareStats + calculateExcelGasComparisonStats 一致) */
-function genFgGasCompareProcess(prefix, title, dp, unit){
-  const steps=[];
-  const rows=[];
-  for(let i=1;i<=30;i++){
-    const r=num(prefix+'-r'+i), c=num(prefix+'-c'+i);
-    if(!Number.isNaN(r)&&!Number.isNaN(c)) rows.push({r,c,i});
-  }
-  if(!rows.length) return fgHint('录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。');
-  const refs=rows.map(x=>x.r), cems=rows.map(x=>x.c);
-  const refAvg=fgAvgX(refs), cemsAvg=fgAvgX(cems);
-  const diffs=cems.map((c,i)=>c-refs[i]);
-  const meanDiff=diffs.reduce((a,b)=>a+b,0)/diffs.length;
-  const absMeanDiff=Math.abs(meanDiff);
-  const sd=rows.length>1?Math.sqrt(diffs.reduce((a,b)=>a+Math.pow(b-meanDiff,2),0)/(rows.length-1)):NaN;
-  const coeff=(typeof getStudentTConfidence==='function')?getStudentTConfidence(rows.length):null;
-  const cc=(coeff===null||Number.isNaN(sd))?NaN:coeff*sd/Math.sqrt(rows.length);
-  const relErr=(refAvg!==0)?absMeanDiff/refAvg*100:NaN;
-  const relAcc=(refAvg!==0&&!Number.isNaN(cc))?(absMeanDiff+cc)/refAvg*100:NaN;
-  const lines=[ 'd_i = C_{\\mathrm{CEMS},i} - C_{\\mathrm{参比},i}' ];
-  rows.forEach(x=>{ lines.push('d_{'+x.i+'} = '+cpFm(x.c,dp)+' - '+cpFm(x.r,dp)+' = '+cpFm(x.c-x.r,dp)); });
-  lines.push('\\bar{d} = \\frac{'+diffs.map(v=>cpFm(v,dp)).join(' + ')+'}{'+rows.length+'} = '+cpFm(meanDiff,dp));
-  lines.push('|\\bar{d}| = '+cpFm(absMeanDiff,dp));
-  steps.push(cpStep('① 差值整理 · '+title, {
-    math: lines,
-    subs: [
-      cpSub('参比均值', '\\overline{C}_{\\mathrm{参比}} = '+cpFm(refAvg,dp)),
-      cpSub('CEMS 均值', '\\overline{C}_{\\mathrm{CEMS}} = '+cpFm(cemsAvg,dp))
-    ]
-  }));
-  steps.push(cpStep('② 标准偏差与置信系数', {
-    math: [
-      'S_d = \\sqrt{\\frac{\\sum (d_i-\\bar{d})^2}{n-1}} = '+cpFm(sd,dp),
-      'c_c = t_{(0.975,n)} \\times \\frac{S_d}{\\sqrt{n}}'+(coeff===null?'':' = '+cpFm(coeff,3)+' \\times \\frac{'+cpFm(sd,dp)+'}{\\sqrt{'+rows.length+'}} = '+cpFm(cc,dp))
-    ],
-    subs: [ cpSub('有效对数', 'n = '+rows.length) ]
-  }));
-  steps.push(cpStep('③ 相对误差与相对准确度', {
-    math: [
-      '\\delta = \\frac{|\\bar{d}|}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(relErr,2)+'\\%',
-      'RA = \\frac{|\\bar{d}| + c_c}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(relAcc,2)+'\\%'
-    ]
-  }));
-  return steps.join('');
-}
-function genFgNoxcmpProcess(){ return genFgGasCompareProcess('fg-noxcmp','氮氧化物比对',2,'mg/m³'); }
-function genFgSo2cmpProcess(){ return genFgGasCompareProcess('fg-so2cmp','二氧化硫比对',2,'mg/m³'); }
-function genFgO2cmpProcess(){ return genFgGasCompareProcess('fg-o2cmp','含氧量比对',2,'%'); }
-function makeFgCompareRenderer(id, gen){
-  return function(){ const box=document.getElementById(id); if(!box) return; try{ box.innerHTML=gen(); } catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; } };
-}
-window.renderFgNoxcmpProcess=makeFgCompareRenderer('fg-noxcmp-process', genFgNoxcmpProcess);
-window.renderFgSo2cmpProcess=makeFgCompareRenderer('fg-so2cmp-process', genFgSo2cmpProcess);
-window.renderFgO2cmpProcess=makeFgCompareRenderer('fg-o2cmp-process', genFgO2cmpProcess);
-if(window.__occProcessRenderers){ window.__occProcessRenderers.push(renderFgNoxcmpProcess); window.__occProcessRenderers.push(renderFgSo2cmpProcess); window.__occProcessRenderers.push(renderFgO2cmpProcess); }
-
-/* ⑥ 示值误差/量程漂移(与 calcDriftItem 一致) */
-function genFgDriftProcess(){
-  const steps=[];
-  const defs=[['so2',2.5,2.5],['nox',5,2.5],['o2',5,2.5]];
-  defs.forEach(function(d){
-    const gas=d[0], indLimit=d[1], driftLimit=d[2];
-    const full=num('fg-drift-'+gas+'-full-scale');
-    const rows=[]; let any=false;
-    for(let i=1;i<=3;i++){
-      const r=num('fg-drift-'+gas+'-ind-ref'+i), c=num('fg-drift-'+gas+'-ind-cems'+i);
-      if(!Number.isNaN(r)&&!Number.isNaN(c)&&r!==0){ rows.push({i, err:(c-r)/r*100}); any=true; }
-    }
-    const resp=num('fg-drift-'+gas+'-response');
-    const zero=num('fg-drift-'+gas+'-zero'), span=num('fg-drift-'+gas+'-span');
-    if(!Number.isNaN(resp)) any=true;
-    if(!Number.isNaN(zero)||!Number.isNaN(span)) any=true;
-    if(!any) return;
-    const lines=[];
-    if(rows.length){
-      lines.push('\\delta_i = \\frac{C_{\\mathrm{CEMS},i} - C_{\\mathrm{标准},i}}{C_{\\mathrm{标准},i}} \\times 100\\%');
-      rows.forEach(x=>{ lines.push('\\delta_{'+x.i+'} = '+cpFm(x.err,2)+'\\%'); });
-    }
-    if(!Number.isNaN(resp)&&resp>0) lines.push('t_{响应} = '+cpFm(resp,0)+'\\ \\mathrm{s}');
-    if(!Number.isNaN(full)&&full>0){
-      ['zero','span'].forEach(function(t){
-        const raw=num('fg-drift-'+gas+'-'+t);
-        if(!Number.isNaN(raw)) lines.push((t==='zero'?'零点漂移 = ':'量程漂移 = ')+'\\frac{'+cpFm(raw,1)+'}{'+cpFm(full,0)+'} \\times 100\\% = '+cpFm(raw/full*100,2)+'\\%');
-      });
-    }
-    steps.push(cpStep('漂移检测 · '+gas.toUpperCase(), {
-      math: lines,
-      subs: [
-        cpSub('示值误差限值', '|\\delta| \\le '+cpFm(indLimit,1)+'\\%'),
-        cpSub('零点/量程漂移限值', '|x| \\div 满量程 \\le '+cpFm(driftLimit,1)+'\\%'),
-        cpSub('响应时间限值', 't \\le 200\\ \\mathrm{s}')
-      ]
-    }));
-  });
-  if(!steps.length) return fgHint('录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。');
-  return steps.join('');
-}
-function renderFgDriftProcess(){
-  const box=document.getElementById('fg-drift-process');
-  if(!box) return;
-  try{ box.innerHTML=genFgDriftProcess(); }
-  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
-}
-window.renderFgDriftProcess=renderFgDriftProcess;
-if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderFgDriftProcess);
-
-/* ⑦ 水质在线比对(与 calcWaterOnlineComparison 一致) */
-function genFgWaterProcess(){
-  const steps=[];
-  const mk=function(prefix, label, rows, tag){
-    const lines=['\\Delta_i = C_{\\mathrm{在线},i} - C_{\\mathrm{实验室},i} 或 C_{\\mathrm{标准},i}','\\delta_i = \\frac{\\Delta_i}{C_{\\mathrm{实验室}/\\mathrm{标准},i}} \\times 100\\%'];
-    let any=false;
-    for(let i=1;i<=rows;i++){
-      const on=num(prefix+'-online'+i), lab=num(prefix+'-'+label+i);
-      if(!Number.isNaN(on)&&!Number.isNaN(lab)){
-        lines.push('\\Delta_{'+i+'} = '+cpFm(on,2)+' - '+cpFm(lab,2)+' = '+cpFm(on-lab,2)+(lab!==0?'，\\delta_{'+i+'} = '+cpFm((on-lab)/lab*100,2)+'\\%':''));
-        any=true;
-      }
-    }
-    if(!any) return;
-    steps.push(cpStep(tag+' · 绝对误差/相对误差', { math: lines }));
-  };
-  mk('fg-water-sample','lab',6,'实际水样比对');
-  mk('fg-water-qc','std',5,'质控样品比对');
-  if(!steps.length) return fgHint('录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。');
-  return steps.join('');
-}
-function renderFgWaterProcess(){
-  const box=document.getElementById('fg-water-process');
-  if(!box) return;
-  try{ box.innerHTML=genFgWaterProcess(); }
-  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
-}
-window.renderFgWaterProcess=renderFgWaterProcess;
-if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderFgWaterProcess);
-
-/* 调度器:现有 calcFlueGas / calcWaterOnlineComparison 钩子仍调用 renderFlueGasProcess */
-window.renderFlueGasProcess=function(){
-  [renderFgMainProcess, renderFgDustProcess, renderFgNoxcmpProcess, renderFgSo2cmpProcess, renderFgO2cmpProcess, renderFgDriftProcess, renderFgWaterProcess].forEach(function(f){ try{ f(); }catch(e){} });
-};
-
-
-/* ── 有组织废气计算过程回归自检(可选,控制台运行 window.runFlueGasProcessTest()) ── */
-window.runFlueGasProcessTest=function(){
-  const inputs=[];
-  document.querySelectorAll('#template-fluegas input, #template-fluegas .vi-input').forEach(function(el){ inputs.push([el.id, el.value]); });
-  const set=(id,v)=>{ const el=document.getElementById(id); if(el){ el.value=String(v); } };
-  const back={};
-  function snap(ids){ ids.forEach(function(id){ back[id]=(document.getElementById(id)||{}).value; }); }
-  function restore(){ Object.keys(back).forEach(function(id){ const el=document.getElementById(id); if(el) el.value=back[id]; }); }
-  const r=[];
-  const push=(name,cond)=>{ r.push({name:name, ok:!!cond}); };
-  const ids=['fg-base-o2','fg-o2-1','fg-o2-2','fg-o2-3','fg-flow-1','fg-flow-2','fg-flow-3','fg-temp-1','fg-temp-2','fg-temp-3',
-    'fg-moist-1','fg-moist-2','fg-moist-3','fg-co-1','fg-co-2','fg-co-3','fg-pm-1','fg-pm-2','fg-pm-3',
-    'fg-dust-pm-r1','fg-dust-pm-c1','fg-dust-pm-r2','fg-dust-pm-c2','fg-dust-temp-r1','fg-dust-temp-c1','fg-dust-temp-r2','fg-dust-temp-c2',
-    'fg-noxcmp-r1','fg-noxcmp-c1','fg-noxcmp-r2','fg-noxcmp-c2','fg-noxcmp-r3','fg-noxcmp-c3',
-    'fg-drift-so2-full-scale','fg-drift-so2-ind-ref1','fg-drift-so2-ind-cems1','fg-drift-so2-zero','fg-drift-so2-response',
-    'fg-water-sample-online1','fg-water-sample-lab1'];
-  snap(ids);
-  set('fg-base-o2',3.5);
-  [1,2,3].forEach(function(i){ set('fg-o2-'+i,[1,2,3][i-1]); set('fg-flow-'+i,[600,620,580][i-1]); set('fg-temp-'+i,[120,122,118][i-1]); set('fg-moist-'+i,[5,6,4][i-1]); set('fg-co-'+i,[3,4,2][i-1]); set('fg-pm-'+i,[30,35,32][i-1]); });
-  set('fg-dust-pm-r1',50); set('fg-dust-pm-c1',55); set('fg-dust-pm-r2',52); set('fg-dust-pm-c2',57);
-  set('fg-dust-temp-r1',150); set('fg-dust-temp-c1',152); set('fg-dust-temp-r2',151); set('fg-dust-temp-c2',153.5);
-  set('fg-noxcmp-r1',100); set('fg-noxcmp-c1',103); set('fg-noxcmp-r2',105); set('fg-noxcmp-c2',110); set('fg-noxcmp-r3',95); set('fg-noxcmp-c3',98);
-  set('fg-drift-so2-full-scale',500); set('fg-drift-so2-ind-ref1',100); set('fg-drift-so2-ind-cems1',102); set('fg-drift-so2-zero',5); set('fg-drift-so2-response',180);
-  set('fg-water-sample-online1',10.32); set('fg-water-sample-lab1',10.00);
-  try{
-    if(typeof calcFlueGas==='function') calcFlueGas();
-    const cell=(id)=>(document.getElementById(id)||{}).textContent||'—';
-    push('主表 C折,1 = 2.625(与过程一致)', cell('fg-co-conv-1')==='2.625');
-    push('主表 平均折算 CO = 2.751', cell('fg-co-a2')==='2.751');
-    push('主表 速率 R1 = 0.0018', cell('fg-co-rate-1')==='0.0018');
-    const pmRel=cell('fg-dust-pm-rel-high');
-    push('主表 颗粒物相对误差 '+pmRel+' ≤15% → 判定', pmRel==='9.80%');
-    push('主表 temp 误差 ≤3℃ → 合格', cell('fg-dust-temp-judge')==='合格');
-    push('主表 NOx 差值 d1 = 3.00', cell('fg-noxcmp-d1')==='3.00');
-    push('主表 NOx 相对误差 = 3.67%', cell('fg-noxcmp-rel')==='3.67%');
-    push('主表 漂移零点 = 1.00%', cell('fg-drift-so2-zero-pct')==='1.00%');
-    push('主表 示值误差1 = 2.00%', cell('fg-drift-so2-ind-err1')==='2.00%');
-    push('主表 水样 Δ1 = 0.32 / δ1 = 3.20%', cell('fg-water-sample-abs1')==='0.32' && cell('fg-water-sample-rel1')==='3.20%');
-  }catch(e){ r.push({name:'执行异常: '+e.message, ok:false}); }
-  restore();
-  const failed=r.filter(x=>!x.ok);
-  const msg='有组织废气计算过程回归: '+(failed.length?('失败 '+failed.length+' 项: '+failed.map(x=>x.name).join('；')):('全部通过('+r.length+' 项)'));
-  if(typeof toast==='function') toast(msg, failed.length?'err':'ok');
-  return { total:r.length, failed:failed };
-};
 
 /* ── 噪声判定边界 / 公式辅助(全局) ── */
 function occNoiseJudge(value, limit){
