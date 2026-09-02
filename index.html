@@ -7,6 +7,8 @@
 <title>检验检测计算系统</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=Noto+Sans+SC:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet"/>
+<script defer="defer" src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <style>
 :root {
   --fg-project-w: 220px;
@@ -1624,6 +1626,17 @@ textarea.input-warning {
 }
 .occ-noise-process .cp-verdict.fail { border-color: var(--red-border); background: var(--red-bg); color: var(--red); }
 .occ-noise-process .cp-hint { color: var(--text3); font-size: 12px; line-height: 1.8; }
+/* KaTeX 数学公式排版（教材式）：公式独占一行居中，结果可 boxed */
+.cp-math { text-align: center; margin: 12px 0; overflow-x: auto; overflow-y: hidden; padding: 2px 0; color: var(--text); }
+.cp-math .katex { font-size: 1.16em; color: var(--text); }
+.cp-math-block { display: block; }
+.cp-math-line { display: inline-block; vertical-align: middle; }
+.cp-math .katex-display { margin: 0; }
+.cp-math-fallback { font-family: var(--sans); font-size: 13px; color: var(--text2); display: inline-block; padding: 4px 2px; }
+.cp-sub { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--text2); align-items: baseline; padding: 2px 0; }
+.cp-sub .cp-sub-k { flex: none; color: var(--text3); }
+.cp-sub .cp-sub-v .katex { font-size: 1.02em; }
+.cp-note-var { font-size: 11px; color: var(--text3); margin-top: 6px; line-height: 1.6; }
 /* 判定卡与校验提示（计算过程区域内） */
 .occ-noise-process .occ-warn {
   border: 1px solid var(--yellow-border); background: var(--yellow-bg); color: var(--yellow);
@@ -1638,6 +1651,7 @@ textarea.input-warning {
 .occ-noise-process .ovc.none { border-color: var(--border2); background: var(--bg3); }
 .occ-noise-process .ovc-head { font-size: 12.5px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .occ-noise-process .ovc-row { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--text2); }
+.cp-label { font-size: 11px; color: var(--text3); margin-left: 6px; }
 .occ-noise-process .ovc-row b { font-family: var(--mono); color: var(--text); font-weight: 600; text-align: right; word-break: break-all; }
 .occ-noise-process .ovc-judge b { color: var(--green); font-size: 13px; }
 .occ-noise-process .ovc.fail .ovc-judge b { color: var(--red); }
@@ -7772,31 +7786,63 @@ function updateCardAvgs() {
   });
 }
 
-/* ══════════ 工作场所噪声检测结果与判定 [dB(A)] · 计算过程 v3（审核级展开） ══════════ */
+/* ══════════ 工作场所噪声检测结果与判定 [dB(A)] · 计算过程 v4（KaTeX 数学排版） ══════════ */
 function cpFm(x, dp){ if(x===null||x===undefined||Number.isNaN(x)) return '—'; const n=Number(x); if(!Number.isFinite(n)) return '—'; return n.toFixed(dp==null?4:dp); }
 function cpFmt(x){ if(x===null||x===undefined||Number.isNaN(x)) return '—'; return Number(x).toLocaleString('zh-CN',{maximumFractionDigits:2}); }
-function cpLine(k,v){ return '<div class="cp-line"><span>'+k+'</span><b>'+v+'</b></div>'; }
-function cpStep(title, formula, lines, result, note){
-  let h='<div class="cp-step">';
-  if(title) h+='<div class="cp-step-title">'+title+'</div>';
-  if(formula) h+='<div class="cp-formula">'+formula+'</div>';
-  if(lines && lines.length) h+='<div class="cp-lines">'+lines.join('')+'</div>';
-  if(result!==undefined && result!==null && result!=='') h+='<div class="cp-result">'+result+'</div>';
-  if(note) h+='<div class="cp-note">'+note+'</div>';
-  return h+'</div>';
+function cpLnum(x){ if(x===null||x===undefined||Number.isNaN(x)) return '—'; return Number(x).toLocaleString('en-US',{maximumFractionDigits:2}).replace(/,/g,'\\,'); }
+function cpLatexPlain(latex){
+  let s=String(latex||'');
+  s=s.replace(/\\dfrac|\\frac/g,' ');
+  s=s.replace(/\\sum_\{i=1\}\^\{n\}/g,'Σ(i=1…n)');
+  s=s.replace(/\\boxed\{([^{}]*)\}/g,'[$1]');
+  s=s.replace(/\\mathrm\{([^{}]*)\}/g,'$1');
+  s=s.replace(/\\text\{([^{}]*)\}/g,'$1');
+  s=s.replace(/\\times/g,'×').replace(/\\lg/g,'lg').replace(/\\qquad/g,'  ').replace(/\\,/g,'');
+  s=s.replace(/\\left|\\right/g,'');
+  s=s.replace(/\\\{/g,'{').replace(/\\\}/g,'}');
+  s=s.replace(/\\_/g,'_');
+  s=s.replace(/\^\{([^{}]*)\}/g,'^($1)').replace(/\^([0-9])/g,'^($1)');
+  s=s.replace(/\{([^{}]*)\}/g,'$1');
+  s=s.replace(/\\\(|\\\)/g,'');
+  return s;
+}
+/* 统一公式组件：display 公式独占一行居中；inline 用于行内；boxed 结果用 \boxed{} */
+function cpMath(latex, opts){
+  opts = opts || {};
+  const cls = 'cp-math' + (opts.inline ? ' cp-math-line' : ' cp-math-block');
+  let body;
+  if (window.katex) {
+    try { body = window.katex.renderToString(latex, { displayMode: !opts.inline, throwOnError: false, strict: false }); }
+    catch(e) { body = '<span class="cp-math-fallback">'+cpLatexPlain(latex)+'</span>'; }
+  } else {
+    body = '<span class="cp-math-fallback">'+cpLatexPlain(latex)+'</span>';
+  }
+  return '<div class="'+cls+'">'+body+'</div>';
+}
+function cpMathBoxed(latex){ return cpMath('\\boxed{'+latex+'}', {}); }
+function cpSub(k, vLatex){ return '<div class="cp-sub"><span class="cp-sub-k">'+k+'</span><span class="cp-sub-v">'+cpMath(vLatex, {inline:true})+'</span></div>'; }
+function cpStep(title, cfg){
+  cfg = cfg || {};
+  let h = '<div class="cp-step">';
+  if(title) h += '<div class="cp-step-title">'+title+'</div>';
+  (cfg.math || []).forEach(l => { h += cpMath(l, {}); });
+  (cfg.subs || []).forEach(s => { h += s; });
+  if(cfg.boxed) h += cpMathBoxed(cfg.boxed);
+  if(cfg.note) h += '<div class="cp-note">'+cfg.note+'</div>';
+  return h + '</div>';
 }
 function cpHint(text){ return '<div class="cp-hint">'+text+'</div>'; }
 function cpWarn(text){ return '<div class="occ-warn">⚠ '+text+'</div>'; }
-function cpNote(text){ return '<div class="cp-note">'+text+'</div>'; }
 function cpNoiseEnergyAvg(vals){ const v=(vals||[]).filter(x=>!Number.isNaN(x)); return v.length? 10*Math.log10(v.reduce((a,b)=>a+Math.pow(10,0.1*b),0)/v.length) : NaN; }
-/* 职业接触限值判定卡：符合性判定（GBZ 2.2 仅达标/超标）→ 与限值差值 → 结果评价 → 依据 */
-function cpVerdictCard(title, value, unit, limit){
+/* 职业接触限值判定卡：符合性判定 → 与限值差值 → 结果评价 → 依据 */
+function cpVerdictCard(titleLatex, label, value, unit, limit){
   if(value===null||value===undefined||Number.isNaN(value)) return '';
+  const titleHtml = cpMath(titleLatex, {inline:true}) + (label ? '<span class="cp-label">'+label+'</span>' : '');
   const head='<div class="ovc-head">■ 职业接触限值判定</div>';
   const foot='<div class="ovc-foot">依据：GBZ 2.2-2007《工作场所有害因素职业接触限值 第2部分：物理因素》· 噪声职业接触限值 85 dB(A)</div>';
   if(Number.isNaN(limit)){
     return '<div class="ovc ovc-none">'+head
-      +'<div class="ovc-row"><span>'+title+'</span><b>'+value.toFixed(1)+' '+unit+'</b></div>'
+      +'<div class="ovc-row"><span>'+titleHtml+'</span><b>'+value.toFixed(1)+' '+unit+'</b></div>'
       +'<div class="ovc-judge ovc-none"><b>⚠ 请在上方对应行的「职业接触限值」列录入限值（如 85）后自动判定</b></div>'
       +foot+'</div>';
   }
@@ -7808,7 +7854,7 @@ function cpVerdictCard(title, value, unit, limit){
   else if(dev<=3){ evTxt='低于限值，满足要求'; evNote='检测结果低于限值，符合要求。'; }
   else{ evTxt='低于限值，满足要求（安全裕度较大）'; evNote='检测结果低于限值且安全裕度较大，符合要求。'; }
   return '<div class="ovc '+(ok?'ovc-ok':'ovc-fail')+'">'+head
-    +'<div class="ovc-row"><span>'+title+'</span><b>'+v1+' '+unit+'</b></div>'
+    +'<div class="ovc-row"><span>'+titleHtml+'</span><b>'+v1+' '+unit+'</b></div>'
     +'<div class="ovc-row"><span>职业接触限值</span><b>'+L+' '+unit+'</b></div>'
     +'<div class="ovc-judge"><span>符合性判定</span><b>'+(ok?'✅ 符合职业接触限值要求':'❌ 不符合职业接触限值要求')+'</b></div>'
     +'<div class="ovc-row"><span>与限值差值</span><b>'+(ok?'-':'+')+dev.toFixed(1)+' '+unit+'</b></div>'
@@ -7822,7 +7868,8 @@ function genOccNoiseWorkplace(){
   const cn=i=> i===1?'一':(i===2?'二':'三');
   const chk3=(label,vals)=>{ if(vals.length && vals.length<3) warns.push(label+'：当前仅 '+vals.length+' 次测量，不满足推荐采样要求（≥3 次）'); };
   const chk8=(label,t)=>{ if(!Number.isNaN(t) && t>8) warns.push(label+'：接触时间 '+t+' h 超过 8 h（工作日有效时间），请核对'); };
-  const E_NOTE='注：能量值为声能量指数 10^(0.1·L)，为无量纲指数，并非 dB(A) 值。';
+  const E_NOTE='注：上式中的能量值为声能量指数（无量纲），并非 dB(A) 值；只有取 10 倍常用对数后才回到分贝量纲。';
+  const K_EN_AVG='L_{Aeq,T_e} = 10\\lg\\left[\\frac{1}{n}\\sum_{i=1}^{n} 10^{0.1 L_i}\\right]';
 
   /* ① 单场所 · 情况一 */
   const v1=sv('occ-noise-s1'), t1=num('occ-noise-time'), l1=num('occ-noise-limit');
@@ -7832,16 +7879,23 @@ function genOccNoiseWorkplace(){
     const sum=terms.reduce((a,b)=>a+b,0);
     const leq=10*Math.log10(sum/v1.length);
     const l8=leq+10*Math.log10(t1/8);
-    steps.push(cpStep('① 情况一（5d/w，=8h/d 或 ≠8h/d）· LAeq,Te 能量平均',
-      'LAeq,Te = 10·lg[ (10^(L₁/10) + 10^(L₂/10) + 10^(L₃/10)) / n ]',
-      v1.map((v,i)=>cpLine('10^(L'+(i+1)+'/10) = 10^('+cpFm(v,1)+'/10)', cpFmt(terms[i]))).concat([
-        cpLine('Σ（能量和）', cpFmt(sum)), cpLine('÷ n（测量次数）', cpFmt(v1.length))]),
-      'LAeq,Te = '+cpFm(leq,4)+' dB(A)', E_NOTE));
-    steps.push(cpStep('② LEX,8h 折算',
-      'LEX,8h = LAeq,Te + 10·lg(Te / 8)',
-      [cpLine('LAeq,Te', cpFm(leq,4)+' dB(A)'), cpLine('Te（日接触时间）', cpFm(t1,2)+' h'), cpLine('10·lg(Te/8)', cpFm(10*Math.log10(t1/8),4)+' dB')],
-      'LEX,8h = '+cpFm(l8,4)+' dB(A)'));
-    steps.push(cpVerdictCard('LEX,8h（工作日等效声级）', l8, 'dB(A)', l1));
+    steps.push(cpStep('① 情况一（5d/w，=8h/d 或 ≠8h/d）· LAeq,Te 能量平均', {
+      math: [
+        K_EN_AVG,
+        'L_{Aeq,T_e} = 10\\lg\\left[\\frac{'+v1.map(v=>'10^{0.1\\times '+cpFm(v,1)+'}').join(' + ')+'}{'+v1.length+'}\\right]'
+      ],
+      boxed: 'L_{Aeq,T_e} = '+cpFm(leq,4)+'\\ \\mathrm{dB(A)}',
+      note: E_NOTE
+    }));
+    steps.push(cpStep('② LEX,8h 折算', {
+      math: [
+        'L_{EX,8h} = L_{Aeq,T_e} + 10\\lg\\frac{T_e}{T_0}',
+        'L_{EX,8h} = '+cpFm(leq,4)+' + 10\\lg\\frac{'+cpFm(t1,2)+'}{8} = '+cpFm(l8,4)
+      ],
+      subs: [ cpSub('Te（日接触时间）', 'T_e = '+cpFm(t1,2)+'\\ \\mathrm{h}'), cpSub('T0（标准工作日）', 'T_0 = 8\\ \\mathrm{h}') ],
+      boxed: 'L_{EX,8h} = '+cpFm(l8,4)+'\\ \\mathrm{dB(A)}'
+    }));
+    steps.push(cpVerdictCard('L_{EX,8h}', '工作日等效声级', l8, 'dB(A)', l1));
   }
 
   /* ② 单场所 · 情况二 */
@@ -7854,32 +7908,44 @@ function genOccNoiseWorkplace(){
     const leq=10*Math.log10(sum/v2.length);
     const l8=leq+10*Math.log10(t2/8);
     const lw=l8+10*Math.log10(d2/5);
-    steps.push(cpStep('③ 情况二（≠5d/w）· LAeq,Te',
-      'LAeq,Te = 10·lg[ (10^(L₁/10) + 10^(L₂/10) + 10^(L₃/10)) / n ]',
-      v2.map((v,i)=>cpLine('10^(L'+(i+1)+'/10) = '+cpFm(v,1)+'/10', cpFmt(terms[i]))).concat([cpLine('÷ n', cpFmt(v2.length))]),
-      'LAeq,Te = '+cpFm(leq,4)+' dB(A)', E_NOTE));
-    steps.push(cpStep('④ LEX,8h 标准化（一天 8h 等效声级）',
-      'LEX,8h = LAeq,Te + 10·lg(Te / 8)',
-      [cpLine('LAeq,Te', cpFm(leq,4)+' dB(A)'), cpLine('Te（日接触时间）', cpFm(t2,2)+' h'), cpLine('10·lg(Te/8)', cpFm(10*Math.log10(t2/8),4)+' dB')],
-      'LEX,8h = '+cpFm(l8,4)+' dB(A)'));
-    steps.push(cpStep('⑤ LEX,w（周等效声级）',
-      'LEX,w = LEX,8h + 10·lg(Tw / 5)',
-      [cpLine('LEX,8h', cpFm(l8,4)+' dB(A)'),
-       cpLine('Tw（每周实际工作天数）', cpFm(d2,1)+' d'),
-       cpLine('标准基准：5 d/week', ''),
-       cpLine('修正系数 Tw/5', cpFm(d2,1)+' / 5 = '+cpFm(d2/5,3))],
-      'LEX,w = '+cpFm(lw,4)+' dB(A)'));
-    steps.push(cpVerdictCard('LEX,w（周等效声级）', lw, 'dB(A)', l2));
+    steps.push(cpStep('③ 情况二（≠5d/w）· LAeq,Te', {
+      math: [
+        K_EN_AVG,
+        'L_{Aeq,T_e} = 10\\lg\\left[\\frac{'+v2.map(v=>'10^{0.1\\times '+cpFm(v,1)+'}').join(' + ')+'}{'+v2.length+'}\\right]'
+      ],
+      boxed: 'L_{Aeq,T_e} = '+cpFm(leq,4)+'\\ \\mathrm{dB(A)}',
+      note: E_NOTE
+    }));
+    steps.push(cpStep('④ LEX,8h 标准化（一天 8h 等效声级）', {
+      math: [
+        'L_{EX,8h} = L_{Aeq,T_e} + 10\\lg\\frac{T_e}{T_0}',
+        'L_{EX,8h} = '+cpFm(leq,4)+' + 10\\lg\\frac{'+cpFm(t2,2)+'}{8} = '+cpFm(l8,4)
+      ],
+      subs: [ cpSub('Te（日接触时间）', 'T_e = '+cpFm(t2,2)+'\\ \\mathrm{h}'), cpSub('T0（标准工作日）', 'T_0 = 8\\ \\mathrm{h}') ],
+      boxed: 'L_{EX,8h} = '+cpFm(l8,4)+'\\ \\mathrm{dB(A)}'
+    }));
+    steps.push(cpStep('⑤ LEX,w（每周 40 h 等效声级）', {
+      math: [
+        'L_{EX,w} = 10\\lg\\left(\\frac{1}{5}\\sum_{i=1}^{n} 10^{0.1\\left(L_{EX,8h}\\right)_i}\\right)'
+      ],
+      subs: [
+        cpSub('单日模式（每日 LEX,8h 相同）', ''),
+        cpSub('等价化简', 'L_{EX,w} = L_{EX,8h} + 10\\lg\\frac{'+cpFm(d2,1)+'}{5}')
+      ],
+      boxed: 'L_{EX,w} = '+cpFm(lw,4)+'\\ \\mathrm{dB(A)}'
+    }));
+    steps.push(cpVerdictCard('L_{EX,w}', '周等效声级', lw, 'dB(A)', l2));
   }
 
-  /* ⑤ 测点单次测量结果能量平均 */
+  /* ⑥ 测点单次测量结果能量平均 */
   const pts=[];
   for(let i=1;i<=3;i++){ const vals=sv('occ-noise-p'+i); if(vals.length) pts.push({i, vals, v:cpNoiseEnergyAvg(vals)}); }
   if(pts.length){
-    steps.push(cpStep('⑥ 测点单次测量结果能量平均',
-      'LAeq = 10·lg[ (10^(L₁/10)+10^(L₂/10)+10^(L₃/10)) / n ]',
-      pts.map(p=>cpLine('第'+cn(p.i)+'个点（'+p.vals.length+' 次测量）', cpFm(p.v,4)+' dB(A)')),
-      '各测点能量平均已得出，供多场所计算引用'));
+    steps.push(cpStep('⑥ 测点单次测量结果能量平均', {
+      math: ['L_{Aeq} = 10\\lg\\left[\\frac{1}{n}\\sum_{i=1}^{n} 10^{0.1 L_i}\\right]'],
+      subs: pts.map(p=>cpSub('第'+cn(p.i)+'个点（'+p.vals.length+' 次测量）', 'L_{Aeq} = '+cpFm(p.v,4)+'\\ \\mathrm{dB(A)}')),
+      note: '各测点能量平均已得出，供多场所计算引用。'
+    }));
   }
 
   /* 多场所公共计算 */
@@ -7906,58 +7972,68 @@ function genOccNoiseWorkplace(){
     return {outs, te, st, l8:10*Math.log10(te/8)};
   };
 
-  /* ⑥⑦ 多场所 · 情况一 */
+  /* ⑦⑧ 多场所 · 情况一 */
   const md=multi('md',false);
   if(md){
     const lim=num('occ-noise-md-limit');
-    steps.push(cpStep('⑦ 多场所情况一（5d/w）· 能量贡献计算',
-      'Eᵢ = Tᵢ × 10^(0.1·LAeq,Tᵢ)',
-      md.outs.map(x=>cpLine('场所'+cn(x.i), cpFm(x.t,2)+' × 10^(0.1×'+cpFm(x.leq,3)+') = '+cpFmt(x.t*Math.pow(10,0.1*x.leq)))),
-      'ΣE = '+cpFmt(md.te)+'；ΣT = '+cpFmt(md.st)+' h', E_NOTE));
-    steps.push(cpStep('⑧ 能量累计与 8h 折算',
-      'LEX,8h = 10·lg[ Σ(Tᵢ·10^(0.1·LAeq,i)) / 8 ] = 10·lg(ΣE / 8)',
-      [cpLine('ΣE（累计能量）', cpFmt(md.te)), cpLine('÷ 8 h', cpFmt(md.te/8))],
-      'LEX,8h = '+cpFm(md.l8,4)+' dB(A)', E_NOTE));
-    steps.push(cpVerdictCard('LEX,8h（工作日等效声级）', md.l8, 'dB(A)', lim));
+    steps.push(cpStep('⑦ 多场所情况一（5d/w）· 能量贡献计算', {
+      math: ['E_i = T_i \\times 10^{0.1 L_{Aeq,T_i}}'],
+      subs: md.outs.map(x=>cpSub('场所'+cn(x.i), 'E_{'+x.i+'} = '+cpFm(x.t,2)+'\\times 10^{0.1\\times '+cpFm(x.leq,3)+'} = '+cpLnum(x.t*Math.pow(10,0.1*x.leq))))
+        .concat([cpSub('合计', '\\sum E = '+cpLnum(md.te)+'\\qquad \\sum T = '+cpFmt(md.st)+'\\ \\mathrm{h}')]),
+      note: E_NOTE
+    }));
+    steps.push(cpStep('⑧ 能量累计与 8h 折算', {
+      math: [
+        'L_{EX,8h} = 10\\lg\\left(\\frac{1}{T_0}\\sum_{i=1}^{n} T_i \\times 10^{0.1 L_{Aeq,T_i}}\\right) = 10\\lg\\frac{\\sum E}{8}',
+        'L_{EX,8h} = 10\\lg\\frac{'+cpLnum(md.te)+'}{8} = '+cpFm(md.l8,4)
+      ],
+      boxed: 'L_{EX,8h} = '+cpFm(md.l8,4)+'\\ \\mathrm{dB(A)}',
+      note: E_NOTE
+    }));
+    steps.push(cpVerdictCard('L_{EX,8h}', '工作日等效声级', md.l8, 'dB(A)', lim));
   }
 
-  /* ⑧⑨⑩ 多场所 · 情况二 */
+  /* ⑨⑩⑪⑫ 多场所 · 情况二 */
   const mw=multi('mw',true);
   if(mw){
     const lim=num('occ-noise-mw-limit');
-    const E= mw.te;
-    const meanE= mw.te/mw.st;
-    const scaled= meanE*mw.dw/5;
-    steps.push(cpStep('⑨ 多场所情况二（≠5d/w）· 能量贡献计算',
-      'Eᵢ = Tᵢ × 10^(0.1·LAeq,Tᵢ)',
-      mw.outs.map(x=>cpLine('场所'+cn(x.i), cpFm(x.t,2)+' × 10^(0.1×'+cpFm(x.leq,3)+') = '+cpFmt(x.t*Math.pow(10,0.1*x.leq)))),
-      'ΣE = '+cpFmt(E)+'；ΣT = '+cpFmt(mw.st)+' h', E_NOTE));
-    steps.push(cpStep('⑩ 工作日综合结果（LAeq,Te）',
-      'LAeq,Te = 10·lg( ΣE ÷ ΣT )',
-      [cpLine('ΣE（能量贡献和）', cpFmt(E)), cpLine('ΣT（实际接触时间合计）', cpFmt(mw.st)+' h')],
-      'LAeq,Te = '+cpFm(mw.laeqTe,4)+' dB(A)', E_NOTE));
-    steps.push(cpStep('⑪ 8h 标准化 LEX,8h（一天 8h 等效声级）',
-      'LEX,8h = LAeq,Te + 10·lg(Te / T0)　（Te＝实际接触时间，T0＝8 h）',
-      [cpLine('LAeq,Te', cpFm(mw.laeqTe,4)+' dB(A)'),
-       cpLine('Te（实际接触时间）', cpFm(mw.st,2)+' h'),
-       cpLine('T0（标准工作日）', '8 h'),
-       cpLine('= '+cpFm(mw.laeqTe,4)+' + 10·lg('+cpFm(mw.st,2)+' / 8)', cpFm(10*Math.log10(mw.st/8),4)+' dB')],
-      'LEX,8h = '+cpFm(mw.l8,4)+' dB(A)'));
-    steps.push(cpStep('⑫ LEX,w（每周 40 h 等效声级）',
-      'LEX,w = 10·lg[ (1/5) × Σ 10^(0.1·LEX,8h,i) ]',
-      [cpLine('单日模式（每日 LEX,8h 相同）', ''),
-       cpLine('→ 等价式：LEX,w = LEX,8h + 10·lg(Tw / 5)', ''),
-       cpLine('LEX,8h', cpFm(mw.l8,4)+' dB(A)'),
-       cpLine('Tw（每周实际工作天数）', cpFm(mw.dw,1)+' d'),
-       cpLine('标准基准：5 d/week', ''),
-       cpLine('修正系数 Tw/5', cpFm(mw.dw,1)+' / 5 = '+cpFm(mw.dw/5,3))],
-      'LEX,w = '+cpFm(mw.lw,4)+' dB(A)'));
-    steps.push(cpVerdictCard('LEX,w（周等效声级）', mw.lw, 'dB(A)', lim));
+    steps.push(cpStep('⑨ 多场所情况二（≠5d/w）· 能量贡献计算', {
+      math: ['E_i = T_i \\times 10^{0.1 L_{Aeq,T_i}}'],
+      subs: mw.outs.map(x=>cpSub('场所'+cn(x.i), 'E_{'+x.i+'} = '+cpFm(x.t,2)+'\\times 10^{0.1\\times '+cpFm(x.leq,3)+'} = '+cpLnum(x.t*Math.pow(10,0.1*x.leq))))
+        .concat([cpSub('合计', '\\sum E = '+cpLnum(mw.te)+'\\qquad \\sum T = '+cpFmt(mw.st)+'\\ \\mathrm{h}')]),
+      note: E_NOTE
+    }));
+    steps.push(cpStep('⑩ 工作日综合结果（LAeq,Te）', {
+      math: [
+        'L_{Aeq,T} = 10\\lg\\left(\\frac{1}{T}\\sum_{i=1}^{n} T_i \\, 10^{0.1 L_{Aeq,T_i}}\\right)',
+        'L_{Aeq,T_e} = 10\\lg\\left[\\frac{'+mw.outs.map(x=>cpFm(x.t,2)+'\\times 10^{0.1\\times '+cpFm(x.leq,4)+'}').join(' + ')+'}{'+mw.outs.map(x=>cpFm(x.t,2)).join('+')+'}\\right]'
+      ],
+      boxed: 'L_{Aeq,T_e} = '+cpFm(mw.laeqTe,4)+'\\ \\mathrm{dB(A)}',
+      note: E_NOTE
+    }));
+    steps.push(cpStep('⑪ 8h 标准化 LEX,8h（一天 8h 等效声级）', {
+      math: [
+        'L_{EX,8h} = L_{Aeq,T_e} + 10\\lg\\frac{T_e}{T_0}',
+        '10\\lg\\left(\\frac{'+cpFm(mw.st,2)+'}{8}\\right) = '+cpFm(10*Math.log10(mw.st/8),4),
+        'L_{EX,8h} = '+cpFm(mw.laeqTe,4)+' - '+cpFm(-10*Math.log10(mw.st/8),4)+' = '+cpFm(mw.l8,4)
+      ],
+      subs: [ cpSub('Te（实际接触时间）', 'T_e = '+cpFm(mw.st,2)+'\\ \\mathrm{h}'), cpSub('T0（标准工作日）', 'T_0 = 8\\ \\mathrm{h}') ],
+      boxed: 'L_{EX,8h} = '+cpFm(mw.l8,4)+'\\ \\mathrm{dB(A)}'
+    }));
+    steps.push(cpStep('⑫ LEX,w（每周 40 h 等效声级）', {
+      math: [
+        'L_{EX,w} = 10\\lg\\left(\\frac{1}{5}\\sum_{i=1}^{n} 10^{0.1\\left(L_{EX,8h}\\right)_i}\\right)',
+        'L_{EX,w} = '+cpFm(mw.l8,4)+' + 10\\lg\\frac{'+cpFm(mw.dw,1)+'}{5} = '+cpFm(mw.l8+10*Math.log10(mw.dw/5),4)
+      ],
+      subs: [ cpSub('单日模式（每日 LEX,8h 相同）', ''), cpSub('等价化简', 'L_{EX,w} = L_{EX,8h} + 10\\lg\\frac{T_w}{5}') ],
+      boxed: 'L_{EX,w} = '+cpFm(mw.lw,4)+'\\ \\mathrm{dB(A)}'
+    }));
+    steps.push(cpVerdictCard('L_{EX,w}', '周等效声级', mw.lw, 'dB(A)', lim));
   }
 
   const warnHtml = warns.length ? '<div class="cp-step"><div class="cp-step-title">⚠ 数据校验提示</div>'+warns.map(cpWarn).join('')+'</div>' : '';
   if(!steps.length){
-    return cpHint('录入上方表格数据后，此处按「能量贡献 → 时间平均 → 周时间修正」逐步展示计算过程，并给出职业接触限值判定。<br>核心公式：LAeq,Te = 10·lg[Σ10^(Lᵢ/10)/n]；LEX,8h = LAeq,Te + 10·lg(Te/8)；LEX,w = LEX,8h + 10·lg(Tw/5)。') + warnHtml;
+    return cpHint('录入上方表格数据后，此处以标准数学排版逐步展示：各场所 LAeq,T → LAeq,Te → LEX,8h → LEX,w → 职业接触限值判定。') + warnHtml;
   }
   return warnHtml + steps.join('');
 }
@@ -7969,6 +8045,17 @@ function renderOccNoiseProcess(){
 }
 window.renderOccNoiseProcess=renderOccNoiseProcess;
 try{ renderOccNoiseProcess(); }catch(e){}
+/* KaTeX 异步加载完成后自动重渲染（加载中先展示兜底文本） */
+window.addEventListener('load', function(){
+  setTimeout(function(){ if(window.katex){ try{ renderOccNoiseProcess(); }catch(e){} } }, 80);
+});
+(function(){
+  var tries=0;
+  var timer=setInterval(function(){
+    tries++;
+    if(window.katex || tries>40){ clearInterval(timer); if(window.katex){ try{ renderOccNoiseProcess(); }catch(e){} } }
+  }, 250);
+})();
 </script>
 </div></div></body>
 </html>
