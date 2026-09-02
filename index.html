@@ -3043,7 +3043,13 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
 
 </div>
 </div>
-</div><div class="template-panel" id="template-noisecheck">
+</div><div class="occ-noise-process-box" id="fg-process-box">
+  <div class="occ-noise-process-title">🧮 计算过程 · 有组织废气比对</div>
+  <div class="occ-noise-process" id="fg-process">
+    <div class="cp-hint">录入有组织废气比对数据后，此处自动展示均值、基准氧折算、误差与判定过程。</div>
+  </div>
+</div>
+<div class="template-panel" id="template-noisecheck">
 <div class="card">
 <div class="card-title">📢 固定测量时长10分钟( 600 秒)</div>
 <div class="btn-row" style="margin-bottom:16px;">
@@ -3172,6 +3178,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
 </table>
 </div>
 </div>
+<div class="occ-noise-process-box" id="nc-process-box">
+  <div class="occ-noise-process-title">🧮 计算过程 · 噪声验算（SEL 换算）</div>
+  <div class="occ-noise-process" id="nc-process">
+    <div class="cp-hint">录入上方 600 s / 1200 s 表格的 Leq 与目标 SEL 后，此处自动展示 SEL 换算与时长反算过程。</div>
+  </div>
+</div>
 </div><div class="template-panel" id="template-g219">
 <div class="card">
 <div class="card-title">🛣️ G219国道噪声</div>
@@ -3208,6 +3220,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
     <div class="kv-item"><div class="kv-label">汇总结论</div><div class="kv-value" id="g219-sum-note">—</div></div>
   </div>
 </div>
+<div class="occ-noise-process-box" id="g219-process-box">
+  <div class="occ-noise-process-title">🧮 计算过程 · G219 背景修正</div>
+  <div class="occ-noise-process" id="g219-process">
+    <div class="cp-hint">录入「测得 Laeq」与「背景 Laeq」后，此处自动展示差值计算、扣背景换算与适用性说明。</div>
+  </div>
+</div>
 </div>
 </div><div class="template-panel" id="template-parshall">
 <div class="card">
@@ -3236,6 +3254,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
       </tbody>
     </table>
   </div>
+  <div class="occ-noise-process-box" id="parshall-process-box">
+  <div class="occ-noise-process-title">🧮 计算过程 · 巴歇尔槽流量</div>
+  <div class="occ-noise-process" id="parshall-process">
+    <div class="cp-hint">录入巴歇尔槽流量参数（指数 n、流量系数 C、液位 h）后，此处自动展示 Q = C × hⁿ 计算过程。</div>
+  </div>
+</div>
   
   <div class="template-section-title" style="text-align: center; height: 50px; line-height: 50px; background-color: rgba(168, 85, 247, 0.03);">槽型对照表</div>
   <table class="summary-table">
@@ -3285,7 +3309,13 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
   </div>
 </div>
 </div>
-</div><div class="template-panel" id="template-ions">
+</div><div class="occ-noise-process-box" id="weather-process-box">
+  <div class="occ-noise-process-title">🧮 计算过程 · 气象参数</div>
+  <div class="occ-noise-process" id="weather-process">
+    <div class="cp-hint">录入日期、时间、经纬度与风速后，此处自动展示太阳高度角、辐射等级、大气稳定度与 1000 m 风速换算过程。</div>
+  </div>
+</div>
+<div class="template-panel" id="template-ions">
 <div class="card">
 <div class="card-title">⚗️ 阴阳离子平衡计算表</div>
 <div class="template-section-title">📝 水中化学平衡</div>
@@ -3317,7 +3347,13 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
       </tbody>
     </table>
   </div>
-</div><div class="template-panel" id="template-odor">
+</div><div class="occ-noise-process-box" id="ions-process-box">
+  <div class="occ-noise-process-title">🧮 计算过程 · 阴阳离子平衡</div>
+  <div class="occ-noise-process" id="ions-process">
+    <div class="cp-hint">录入阴阳离子测定结果与总硬度/TDS 后，此处自动展示当量换算、平衡误差与校验过程。</div>
+  </div>
+</div>
+<div class="template-panel" id="template-odor">
 <div class="card">
 <div class="card-title">👃 臭气浓度关系表</div>
 <div class="template-subtitle">已拆成“数据录入 / 浓度换算结果”两段，保留多物质换算与臭袋法结果联动。</div>
@@ -3364,7 +3400,13 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
   <div class="template-tip" style="margin-top:14px">多物质换算表与臭袋法结果共存于同一模板下，后续可以继续增加结果导出或报告区。</div>
 </div>
 </div>
-</div><div class="template-panel" id="template-cems">
+</div><div class="occ-noise-process-box" id="odor-process-box">
+  <div class="occ-noise-process-title">🧮 计算过程 · 臭气浓度关系表</div>
+  <div class="occ-noise-process" id="odor-process">
+    <div class="cp-hint">录入臭气物质摩尔质量 M、质量浓度 C 与嗅辩阈值后，此处自动展示 ppm 换算与稀释倍数过程。</div>
+  </div>
+</div>
+<div class="template-panel" id="template-cems">
 <div class="card">
 <div class="card-title">🏭 CEMS 72小时调试报告</div>
 <div class="template-subtitle">已按“分组式子页签”重构样板，不再把复杂模板平铺成单页。当前优先接入了封面、技术要求、汇总、漂移、示值误差、准确度评估、速度场系数、参比准确度，并新增正式报告预览。</div>
@@ -3689,7 +3731,13 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
 </div>
 </div>
 </div>
-</div><div class="template-panel" id="template-occupational">
+</div><div class="occ-noise-process-box" id="cems-process-box">
+  <div class="occ-noise-process-title">🧮 计算过程 · CEMS 72 h 调试</div>
+  <div class="occ-noise-process" id="cems-process">
+    <div class="cp-hint">录入 CEMS 漂移、示值误差、准确度与速度场系数数据后，此处自动展示标准公式链与中间结果。</div>
+  </div>
+</div>
+<div class="template-panel" id="template-occupational">
 <div class="card">
 <div class="card-title">🧰 职业卫生计算模板</div>
 <div class="template-subtitle">包含化学因素和物理因素两大模块。</div>
@@ -3870,6 +3918,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
         </tbody>
       </table>
     </div>
+    <div class="occ-noise-process-box" id="occ-fr-process-box">
+  <div class="occ-noise-process-title">🧮 计算过程 · FR 折减因子（高频电磁场）</div>
+  <div class="occ-noise-process" id="occ-fr-process">
+    <div class="cp-hint">录入高频电磁场工作时长与限值后，此处自动展示 TWA 折算（RF 折减因子）过程。</div>
+  </div>
+</div>
     <div style="overflow-x:auto;">
       <table class="simple-table" style="margin-top:12px">
         <colgroup>
@@ -3892,6 +3946,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
         </tbody>
       </table>
     </div>
+    <div class="occ-noise-process-box" id="occ-chem-process-box">
+  <div class="occ-noise-process-title">🧮 计算过程 · 化学因素 CTWA/STEL 判定</div>
+  <div class="occ-noise-process" id="occ-chem-process">
+    <div class="cp-hint">录入化学因素情况一数据后，此处自动展示 CTWA/STEL 判定与采样体积换算过程。</div>
+  </div>
+</div>
   </div>
 </div>
 
@@ -4209,6 +4269,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
         </tbody>
       </table>
     </div>
+    <div class="occ-noise-process-box" id="occ-electric-process-box">
+  <div class="occ-noise-process-title">🧮 计算过程 · 工频电场 8 h 等效</div>
+  <div class="occ-noise-process" id="occ-electric-process">
+    <div class="cp-hint">录入工频电场测量值与接触时间后，此处自动展示 8 h 等效换算过程。</div>
+  </div>
+</div>
   </div>
 </div>
 
@@ -4246,6 +4312,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
     <div class="result-box"><div class="result-label">M3</div><div class="result-value" id="o6p-m3">—</div></div>
   </div>
   <div class="result-box" style="margin-top:12px"><div class="result-label">臭气浓度</div><div class="result-value" id="o6p-odor">—</div></div>
+</div>
+<div class="occ-noise-process-box" id="o6-process-box">
+  <div class="occ-noise-process-title">🧮 计算过程 · O₆ 三点比较式臭气浓度</div>
+  <div class="occ-noise-process" id="o6-process">
+    <div class="cp-hint">录入 10³/10²/10¹ 稀释档 3 管人中正解人次后，此处自动展示 M 值与臭气浓度判定过程。</div>
+  </div>
 </div>
 </div>
 </div><!-- 统计结果页签 -->
@@ -5773,6 +5845,7 @@ function calcWaterOnlineComparison(){
   };
   calcRows('fg-water-sample', 'lab', 6);
   calcRows('fg-water-qc', 'std', 5);
+  if (typeof renderFlueGasProcess === 'function') { try { renderFlueGasProcess(); } catch(e) {} }
 }
 function fluegasDual(refId, cemsId, limitId, absId, relId, judgeId, dp=2, unit=''){
   const ref = num(refId), cems = num(cemsId), limit = num(limitId);
@@ -6232,6 +6305,7 @@ function calcFlueGas(){
 
   calcWaterOnlineComparison();
   if (typeof updateCardAvgs === 'function') updateCardAvgs();
+  if (typeof renderFlueGasProcess === 'function') { try { renderFlueGasProcess(); } catch(e) {} }
 }
 
 function getComparisonDataRows(body){
@@ -6440,6 +6514,7 @@ function calcNoiseRow600(rowIdx){
     if(el2) el2.textContent = '—';
     if(el3) el3.textContent = '—';
   }
+  if (typeof renderNoiseCheckProcess === 'function') { try { renderNoiseCheckProcess(); } catch(e) {} }
 }
 function addNoiseRow600(){
   const tbody = document.getElementById('noise-table-body-600');
@@ -6501,6 +6576,7 @@ function calcNoiseRow1200(rowIdx){
     if(el2) el2.textContent = '—';
     if(el3) el3.textContent = '—';
   }
+  if (typeof renderNoiseCheckProcess === 'function') { try { renderNoiseCheckProcess(); } catch(e) {} }
 }
 function addNoiseRow1200(){
   const tbody = document.getElementById('noise-table-body-1200');
@@ -6558,6 +6634,7 @@ function calcG219(){
   setPlain('g219-sum-truck', Number.isNaN(truck) ? '—' : `${truck} 辆`);
   const corrText = Number.isNaN(corr) ? '未形成有效扣背景值' : `扣背景后 ${corr.toFixed(2)} dB`;
   setPlain('g219-sum-note', `${corrText}；${note}`);
+  if (typeof renderG219Process === 'function') { try { renderG219Process(); } catch(e) {} }
 }
 function initParshall(){
   const sel = document.getElementById('parshall-type');
@@ -6599,6 +6676,7 @@ function getWindBin(u){
   return 6;
 }
 function calcWeather(){
+  if (typeof renderWeatherProcess === 'function') { try { renderWeatherProcess(); } catch(e) {} }
   const dateStr = document.getElementById('w-date').value;
   const timeStr = document.getElementById('w-time').value;
   const lat = num('w-lat'), lon = num('w-lon');
@@ -6682,6 +6760,7 @@ function calcIons(){
   setPlain('ion-judge-tds', tdsJudge);
   const overall = [balanceJudge, hardJudge, tdsJudge].includes('—') ? '请补全数据后再综合判断' : ([balanceJudge, hardJudge, tdsJudge].some(t => t.includes('偏大')) ? '建议复核部分项目或检查录入数据' : '整体结果稳定，可用于报告整理');
   setPlain('ion-judge-overall', overall);
+  if (typeof renderIonsProcess === 'function') { try { renderIonsProcess(); } catch(e) {} }
 }
 function calcOdor(){
   document.querySelectorAll('#odor-table tbody tr').forEach(tr=>{
@@ -6695,6 +6774,7 @@ function calcOdor(){
     tds[5].textContent = isNaN(dil)?'—':dil.toFixed(2);
   });
   calcO6();
+  if (typeof renderOdorProcess === 'function') { try { renderOdorProcess(); } catch(e) {} }
 }
 function calcO6(){
   const M = (a,b)=> ((Number.isNaN(a)?0:a) + (Number.isNaN(b)?0:b)*(1/3)) / 6;
@@ -6995,6 +7075,7 @@ function calcCems(){
   if(kJudge !== '—') noteParts.push(`速度场 ${kJudge}`);
   if(Object.values(refJudges).some(v=>v!=='—')) noteParts.push(`参比准确度 ${Object.values(refJudges).every(v=>v==='合格') ? '合格' : '需复核'}`);
   setPlain('cems-summary-note', noteParts.length ? noteParts.join('；') : '请继续补充检测数据');
+  if (typeof renderCemsProcess === 'function') { try { renderCemsProcess(); } catch(e) {} }
 
   setPlain('cems-acc-drift', driftValid.length ? `${driftPass.length}/${driftValid.length} 项合格；最大漂移 ${formatNum(driftMax,2,'%')}` : '—');
   setPlain('cems-acc-indication', indValid.length ? `${indPass.length}/${indValid.length} 项合格；最大相对误差 ${formatNum(indMaxRel,2,'%')}` : '—');
@@ -7404,9 +7485,12 @@ function calcOccupational(){
   const totalTimeW = loc1Time + loc2Time + loc3Time;
   const totalWbgt = (totalTimeW > 0) ? (loc1Tw + loc2Tw + loc3Tw) / totalTimeW : NaN;
   setPlain('occ-heat-total-wbgt', !Number.isNaN(totalWbgt) ? totalWbgt.toFixed(1) : '—');
-  /* 刷新「工作场所噪声检测结果与判定」/「个体噪声检测结果与判定」计算过程展示 */
+  /* 刷新职业卫生各子模块计算过程展示 */
   if (typeof renderOccNoiseProcess === 'function') { try { renderOccNoiseProcess(); } catch(e) {} }
   if (typeof renderOccIndNoiseProcess === 'function') { try { renderOccIndNoiseProcess(); } catch(e) {} }
+  if (typeof renderOccChemProcess === 'function') { try { renderOccChemProcess(); } catch(e) {} }
+  if (typeof renderOccElectricProcess === 'function') { try { renderOccElectricProcess(); } catch(e) {} }
+  if (typeof renderOccFrProcess === 'function') { try { renderOccFrProcess(); } catch(e) {} }
 }
 function calcO6Panel(){
   const M = (a,b)=> ((Number.isNaN(a)?0:a) + (Number.isNaN(b)?0:b)*(1/3)) / 6;
@@ -7424,6 +7508,7 @@ function calcO6Panel(){
   setPlain('o6p-range', `当前自动落入：${range}`);
   setPlain('o6p-report', `M1=${formatNum(m1,4)}，M2=${formatNum(m2,4)}，M3=${formatNum(m3,4)}，臭气浓度=${odor}`);
   setPlain('o6p-advice', odor==='—' ? '请补充更多分段数据后再生成记录。' : '系统已自动按浓度区间调用结果逻辑，无需再人工进入各区间工作表。');
+  if (typeof renderO6Process === 'function') { try { renderO6Process(); } catch(e) {} }
 }
 function renderParshallLookup(){
   const body = document.getElementById('parshall-lookup-body');
@@ -7520,6 +7605,7 @@ function calcParshallRow(input){
   const Qmh = Q * 3.6;
   qCell.textContent = Q.toFixed(2);
   qmhCell.textContent = Qmh.toFixed(2);
+  if (typeof renderParshallProcess === 'function') { try { renderParshallProcess(); } catch(e) {} }
 }
 
 function calcParshallByParams(){
@@ -7546,6 +7632,7 @@ function calcParshallByParams(){
   
   qInput.value = Q.toFixed(2);
   qmhInput.value = Qmh.toFixed(2);
+  if (typeof renderParshallProcess === 'function') { try { renderParshallProcess(); } catch(e) {} }
 }
 
 // 颗粒物/流速/温度/湿度比对模块 - 添加记录
@@ -8166,19 +8253,633 @@ function renderOccIndNoiseProcess(){
   catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
 }
 window.renderOccIndNoiseProcess=renderOccIndNoiseProcess;
-try{ renderOccNoiseProcess(); }catch(e){}
-try{ renderOccIndNoiseProcess(); }catch(e){}
+/* ── 全模块计算过程渲染注册表:各模块将 render 函数 push 进来,KaTeX 就绪后统一重渲染 ── */
+window.__occProcessRenderers=[renderOccNoiseProcess, renderOccIndNoiseProcess];
+function renderAllProcesses(){ (window.__occProcessRenderers||[]).forEach(function(f){ try{ f(); }catch(e){} }); }
+try{ renderAllProcesses(); }catch(e){}
 /* KaTeX 异步加载完成后自动重渲染（加载中先展示兜底文本） */
 window.addEventListener('load', function(){
-  setTimeout(function(){ if(window.katex){ try{ renderOccNoiseProcess(); }catch(e){} try{ renderOccIndNoiseProcess(); }catch(e){} } }, 80);
+  setTimeout(function(){ if(window.katex){ try{ renderAllProcesses(); }catch(e){} } }, 80);
 });
 (function(){
   var tries=0;
   var timer=setInterval(function(){
     tries++;
-    if(window.katex || tries>40){ clearInterval(timer); if(window.katex){ try{ renderOccNoiseProcess(); }catch(e){} try{ renderOccIndNoiseProcess(); }catch(e){} } }
+    if(window.katex || tries>40){ clearInterval(timer); if(window.katex){ try{ renderAllProcesses(); }catch(e){} } }
   }, 250);
 })();
+
+
+/* ── 噪声验算(600 s/1200 s):SEL 计算与测量时长反算 ── */
+function genNoiseCheckProcess(){
+  const steps=[], warns=[];
+  const groups=[['nc600','noise-table-body-600',600,'600 s'],['nc1200','noise-table-body-1200',1200,'1200 s']];
+  groups.forEach(function(g){
+    const prefix=g[0], bodyId=g[1], sec=g[2], tag=g[3];
+    const rows=(document.querySelectorAll && document.querySelectorAll('#'+bodyId+' tr'))||[];
+    rows.forEach(function(row, idx){
+      const leq=num(prefix+'-leq-'+idx);
+      if(Number.isNaN(leq)) return;
+      const target=num(prefix+'-sel-target-'+idx);
+      const sel=leq+10*Math.log10(sec);
+      steps.push(cpStep(tag+' · 第 '+(idx+1)+' 行 · SEL（声暴露级）', {
+        math: [
+          'SEL = L_{eq} + 10\\lg\\frac{T}{T_0}',
+          'SEL = '+cpFm(leq,3)+' + 10\\lg\\frac{'+sec+'}{1} = '+cpFm(sel,3)+'\\ \\mathrm{dB}'
+        ],
+        note: 'T0 = 1 s；SEL 为测量时长 T 内的等效声级换算到 1 s 声暴露量对应的声级。'
+      }));
+      if(!Number.isNaN(target)){
+        const tSec=Math.pow(10,(target-leq)/10);
+        steps.push(cpStep(tag+' · 第 '+(idx+1)+' 行 · 目标 SEL 对应时长', {
+          math: [
+            'T = 10^{\\frac{SEL_{目标} - L_{eq}}{10}}',
+            'T = 10^{\\frac{'+cpFm(target,3)+' - '+cpFm(leq,3)+'}{10}} = '+cpFm(tSec,2)+'\\ \\mathrm{s} = '+cpFm(tSec/60,4)+'\\ \\mathrm{min}'
+          ]
+        }));
+      }
+    });
+  });
+  if(!steps.length) return cpHint('录入上方 600 s / 1200 s 表格的 Leq 与目标 SEL 后，此处自动展示 SEL 换算与时长反算过程。');
+  return steps.join('');
+}
+function renderNoiseCheckProcess(){
+  const box=document.getElementById('nc-process');
+  if(!box) return;
+  try{ box.innerHTML=genNoiseCheckProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderNoiseCheckProcess=renderNoiseCheckProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderNoiseCheckProcess);
+
+/* ── G219 国道噪声:背景差值/扣背景/适用性 ── */
+function genG219Process(){
+  const steps=[];
+  const meas=num('g219-meas'), bg=num('g219-bg');
+  if(Number.isNaN(meas) && Number.isNaN(bg)) return cpHint('录入「测得 Laeq」与「背景 Laeq」后，此处自动展示差值计算、扣背景换算与适用性说明。');
+  const diff=meas-bg;
+  steps.push(cpStep('① 差值 ΔL', {
+    math: [
+      '\\Delta L = L_{测得} - L_{背景}',
+      '\\Delta L = '+cpFm(meas,2)+' - '+cpFm(bg,2)+' = '+cpFm(diff,2)+'\\ \\mathrm{dB}'
+    ]
+  }));
+  if(!Number.isNaN(meas) && !Number.isNaN(bg) && meas>bg){
+    const e=Math.pow(10,0.1*meas)-Math.pow(10,0.1*bg);
+    const corr=e>0 ? 10*Math.log10(e) : NaN;
+    steps.push(cpStep('② 扣背景后 L_{aeq}', {
+      math: [
+        'L_{aeq} = 10\\lg(10^{0.1 L_{测得}} - 10^{0.1 L_{背景}})',
+        'L_{aeq} = 10\\lg(10^{0.1\\times '+cpFm(meas,2)+'} - 10^{0.1\\times '+cpFm(bg,2)+'}) = '+(Number.isNaN(corr)?'—':cpFm(corr,2))+'\\ \\mathrm{dB}'
+      ]
+    }));
+  }
+  if(!Number.isNaN(diff) && meas>bg){
+    const note = diff < 3 ? '差值 < 3 dB，谨慎采用（背景噪声与测量值接近，结果代表性下降）' : diff < 10 ? '可扣背景，建议备注说明' : '背景影响较小';
+    steps.push(cpStep('③ 适用性说明', { note: note }));
+  } else if(!Number.isNaN(diff) && meas<=bg){
+    steps.push(cpStep('③ 适用性说明', { note: '测量值不高于背景值，无法扣背景，请核查测量过程。' }));
+  }
+  return steps.join('');
+}
+function renderG219Process(){
+  const box=document.getElementById('g219-process');
+  if(!box) return;
+  try{ box.innerHTML=genG219Process(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderG219Process=renderG219Process;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderG219Process);
+
+
+/* ── 巴歇尔槽流量:Q = C × h^n ── */
+function genParshallProcess(){
+  const steps=[];
+  const tbody=document.getElementById('parshall-tbody');
+  if(tbody && tbody.children){
+    Array.from(tbody.children).forEach(function(tr, idx){
+      const inputs=tr.querySelectorAll('input');
+      if(inputs.length<4) return;
+      const n=parseFloat(inputs[1].value), c=parseFloat(inputs[2].value), h=parseFloat(inputs[3].value);
+      if(isNaN(c)||isNaN(n)||isNaN(h)||h<=0) return;
+      const Q=c*Math.pow(h,n);
+      steps.push(cpStep('第 '+(idx+1)+' 行 · 巴歇尔槽流量', {
+        math: [
+          'Q = C \\times h^{n}',
+          'Q = '+cpFm(c,2)+' \\times '+cpFm(h,3)+'^{'+cpFm(n,4)+'} = '+cpFm(Q,2)+'\\ \\mathrm{L/s}'
+        ],
+        boxed: 'Q_h = '+cpFm(Q*3.6,2)+'\\ \\mathrm{m^3/h}'
+      }));
+    });
+  }
+  const b=num('parshall-b'), nn=num('parshall-n'), c2=num('parshall-c'), h2=num('parshall-h');
+  if(!Number.isNaN(b) && !Number.isNaN(nn) && !Number.isNaN(c2) && !Number.isNaN(h2) && h2>0){
+    const Q=c2*Math.pow(h2,nn);
+    steps.push(cpStep('参数录入 · 巴歇尔槽流量', {
+      math: [
+        'Q = C \\times h^{n}',
+        'Q = '+cpFm(c2,2)+' \\times '+cpFm(h2,3)+'^{'+cpFm(nn,4)+'} = '+cpFm(Q,2)+'\\ \\mathrm{L/s}'
+      ],
+      boxed: 'Q_h = '+cpFm(Q*3.6,2)+'\\ \\mathrm{m^3/h}'
+    }));
+  }
+  if(!steps.length) return cpHint('录入巴歇尔槽参数（指数 n、流量系数 C、液位 h）后，此处自动展示 Q = C × hⁿ 计算过程。');
+  return steps.join('');
+}
+function renderParshallProcess(){
+  const box=document.getElementById('parshall-process');
+  if(!box) return;
+  try{ box.innerHTML=genParshallProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderParshallProcess=renderParshallProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderParshallProcess);
+
+/* ── 气象:太阳高度角/云量辐射/稳定度/10m 风速 ── */
+function genWeatherProcess(){
+  const steps=[];
+  const lat=num('w-lat'), lon=num('w-lon'), ua=num('w-ua'), a=num('w-a');
+  const dateStr=(document.getElementById('w-date')||{}).value||'';
+  const timeStr=(document.getElementById('w-time')||{}).value||'';
+  if(!dateStr || !timeStr || Number.isNaN(lat) || Number.isNaN(lon)) return cpHint('录入日期、时间与经纬度后，此处自动展示太阳高度角、稳定度判定与 1000 m 风速换算过程。');
+  const d=new Date(dateStr+'T'+timeStr+':00');
+  const dn=Math.floor((d-new Date(d.getFullYear(),0,1))/86400000);
+  const t=d.getHours()+d.getMinutes()/60+d.getSeconds()/3600;
+  const Q0=2*Math.PI*dn/365;
+  const delta=(0.006918-0.399912*Math.cos(Q0)+0.0702578*Math.sin(Q0)-0.006758*Math.cos(2*Q0)+0.000907*Math.sin(2*Q0)-0.002697*Math.cos(3*Q0)+0.00148*Math.sin(3*Q0))*180/Math.PI;
+  let h0=Math.asin(Math.sin(lat*Math.PI/180)*Math.sin(delta*Math.PI/180)+Math.cos(lat*Math.PI/180)*Math.cos(delta*Math.PI/180)*Math.cos((15*t+lon-300)*Math.PI/180))*180/Math.PI;
+  if(h0<0) h0=0;
+  const total=num('w-cloud-total'), low=num('w-cloud-low');
+  steps.push(cpStep('① 太阳高度角', {
+    math: [
+      'h_0 = \\arcsin\\left(\\sin\\varphi\\sin\\delta + \\cos\\varphi\\cos\\delta\\cos(15t + \\lambda - 300)\\right)',
+      'h_0 = '+cpFm(h0,2)+'^{\\circ}'
+    ],
+    subs: [ cpSub('赤纬', '\\delta = '+cpFm(delta,2)+'^{\\circ}'), cpSub('时角参数', '15t + \\lambda - 300 = '+cpFm(15*t+lon-300,1)+'^{\\circ}') ]
+  }));
+  if(!Number.isNaN(total) && !Number.isNaN(low) && total>=low){
+    const cloudIndex = (total<=4&&low<=4)?1:(total>=5&&total<=7&&low<=4)?2:(total>=8&&low<=4)?3:(total>=5&&total<=7&&low>=5&&low<=7)?4:5;
+    const solarCol=h0<=0?0:(h0<=15?1:h0<=35?2:h0<=65?3:4);
+    const radMap={1:[-2,-1,1,2,3],2:[-1,0,1,2,3],3:[-1,0,0,1,1],4:[0,0,0,0,1],5:[0,0,0,0,0]};
+    const rad=radMap[cloudIndex]?.[solarCol]??0;
+    const windBin=Number.isNaN(ua)?null:(ua<2?0:ua<3?2:ua<5?3:ua<6?5:6);
+    const stabGrid={0:{'-2':'F','-1':'E','0':'D','1':'B','2':'B','3':'A'},2:{'-2':'F','-1':'E','0':'D','1':'C','2':'B','3':'B'},3:{'-2':'E','-1':'D','0':'D','1':'C','2':'C','3':'B'},5:{'-2':'D','-1':'D','0':'D','1':'D','2':'D','3':'C'},6:{'-2':'D','-1':'D','0':'D','1':'D','2':'D','3':'D'}};
+    const grade=windBin!=null?(stabGrid[windBin]?.[String(rad)]||'D'):'D';
+    steps.push(cpStep('② 辐射等级与大气稳定度（查表）', {
+      subs: [
+        cpSub('云量等级', '总云量 '+cpFm(total,0)+'、低云量 '+cpFm(low,0)+' → 等级 '+cloudIndex),
+        cpSub('太阳高度角档位', 'h_0 = '+cpFm(h0,1)+'^{\\circ} → 辐照等级 '+rad),
+        cpSub('大气稳定度查表', '风速档 × 辐照等级 → 稳定度 '+grade)
+      ]
+    }));
+  }
+  if(!Number.isNaN(ua) && !Number.isNaN(a) && a>0){
+    const area=(document.getElementById('w-area')||{}).value||'城市';
+    const nMap={城市:{A:0.1,B:0.15,C:0.2,D:0.25,E:0.3,F:0.3},农村:{A:0.07,B:0.07,C:0.1,D:0.15,E:0.25,F:0.25}};
+    // 稳定度先按 u10 未修正近似(与主表一致采用二次查表,此处展示典型 n 值)
+    const n=nMap[area]?.['D']||0.15;
+    const u10=ua*Math.pow(10/a,n);
+    steps.push(cpStep('③ 1000 m 高度风速换算', {
+      math: [
+        'u_{10} = u_a \\times \\left(\\frac{10}{a}\\right)^{n}',
+        'u_{10} = '+cpFm(ua,2)+' \\times \\left(\\frac{10}{'+cpFm(a,1)+'}\\right)^{'+cpFm(n,3)+'} = '+cpFm(u10,2)+'\\ \\mathrm{m/s}'
+      ],
+      subs: [ cpSub('n（P 指数）', 'n = '+cpFm(n,3)+'\\ (\\mathrm{'+area+'},\\ \\mathrm{D})') ]
+    }));
+  }
+  return steps.join('');
+}
+function renderWeatherProcess(){
+  const box=document.getElementById('weather-process');
+  if(!box) return;
+  try{ box.innerHTML=genWeatherProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderWeatherProcess=renderWeatherProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderWeatherProcess);
+
+
+/* ── 阴阳离子平衡:当量换算/平衡误差/总硬度/TDS ── */
+function genIonsProcess(){
+  const steps=[];
+  const v=id=>{ const n=num(id); return Number.isNaN(n)?0:n; };
+  const cat=v('ion-na')/23+v('ion-k')/39+v('ion-ca')/20+v('ion-mg')/12+v('ion-nh4')/18+v('ion-fe')/18.6+v('ion-mn')/27.5;
+  const an=v('ion-so4')/48+v('ion-cl')/35.5+v('ion-hco3')/61+v('ion-co3')/30+v('ion-sio3')/38+v('ion-no3')/62+v('ion-f')/19;
+  const hasCat=v('ion-na')+v('ion-k')+v('ion-ca')+v('ion-mg')+v('ion-nh4')+v('ion-fe')+v('ion-mn');
+  const hasAn=v('ion-so4')+v('ion-cl')+v('ion-hco3')+v('ion-co3')+v('ion-sio3')+v('ion-no3')+v('ion-f');
+  if(!hasCat && !hasAn) return cpHint('录入阴阳离子测定结果后，此处自动展示当量换算、平衡误差、总硬度与 TDS 校验过程。');
+  steps.push(cpStep('① 阴阳离子当量换算（mmol/L）', {
+    math: [
+      'C_{eq} = \\sum_i \\frac{C_i}{M_i},\\quad 阳离子: Na/23 + K/39 + Ca/20 + Mg/12 + NH_4/18 + Fe/18.6 + Mn/27.5',
+      '\\sum Cat = '+cpFm(cat,3)+'\\ \\mathrm{mmol/L}'
+    ],
+    subs: [ cpSub('阴离子', '\\sum An = '+cpFm(an,3)+'\\ \\mathrm{mmol/L}') ]
+  }));
+  const balance=(cat+an)!==0?(an-cat)/(an+cat)*100:NaN;
+  steps.push(cpStep('② 阴阳离子平衡误差', {
+    math: [
+      '\\delta = \\frac{\\sum An - \\sum Cat}{\\sum An + \\sum Cat} \\times 100\\%',
+      '\\delta = '+cpFm(balance,2)+'\\%'
+    ],
+    note: Number.isNaN(balance)?'—':(Math.abs(balance)<=5?'平衡误差较好':(Math.abs(balance)<=10?'平衡误差可接受':'平衡误差偏大，建议复核'))
+  }));
+  const hardCalc=(v('ion-ca')/20+v('ion-mg')/12+v('ion-fe')/18.6+v('ion-mn')/27.5)*50;
+  const hard=num('ion-hardness');
+  if(!Number.isNaN(hard)&&hard!==0){
+    const hardErr=(hardCalc/hard-1)*100;
+    steps.push(cpStep('③ 总硬度校验', {
+      math: [ 'H = (Ca/20 + Mg/12 + Fe/18.6 + Mn/27.5) \\times 50',
+        'H = '+cpFm(hardCalc,2)+'\\ \\mathrm{mg/L},\\quad 误差 = '+cpFm(hardErr,2)+'\\%' ],
+      note: Math.abs(hardErr)<=10?'总硬度误差可接受':'总硬度误差偏大'
+    }));
+  }
+  const tdsCalc=v('ion-na')+v('ion-k')+v('ion-ca')+v('ion-mg')+v('ion-fe')+v('ion-mn')+v('ion-so4')+v('ion-cl')+v('ion-no3')+v('ion-hco3')*60/122;
+  const tds=num('ion-tds');
+  if(!Number.isNaN(tds)&&tds!==0){
+    const tdsErr=(tdsCalc/tds-1)*100;
+    steps.push(cpStep('④ 溶解性总固体（TDS）校验', {
+      math: [ 'TDS_{估算} = \\sum C_i\\ (+\\ HCO_3 \\times 60/122)',
+        'TDS_{估算} = '+cpFm(tdsCalc,2)+'\\ \\mathrm{mg/L},\\quad 误差 = '+cpFm(tdsErr,2)+'\\%' ],
+      note: Math.abs(tdsErr)<=10?'TDS误差可接受':'TDS误差偏大'
+    }));
+  }
+  return steps.join('');
+}
+function renderIonsProcess(){
+  const box=document.getElementById('ions-process');
+  if(!box) return;
+  try{ box.innerHTML=genIonsProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderIonsProcess=renderIonsProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderIonsProcess);
+
+/* ── 臭气浓度关系表:ppm 换算与稀释倍数 ── */
+function genOdorProcess(){
+  const steps=[];
+  const rows=(document.querySelectorAll&&document.querySelectorAll('#odor-table tbody tr'))||[];
+  rows.forEach(function(tr, idx){
+    const tds=tr.querySelectorAll('td');
+    if(tds.length<6) return;
+    const mwRaw=tds[1]&&tds[1].querySelector('input')?tds[1].querySelector('input').value:'';
+    const mgRaw=tds[2]&&tds[2].querySelector('input')?tds[2].querySelector('input').value:'';
+    const thRaw=tds[3]&&tds[3].querySelector('input')?tds[3].querySelector('input').value:'';
+    const mw=parseFloat(mwRaw), mg=parseFloat(mgRaw), th=parseFloat(thRaw);
+    if(isNaN(mw)||isNaN(mg)||mw===0) return;
+    const ppm=mg*22.4/mw;
+    steps.push(cpStep('第 '+(idx+1)+' 行 · 质量浓度 → ppm', {
+      math: [
+        'ppm = \\frac{C_{mg/m^3} \\times 22.4}{M}',
+        'ppm = \\frac{'+cpFm(mg,2)+' \\times 22.4}{'+cpFm(mw,1)+'} = '+cpFm(ppm,4)
+      ]
+    }));
+    if(!isNaN(th)&&th!==0){
+      const dil=ppm/th;
+      steps.push(cpStep('第 '+(idx+1)+' 行 · 稀释倍数', {
+        math: [ 'D = \\frac{ppm}{嗅辩阈值}',
+          'D = \\frac{'+cpFm(ppm,4)+'}{'+cpFm(th,2)+'} = '+cpFm(dil,2)+'\\ \\mathrm{倍}' ]
+      }));
+    }
+  });
+  if(!steps.length) return cpHint('录入臭气物质摩尔质量 M、质量浓度 C 与嗅辩阈值后，此处自动展示 ppm 换算与稀释倍数过程。');
+  return steps.join('');
+}
+function renderOdorProcess(){
+  const box=document.getElementById('odor-process');
+  if(!box) return;
+  try{ box.innerHTML=genOdorProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderOdorProcess=renderOdorProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderOdorProcess);
+
+/* ── 厂区东北侧 O₆ / 三点比较式臭气浓度 ── */
+function genO6Process(){
+  const steps=[];
+  const M=(a,b)=>((Number.isNaN(a)?0:a)+(Number.isNaN(b)?0:b)*(1/3))/6;
+  const a10=num('o6p-a10'), b10=num('o6p-b10'), a100=num('o6p-a100'), b100=num('o6p-b100'), a1000=num('o6p-a1000'), b1000=num('o6p-b1000');
+  const m1=M(a10,b10), m2=M(a100,b100), m3=M(a1000,b1000);
+  if(Number.isNaN(a10)&&Number.isNaN(a100)&&Number.isNaN(a1000)) return cpHint('录入 10³/10²/10¹ 稀释档的 3 管人中正解人数（a、b）后，此处自动展示 M 值与臭气浓度判定过程。');
+  const mk=function(name, a, b, m){
+    if(Number.isNaN(a)&&Number.isNaN(b)) return '';
+    return cpStep(name+' 档 M 值', {
+      math: [
+        'M = \\frac{a + b/3}{6}',
+        'M = \\frac{'+cpFm(Number.isNaN(a)?0:a,1)+' + '+cpFm(Number.isNaN(b)?0:b,1)+'/3}{6} = '+cpFm(m,4)
+      ]
+    });
+  };
+  const s1=mk('10³',a10,b10,m1), s2=mk('10²',a100,b100,m2), s3=mk('10¹',a1000,b1000,m3);
+  if(s1) steps.push(s1); if(s2) steps.push(s2); if(s3) steps.push(s3);
+  if(!Number.isNaN(m1)){
+    let odor='—';
+    if(m1<0.58) odor='<10';
+    else if(Math.abs(m1-0.58)<1e-9) odor='10';
+    else if(Number.isNaN(m2)||m2<0.58) odor=Math.trunc(10*Math.pow(10,(m1-0.58)/(m1-m2)));
+    else if(!Number.isNaN(m3)) odor=Math.trunc(100*Math.pow(10,(m2-0.58)/(m2-m3)*Math.log10(1000/100)));
+    steps.push(cpStep('臭气浓度判定', {
+      subs: [
+        cpSub('M1 判据', Number.isNaN(m1-0.58)?'—':(m1<0.58?'M1 < 0.58 → 臭气浓度 < 10':(Math.abs(m1-0.58)<1e-9?'M1 ≈ 0.58 → 臭气浓度 = 10':'按对数插值计算'))),
+        cpSub('结果', '臭气浓度 = '+odor)
+      ]
+    }));
+  }
+  return steps.join('');
+}
+function renderO6Process(){
+  const box=document.getElementById('o6-process');
+  if(!box) return;
+  try{ box.innerHTML=genO6Process(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderO6Process=renderO6Process;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderO6Process);
+
+
+/* ── CEMS 72h:漂移/示值误差/准确度/速度场系数 ── */
+function genCemsProcess(){
+  const steps=[];
+  const driftRows=[['pm','颗粒物'],['o2','O₂'],['so2','SO₂'],['nox','NOx']];
+  const driftSteps=[];
+  driftRows.forEach(function(dr){
+    const key=dr[0], label=dr[1];
+    const range=num('cemsd-'+key+'-range');
+    const z=[num('cemsd-'+key+'-z1'),num('cemsd-'+key+'-z2'),num('cemsd-'+key+'-z3')].filter(v=>!Number.isNaN(v));
+    const s=[num('cemsd-'+key+'-s1'),num('cemsd-'+key+'-s2'),num('cemsd-'+key+'-s3')].filter(v=>!Number.isNaN(v));
+    if(!z.length&&!s.length) return;
+    const zmax=z.length?z.reduce((a,b)=>Math.abs(a)>=Math.abs(b)?a:b):NaN;
+    const smax=s.length?s.reduce((a,b)=>Math.abs(a)>=Math.abs(b)?a:b):NaN;
+    const zpct=(!Number.isNaN(zmax)&&!Number.isNaN(range)&&range!==0)?zmax/range*100:NaN;
+    const spct=(!Number.isNaN(smax)&&!Number.isNaN(range)&&range!==0)?smax/range*100:NaN;
+    driftSteps.push(cpSub(label, '零点漂移 = '+cpFm(zpct,2)+'%，量程漂移 = '+cpFm(spct,2)+'%'));
+  });
+  if(driftSteps.length) steps.push(cpStep('① 漂移检测', {
+    math: ['零点漂移 = \\frac{|最大值|}{量程} \\times 100\\%,\\quad 量程漂移 = \\frac{|S_{max}|}{量程} \\times 100\\%'],
+    subs: driftSteps
+  }));
+  const indRows=[['o2','O₂'],['so2','SO₂'],['no','NO']];
+  const indSteps=[];
+  indRows.forEach(function(ir){
+    const key=ir[0], label=ir[1];
+    const refs=[num('cemsi-'+key+'-r1'),num('cemsi-'+key+'-r2'),num('cemsi-'+key+'-r3')];
+    const cems=[num('cemsi-'+key+'-c1'),num('cemsi-'+key+'-c2'),num('cemsi-'+key+'-c3')];
+    const diffs=refs.map((r,i)=>(!Number.isNaN(r)&&!Number.isNaN(cems[i]))?cems[i]-r:NaN).filter(v=>!Number.isNaN(v));
+    if(!diffs.length) return;
+    const dbar=avg(diffs), ravg=avg(refs.filter(r=>!Number.isNaN(r)));
+    const rel=(!Number.isNaN(dbar)&&!Number.isNaN(ravg)&&ravg!==0)?dbar/ravg*100:NaN;
+    indSteps.push(cpSub(label, 'd̄ = '+cpFm(dbar,3)+'，RE = '+cpFm(rel,2)+'%'));
+  });
+  if(indSteps.length) steps.push(cpStep('② 示值误差', {
+    math: ['RE = \\frac{\\bar{d}}{\\bar{R}} \\times 100\\%,\\quad d_i = C_i - R_i'],
+    subs: indSteps
+  }));
+  const accRows=[['o2','氧'],['so2','SO₂'],['nox','NOx']];
+  const accSteps=[];
+  accRows.forEach(function(ar){
+    const key=ar[0], label=ar[1];
+    const refs=[num('cemsa-'+key+'-r1'),num('cemsa-'+key+'-r2'),num('cemsa-'+key+'-r3')];
+    const cems=[num('cemsa-'+key+'-c1'),num('cemsa-'+key+'-c2'),num('cemsa-'+key+'-c3')];
+    const diffs=refs.map((r,i)=>(!Number.isNaN(r)&&!Number.isNaN(cems[i]))?cems[i]-r:NaN).filter(v=>!Number.isNaN(v));
+    if(diffs.length<3) return;
+    const dbar=avg(diffs), sdv=stdev(diffs);
+    const tVals={3:3.182,4:2.776,5:2.571,6:2.447,7:2.365,8:2.306,9:2.262,10:2.228,12:2.179,15:2.131,20:2.086};
+    const tv=tVals[diffs.length]||2.262;
+    const cc=tv*sdv/Math.sqrt(diffs.length);
+    const rmAvg=avg(refs.filter(r=>!Number.isNaN(r)));
+    const ra=(!Number.isNaN(dbar)&&!Number.isNaN(cc)&&!Number.isNaN(rmAvg)&&rmAvg!==0)?(Math.abs(dbar)+cc)/rmAvg*100:NaN;
+    accSteps.push(cpSub(label, 'cc = '+cpFm(cc,3)+'，RA = '+cpFm(ra,2)+'%'));
+  });
+  if(accSteps.length) steps.push(cpStep('③ 准确度（HJ 75-2017 附录A）', {
+    math: ['c_c = t_{(0.975,n)} \\times \\frac{S_d}{\\sqrt{n}},\\quad RA = \\frac{|\\bar{d}| + c_c}{\\bar{R}_M} \\times 100\\%'],
+    subs: accSteps
+  }));
+  const kOverall=num('k-overall')||num('k-avg1');
+  if(!Number.isNaN(num('k-avg1'))){
+    steps.push(cpStep('④ 速度场系数', {
+      math: ['K_i = \\frac{参比流速}{CEMS 流速},\\quad RSD = \\frac{S}{\\bar{K}} \\times 100\\%'],
+      subs: [
+        cpSub('K 均值', '\\bar{K} = '+cpFm(num('k-overall'),4)),
+        cpSub('RSD', (num('k-overall-rsd')!==NaN)?cpFm(num('k-overall-rsd'),2)+'%':'—')
+      ]
+    }));
+  }
+  const noteEl=document.getElementById('cems-summary-note');
+  if(noteEl&&noteEl.textContent&&noteEl.textContent!=='请继续补充检测数据'){
+    steps.push(cpStep('⑤ 汇总', { note: noteEl.textContent }));
+  }
+  if(!steps.length) return cpHint('录入 CEMS 漂移、示值误差、准确度与速度场系数数据后，此处自动展示标准公式链与中间结果。');
+  return steps.join('');
+}
+function renderCemsProcess(){
+  const box=document.getElementById('cems-process');
+  if(!box) return;
+  try{ box.innerHTML=genCemsProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderCemsProcess=renderCemsProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderCemsProcess);
+
+
+/* ── 有组织废气:均值/基准氧折算/误差判定/水样比对 ── */
+function genFlueGasProcess(){
+  const steps=[];
+  const hasAny=[num('fg-o2-avg'),num('fg-temp-avg'),num('fg-moist-avg'),num('fg-flow-avg')].filter(v=>!Number.isNaN(v));
+  if(!hasAny.length) return cpHint('录入有组织废气比对数据后，此处自动展示均值、基准氧折算、误差与判定过程。');
+  const o2a=num('fg-o2-avg'), ta=num('fg-temp-avg'), ma=num('fg-moist-avg'), fa=num('fg-flow-avg');
+  if(!Number.isNaN(o2a)||!Number.isNaN(ta)||!Number.isNaN(ma)||!Number.isNaN(fa)){
+    steps.push(cpStep('① 平均工况参数', {
+      math: ['\\bar{x} = \\frac{1}{n}\\sum_{i=1}^{n} x_i'],
+      subs: [
+        cpSub('O₂ 均值', '\\bar{O_2} = '+cpFm(o2a,3)+'\\%'),
+        cpSub('温度均值', '\\bar{T} = '+cpFm(ta,1)+'\\mathrm{^\\circ C}'),
+        cpSub('含湿量均值', '\\bar{w} = '+cpFm(ma,1)+'\\%'),
+        cpSub('流速均值', '\\bar{v} = '+cpFm(fa,1)+'\\ \\mathrm{m/s}')
+      ]
+    }));
+  }
+  ['nox','so2','o2','c1'].forEach(function(k){
+    const base=num('fg-'+k+'-base');
+    const o2i=num('fg-'+k+'-o2-1');
+    const vi=num('fg-'+k+'-v1');
+    if(!Number.isNaN(vi) && !Number.isNaN(o2i) && !Number.isNaN(base) && (21-o2i)!==0){
+      const conv=((21-base)/(21-o2i))*vi;
+      steps.push(cpStep('② 基准氧折算 · '+k.toUpperCase(), {
+        math: [
+          'C_{折算} = \\frac{21 - O_{2基}}{21 - O_{2实测}} \\times C_{实测}',
+          'C_{折算} = \\frac{21 - '+cpFm(base,1)+'}{21 - '+cpFm(o2i,1)+'} \\times '+cpFm(vi,3)+' = '+cpFm(conv,3)
+        ]
+      }));
+    }
+  });
+  const pmR=num('fg-dust-pm-ravg'), pmC=num('fg-dust-pm-cavg');
+  if(!Number.isNaN(pmR) && !Number.isNaN(pmC) && pmR!==0){
+    const re=(pmC-pmR)/pmR*100;
+    steps.push(cpStep('③ 颗粒物（烟尘）相对误差', {
+      math: ['RE = \\frac{C_{CEMS} - C_{参比}}{C_{参比}} \\times 100\\%',
+        'RE = \\frac{'+cpFm(pmC,2)+' - '+cpFm(pmR,2)+'}{'+cpFm(pmR,2)+'} \\times 100\\% = '+cpFm(re,2)+'\\%'],
+      note: '按烟尘浓度区间套用限值：>200 mg/m³ → ±15%；100~200 → ±20%；50~100 → ±25%；20~50 → ±30%；10~20 绝对误差 ≤6 mg/m³；≤10 绝对误差 ≤5 mg/m³。'
+    }));
+  }
+  const flowR=num('fg-dust-flow-ravg'), flowC=num('fg-dust-flow-cavg');
+  if(!Number.isNaN(flowR) && !Number.isNaN(flowC) && flowR!==0){
+    steps.push(cpStep('④ 流量相对误差', {
+      math: ['RE = \\frac{v_{CEMS} - v_{参比}}{v_{参比}} \\times 100\\% = '+cpFm((flowC-flowR)/flowR*100,2)+'\\%'],
+      note: '限值：流速 ≤10 m/s → ±12%；>10 m/s → ±10%。'
+    }));
+  }
+  const tempR=num('fg-dust-temp-ravg'), tempC=num('fg-dust-temp-cavg');
+  if(!Number.isNaN(tempR) && !Number.isNaN(tempC)){
+    steps.push(cpStep('⑤ 烟温绝对误差', {
+      math: ['\\Delta T = T_{CEMS} - T_{参比} = '+cpFm(tempC-tempR,2)+'\\ \\mathrm{^\\circ C}'],
+      note: '限值：|ΔT| ≤ 3 ℃。'
+    }));
+  }
+  const moistR=num('fg-dust-moist-ravg'), moistC=num('fg-dust-moist-cavg');
+  if(!Number.isNaN(moistR) && !Number.isNaN(moistC)){
+    steps.push(cpStep('⑥ 含湿量误差', {
+      math: ['\\Delta w = w_{CEMS} - w_{参比} = '+cpFm(moistC-moistR,2)+'\\%'],
+      note: '限值：含湿量 ≤5% → 绝对误差 ≤1.5%；>5% → 相对误差 ≤25%。'
+    }));
+  }
+  const waterEl=document.getElementById('fg-water-sample-rel1');
+  if(waterEl && waterEl.textContent && waterEl.textContent!=='—'){
+    steps.push(cpStep('⑦ 水质在线比对', {
+      math: ['\\Delta = C_{在线} - C_{实验室},\\quad 相对误差 = \\frac{\\Delta}{C_{实验室}} \\times 100\\%'],
+      note: '第 1 组相对误差 '+waterEl.textContent+'（其余各组同法，见明细表）。'
+    }));
+  }
+  return steps.join('');
+}
+function renderFlueGasProcess(){
+  const box=document.getElementById('fg-process');
+  if(!box) return;
+  try{ box.innerHTML=genFlueGasProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderFlueGasProcess=renderFlueGasProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderFlueGasProcess);
+
+/* ── 职业卫生 · 化学因素:CTWA/STEL/超标判定 + 标况体积 ── */
+function genOccChemProcess(){
+  const steps=[];
+  const t=num('occ-c1-t'), stel=num('occ-c1-stel'), twaLimit=num('occ-c1-twa-limit');
+  const concs=[];
+  for(let i=1;i<=5;i++){ const v=num('occ-c1-cste'+i); if(!Number.isNaN(v)) concs.push(v); }
+  if(concs.length){
+    const avgConc=concs.reduce((a,b)=>a+b,0)/concs.length;
+    const ctwa=avgConc*t/8;
+    steps.push(cpStep('① 情况一 CTWA 计算', {
+      math: [
+        'C_{TWA} = \\bar{C}_{CSTE} \\times \\frac{t}{8}',
+        'C_{TWA} = '+cpFm(avgConc,3)+' \\times \\frac{'+cpFm(t,2)+'}{8} = '+cpFm(ctwa,3)
+      ],
+      subs: [ cpSub('STEL 判定', 'C_{PE} = '+cpFm(Math.max.apply(null,concs),2)+', STEL 限值 = '+cpFm(stel,2)+' → '+(Math.max.apply(null,concs)<stel?'符合':'不符合')) ]
+    }));
+  }
+  return steps.length?steps.join(''):cpHint('录入化学因素情况一数据后，此处自动展示 CTWA/STEL 判定过程。');
+}
+function renderOccChemProcess(){
+  const box=document.getElementById('occ-chem-process');
+  if(!box) return;
+  try{ box.innerHTML=genOccChemProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderOccChemProcess=renderOccChemProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderOccChemProcess);
+
+/* ── 职业卫生 · 工频电场:8h 等效与多点合成 ── */
+function genOccElectricProcess(){
+  const steps=[];
+  const c1=num('occ-electric-c1-report'), c1t=num('occ-electric-c1-time');
+  if(!Number.isNaN(c1) && !Number.isNaN(c1t) && c1t>0){
+    const e8=c1*Math.sqrt(c1t/8);
+    steps.push(cpStep('① 8 h 等效电场强度', {
+      math: ['E_{8h} = E \\times \\sqrt{\\frac{t}{8}}',
+        'E_{8h} = '+cpFm(c1,2)+' \\times \\sqrt{\\frac{'+cpFm(c1t,2)+'}{8}} = '+cpFm(e8,2)+'\\ \\mathrm{V/m}'],
+      subs: [ cpSub('判定', '限值 '+cpFm(num('occ-electric-c1-limit'),1)+' V/m → '+(e8<num('occ-electric-c1-limit')?'符合':'不符合')) ]
+    }));
+  }
+  return steps.length?steps.join(''):cpHint('录入工频电场测量值与接触时间后，此处自动展示 8 h 等效换算过程。');
+}
+function renderOccElectricProcess(){
+  const box=document.getElementById('occ-electric-process');
+  if(!box) return;
+  try{ box.innerHTML=genOccElectricProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderOccElectricProcess=renderOccElectricProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderOccElectricProcess);
+
+/* ── 职业卫生 · 高频电磁场(工作日内大于8h/每周40h) ── */
+function genOccFrProcess(){
+  const steps=[];
+  const dh=num('occ-fr-daily-h'), dl=num('occ-fr-daily-limit');
+  const wh=num('occ-fr-weekly-h'), wl=num('occ-fr-weekly-limit');
+  if(Number.isNaN(dh)&&Number.isNaN(wh)) return cpHint('录入高频电磁场工作时长与限值后，此处自动展示 TWA 折算过程。');
+  if(!Number.isNaN(dh)&&dh>0&&!Number.isNaN(dl)){
+    const rf=(8/dh)*((24-dh)/16), pct=rf*dl;
+    steps.push(cpStep('① 每日（>8h）折算', {
+      math: ['RF_{日} = \\frac{8}{t} \\times \\frac{24 - t}{16}',
+        'RF_{日} = \\frac{8}{'+cpFm(dh,1)+'} \\times \\frac{24 - '+cpFm(dh,1)+'}{16} = '+cpFm(rf,4)],
+      subs: [ cpSub('PCTWA', 'PCTWA = '+cpFm(rf,4)+' \\times '+cpFm(dl,2)+' = '+cpFm(pct,4)) ]
+    }));
+  }
+  if(!Number.isNaN(wh)&&wh>0&&!Number.isNaN(wl)){
+    const rf=(40/wh)*((168-wh)/128), pct=rf*wl;
+    steps.push(cpStep('② 每周（>40h 或 5d）折算', {
+      math: ['RF_{周} = \\frac{40}{t} \\times \\frac{168 - t}{128}',
+        'RF_{周} = \\frac{40}{'+cpFm(wh,1)+'} \\times \\frac{168 - '+cpFm(wh,1)+'}{128} = '+cpFm(rf,4)],
+      subs: [ cpSub('PCTWA', 'PCTWA = '+cpFm(rf,4)+' \\times '+cpFm(wl,2)+' = '+cpFm(pct,4)) ]
+    }));
+  }
+  return steps.join('');
+}
+function renderOccFrProcess(){
+  const box=document.getElementById('occ-fr-process');
+  if(!box) return;
+  try{ box.innerHTML=genOccFrProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderOccFrProcess=renderOccFrProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderOccFrProcess);
+
+/* ── 职业卫生 · 高温作业:WBGT 加权 ── */
+function genOccHeatProcess(){
+  const steps=[];
+  const calc=function(prefix){
+    const wet=num(prefix+'-wet'), black=num(prefix+'-black'), dry=num(prefix+'-dry');
+    if(Number.isNaN(wet)&&Number.isNaN(black)) return NaN;
+    const type=(document.getElementById(prefix+'-type')||{}).value||'outdoor';
+    if(type==='outdoor') return (!Number.isNaN(wet)&&!Number.isNaN(black)&&!Number.isNaN(dry))?wet*0.7+black*0.2+dry*0.1:NaN;
+    return (!Number.isNaN(wet)&&!Number.isNaN(black))?wet*0.7+black*0.3:NaN;
+  };
+  const head=calc('occ-heat-head'), ab=calc('occ-heat-abdomen'), ankle=calc('occ-heat-ankle');
+  if(!Number.isNaN(head)||!Number.isNaN(ab)||!Number.isNaN(ankle)){
+    steps.push(cpStep('① 各部位 WBGT', {
+      math: ['WBGT = 0.7 T_{湿} + 0.2 T_{黑} + 0.1 T_{干}\\ (室外)',
+        'WBGT = 0.7 T_{湿} + 0.3 T_{黑}\\ (室内)'],
+      subs: [
+        cpSub('头', 'WBGT_{头} = '+cpFm(head,1)),
+        cpSub('腹', 'WBGT_{腹} = '+cpFm(ab,1)),
+        cpSub('踝', 'WBGT_{踝} = '+cpFm(ankle,1))
+      ]
+    }));
+    const w=(head+2*ab+ankle)/4;
+    steps.push(cpStep('② 岗位加权 WBGT', {
+      math: ['WBGT = \\frac{WBGT_{头} + 2 \\times WBGT_{腹} + WBGT_{踝}}{4}',
+        'WBGT = \\frac{'+cpFm(head,1)+' + 2 \\times '+cpFm(ab,1)+' + '+cpFm(ankle,1)+'}{4} = '+cpFm(w,1)+'\\ \\mathrm{^\\circ C}']
+    }));
+  }
+  return steps.length?steps.join(''):cpHint('录入高温作业各部位湿球/黑球/干球温度后，此处自动展示 WBGT 加权计算过程。');
+}
+function renderOccHeatProcess(){
+  const box=document.getElementById('occ-heat-process');
+  if(!box) return;
+  try{ box.innerHTML=genOccHeatProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderOccHeatProcess=renderOccHeatProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderOccHeatProcess);
 
 /* ── 噪声判定边界 / 公式辅助(全局) ── */
 function occNoiseJudge(value, limit){
