@@ -9276,9 +9276,14 @@ function gridPasteAfterCalc(table, originEl){
     if(id==='fg-measurement-table'){ if(typeof calcFlueGas==='function') calcFlueGas(); return; }
     if(id==='occ-individual-noise-table'){ if(typeof calcOccupational==='function') calcOccupational(); return; }
   }catch(e){}
+  /* 页签作用域规则:定位当前业务模块(不依赖 oninput 属性,时间列输入可能无 oninput) */
+  var sub=null; try{ sub=(originEl&&originEl.closest)?originEl.closest('.fluegas-subpanel'):null; }catch(e1){}
+  if(sub && typeof calcFlueGas==='function'){ try{ calcFlueGas(); }catch(e2){} return; }
+  var occTab=null; try{ occTab=(originEl&&originEl.closest)?originEl.closest('.occ-tab-content'):null; }catch(e3){}
+  if(occTab && typeof calcOccupational==='function'){ try{ calcOccupational(); }catch(e4){} return; }
   var h=(originEl&&originEl.getAttribute&&originEl.getAttribute('oninput'))||'';
   var m=/([A-Za-z_$][\w$]*)\s*\(/.exec(h);
-  if(m && m[1] && typeof window[m[1]]==='function'){ try{ window[m[1]](); }catch(e){} }
+  if(m && m[1] && typeof window[m[1]]==='function'){ try{ window[m[1]](); }catch(e){} return; }
   if(typeof renderAllProcesses==='function'){ try{ renderAllProcesses(); }catch(e){} }
 }
 function handleGridPaste(evt){
