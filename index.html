@@ -5774,7 +5774,7 @@ function calculateExcelGasComparisonStats(refs, cems){
   const meanDiff = diffs.length ? diffs.reduce((sum, value) => sum + value, 0) / diffs.length : NaN;
   const absMeanDiff = Math.abs(meanDiff);
   const diffStd = diffs.length > 1 ? Math.sqrt(diffs.reduce((sum, value) => sum + Math.pow(value - meanDiff, 2), 0) / (diffs.length - 1)) : NaN;
-  const coeff = getStudentTConfidence(Math.max(2, pairs.length - 1)); /* t 按自由度 v=n-1 */
+  const coeff = getStudentTConfidence(pairs.length); /* 表键为样本数 n(=ν+1):n=9 → t_{0.975,8}=2.306 */
   const cc = Number.isNaN(diffStd) || coeff === null ? NaN : coeff * diffStd / Math.sqrt(pairs.length);
   const relativeError = Number.isFinite(refAvg) && refAvg !== 0 ? absMeanDiff / refAvg * 100 : NaN;
   const relativeAccuracy = Number.isFinite(refAvg) && refAvg !== 0 && Number.isFinite(cc) ? (absMeanDiff + cc) / refAvg * 100 : NaN;
@@ -9568,7 +9568,7 @@ function runNoiseGoldenTest(){
     push('G3 O₂ A=8.04% → 只启用相对准确度', o2br(8.04).abs===0 && o2br(8.04).rel===1);
     push('G3 O₂ A=5.00% → 只启用绝对误差', o2br(5.00).abs===1 && o2br(5.00).rel===0);
     push('G3 O₂ A=5.01% → 只启用相对准确度', o2br(5.01).abs===0 && o2br(5.01).rel===1);
-    push('G3 n=9 → 自由度 v=8, t=2.306', getStudentTConfidence(8)===2.306 && getStudentTConfidence(9)===2.262);
+    push('G3 n=9 → 样本数对应 t_{0.975,8}=2.306(表键 n=9)', getStudentTConfidence(9)===2.306 && getStudentTConfidence(8)===2.365);
     push('G3 CC 校验: t_{0.975,8}×0.87/√9=0.67', Math.abs(2.306*0.87/Math.sqrt(9)-0.6674)<=0.01);
   })();
   })();
