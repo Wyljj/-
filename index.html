@@ -4020,14 +4020,6 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td><input class="vi-input" id="occ-noise-mw3-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td class="result-cell" id="occ-noise-mw3-laeq">—</td>
           </tr>
-          <tr style="background-color: rgba(34, 197, 94, 0.10); font-weight: bold;">
-            <td colspan="7">工作日综合结果（LAeq,Te → LEX,8h → LEX,w）</td>
-            <td class="result-cell" id="occ-noise-mw-sum-laeqte">—</td>
-            <td class="result-cell" id="occ-noise-mw-sum-lex8">—</td>
-            <td class="result-cell" id="occ-noise-mw-sum-lexw">—</td>
-            <td></td>
-            <td></td>
-          </tr>
           <tr class="occ-noise-subsection">
             <td colspan="3">每周实际工作天数</td>
             <td><input class="vi-input" id="occ-noise-mw-days" oninput="calcOccupational()" step="0.1" type="number"/></td>
@@ -7940,7 +7932,7 @@ function genOccNoiseWorkplace(){
       'Eᵢ = Tᵢ × 10^(0.1·LAeq,Tᵢ)',
       mw.outs.map(x=>cpLine('场所'+cn(x.i), cpFm(x.t,2)+' × 10^(0.1×'+cpFm(x.leq,3)+') = '+cpFmt(x.t*Math.pow(10,0.1*x.leq)))),
       'ΣE = '+cpFmt(E)+'；ΣT = '+cpFmt(mw.st)+' h', E_NOTE));
-    steps.push(cpStep('⑩ 实际工作日合成（LAeq,Te）',
+    steps.push(cpStep('⑩ 工作日综合结果（LAeq,Te）',
       'LAeq,Te = 10·lg( ΣE ÷ ΣT )',
       [cpLine('ΣE（能量贡献和）', cpFmt(E)), cpLine('ΣT（实际接触时间合计）', cpFmt(mw.st)+' h')],
       'LAeq,Te = '+cpFm(mw.laeqTe,4)+' dB(A)', E_NOTE));
