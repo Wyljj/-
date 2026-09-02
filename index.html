@@ -3999,8 +3999,8 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td><input class="vi-input" id="occ-noise-mw1-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-mw1-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td class="result-cell" id="occ-noise-mw1-laeq">—</td>
-            <td rowspan="3" class="result-cell">—</td>
-            <td rowspan="3" class="result-cell">—</td>
+            <td rowspan="3" class="result-cell" id="occ-noise-mw-lex8">—</td>
+            <td rowspan="3" class="result-cell" id="occ-noise-mw-lexw">—</td>
             <td rowspan="3"><input class="vi-input" id="occ-noise-mw-limit" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td rowspan="3" class="result-cell" id="occ-noise-mw-judge">—</td>
           </tr>
@@ -4022,9 +4022,9 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
           </tr>
           <tr style="background-color: rgba(34, 197, 94, 0.10); font-weight: bold;">
             <td colspan="7">工作日综合结果（LAeq,Te → LEX,8h → LEX,w）</td>
-            <td class="result-cell" id="occ-noise-mw-laeqte">—</td>
-            <td class="result-cell" id="occ-noise-mw-lex8">—</td>
-            <td class="result-cell" id="occ-noise-mw-lexw">—</td>
+            <td class="result-cell" id="occ-noise-mw-sum-laeqte">—</td>
+            <td class="result-cell" id="occ-noise-mw-sum-lex8">—</td>
+            <td class="result-cell" id="occ-noise-mw-sum-lexw">—</td>
             <td></td>
             <td></td>
           </tr>
@@ -7236,8 +7236,10 @@ function calcOccupational(){
   const mwDays = num('occ-noise-mw-days');
   const mwLimit = num('occ-noise-mw-limit');
   const mw = calcMultiNoise('mw', mwDays, mwLimit, 'occ-noise-mw-lexw', 'occ-noise-mw-judge', true);
-  setPlain('occ-noise-mw-laeqte', fmtNoiseLong(mw.laeqTe));
   setPlain('occ-noise-mw-lex8', fmtNoiseLong(mw.daily));
+  setPlain('occ-noise-mw-sum-laeqte', fmtNoiseLong(mw.laeqTe));
+  setPlain('occ-noise-mw-sum-lex8', fmtNoiseLong(mw.daily));
+  setPlain('occ-noise-mw-sum-lexw', fmtNoiseLong(mw.weeklyValue));
   setPlain('occ-noise-multi-note', !Number.isNaN(mwDays) ? `按每周 ${mwDays} 天折算多场所 LEX,w` : '请录入每周实际工作天数');
 
   setPlain('occ-lex', `${fmtNoise(lex8)} / ${fmtNoise(s2Lexw)} · 情况一${singleJudge}，情况二${s2Judge}`);
