@@ -3278,12 +3278,15 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
       <thead>
         <tr>
           <th style="width:40px">#</th>
-          <th>喉宽b（m）</th>
-          <th>指数n</th>
-          <th>C（流量系数）</th>
-          <th>液位高度h（m）</th>
-          <th>流量Q（L/s）</th>
+          <th style="min-width:190px">槽型（选择后自动带出参数）</th>
+          <th>喉道宽度 b（m）</th>
+          <th>指数 n（自动）</th>
+          <th>流量系数 C（自动）</th>
+          <th>上游水位 hₐ（m）</th>
+          <th>下游水头 h_b（m，可选）</th>
+          <th>流量 Q（L/s）</th>
           <th>流量（m³/h）</th>
+          <th style="min-width:260px">有效性提示</th>
         </tr>
       </thead>
       <tbody id="parshall-tbody">
@@ -7588,12 +7591,15 @@ function addParshallRowHtml(rowNum){
   const tr = document.createElement('tr');
   tr.innerHTML = `
     <td>${rowNum}</td>
-    <td><input class="vi-input" type="number" step="0.001" oninput="calcParshallRow(this)"/></td>
-    <td><input class="vi-input" type="number" step="0.001" oninput="calcParshallRow(this)"/></td>
-    <td><input class="vi-input" type="number" step="0.001" oninput="calcParshallRow(this)"/></td>
-    <td><input class="vi-input" type="number" step="0.001" oninput="calcParshallRow(this)"/></td>
+    <td><select class="vi-input" onchange="applyParshallType(this)"><option value="">— 请选择槽型 —</option>${PARSHALL_DATA.map(function(p){ return '<option value="'+p.id+'">序号'+p.id+' · '+p.type+' · b='+p.b+' m · C='+p.c+' · n='+p.n+'</option>'; }).join('')}</select></td>
+    <td><input class="vi-input" type="number" step="0.001" oninput="calcParshallRow(this)" placeholder="b"/></td>
+    <td><input class="vi-input" type="number" step="0.001" readonly oninput="calcParshallRow(this)"/></td>
+    <td><input class="vi-input" type="number" step="0.001" readonly oninput="calcParshallRow(this)"/></td>
+    <td><input class="vi-input" type="number" step="0.001" oninput="calcParshallRow(this)" placeholder="hₐ"/></td>
+    <td><input class="vi-input" type="number" step="0.001" oninput="calcParshallRow(this)" placeholder="h_b"/></td>
     <td class="result-cell" id="parshall-q-${rowNum}">—</td>
     <td class="result-cell" id="parshall-qmh-${rowNum}">—</td>
+    <td class="result-cell p-note" id="parshall-note-${rowNum}">—</td>
   `;
   tbody.appendChild(tr);
 }
@@ -7624,27 +7630,72 @@ function clearParshallTable(){
   }
 }
 
+
+function applyParshallType(sel){
+  const tr=sel.closest('tr');
+  if(!tr) return;
+  const inps=tr.querySelectorAll('input');
+  const p=PARSHALL_DATA.find(function(x){ return String(x.id)===String(sel.value); })||null;
+  if(p){ inps[0].value=p.b; inps[1].value=p.n; inps[2].value=p.c; }
+  else { inps[0].value=''; inps[1].value=''; inps[2].value=''; }
+  calcParshallRow(inps[1]||sel);
+}
+function parshallFindByB(b){
+  return PARSHALL_DATA.find(function(p){ return Math.abs(p.b-b)<1e-9; })||null;
+}
+function parshallRowState(tr){
+  const inps=tr.querySelectorAll('input');
+  const sel=tr.querySelector('select');
+  let p=(sel&&sel.value)?PARSHALL_DATA.find(function(x){ return String(x.id)===String(sel.value); }):null;
+  const b=parseFloat(inps[0]?inps[0].value:'');
+  if(!p && !Number.isNaN(b)) p=parshallFindByB(b);
+  return { p: p, inps: inps, sel: sel, b: b };
+}
+
 function calcParshallRow(input){
   const tr = input.closest('tr');
   const rowIndex = Array.from(tr.parentNode.children).indexOf(tr) + 1;
-  const inputs = tr.querySelectorAll('input');
-  const c = parseFloat(inputs[2].value);
-  const n = parseFloat(inputs[1].value);
-  const h = parseFloat(inputs[3].value);
-  
+  const st = parshallRowState(tr);
   const qCell = document.getElementById(`parshall-q-${rowIndex}`);
   const qmhCell = document.getElementById(`parshall-qmh-${rowIndex}`);
-  
-  if(isNaN(c) || isNaN(n) || isNaN(h) || h <= 0){
-    qCell.textContent = '—';
-    qmhCell.textContent = '—';
+  const noteCell = document.getElementById(`parshall-note-${rowIndex}`);
+  const note = function(t){ if(noteCell) noteCell.textContent = t; };
+  if(!st.p){
+    if(st.inps[1]) st.inps[1].value='';
+    if(st.inps[2]) st.inps[2].value='';
+    if(qCell) qCell.textContent='—';
+    if(qmhCell) qmhCell.textContent='—';
+    note('未找到匹配的巴歇尔槽型号');
+    if (typeof renderParshallProcess === 'function') { try { renderParshallProcess(); } catch(e) {} }
     return;
   }
-  
-  const Q = c * Math.pow(h, n);
+  const p=st.p;
+  if(st.inps[1]) st.inps[1].value=p.n;
+  if(st.inps[2]) st.inps[2].value=p.c;
+  if(st.sel && String(st.sel.value)!==String(p.id)) st.sel.value=String(p.id);
+  const h=parseFloat(st.inps[3]?st.inps[3].value:''), hb=parseFloat(st.inps[4]?st.inps[4].value:'');
+  if(Number.isNaN(h) || h<=0){
+    if(qCell) qCell.textContent='—';
+    if(qmhCell) qmhCell.textContent='—';
+    note(h===''||Number.isNaN(h)?'请录入有效上游水位 hₐ（>0）':'hₐ 不应为负值');
+    if (typeof renderParshallProcess === 'function') { try { renderParshallProcess(); } catch(e) {} }
+    return;
+  }
+  const Q = p.c * Math.pow(h, p.n);
   const Qmh = Q * 3.6;
-  qCell.textContent = Q.toFixed(2);
-  qmhCell.textContent = Qmh.toFixed(2);
+  const msgs=[];
+  if(h<p.hmin || h>p.hmax) msgs.push('⚠ 超出当前槽型允许水位范围 '+p.hmin+'～'+p.hmax+' m');
+  if(Q<p.qmin || Q>p.qmax) msgs.push('⚠ 计算流量超出当前槽型推荐/适用流量范围 '+p.qmin+'～'+p.qmax+' L/s');
+  if(Number.isNaN(hb)) msgs.push('未录入下游水头 h_b，当前无法校验淹没度和自由流条件');
+  else if(hb<0) msgs.push('⚠ 下游水头 h_b 不应为负数');
+  else {
+    const S=hb/h*100;
+    if(S>p.sub*100) msgs.push('⚠ 淹没度 '+S.toFixed(1)+'% 超过临界淹没度 '+(p.sub*100)+'%，自由流公式不直接适用，结果不可作为有效结果');
+    else msgs.push('自由流条件满足（淹没度 '+S.toFixed(1)+'% ≤ 临界 '+(p.sub*100)+'%）');
+  }
+  if(qCell) qCell.textContent=Q.toFixed(4);
+  if(qmhCell) qmhCell.textContent=Qmh.toFixed(4);
+  note(msgs.join('；'));
   if (typeof renderParshallProcess === 'function') { try { renderParshallProcess(); } catch(e) {} }
 }
 
@@ -8407,38 +8458,53 @@ window.renderG219Process=renderG219Process;
 if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderG219Process);
 
 
-/* ── 巴歇尔槽流量:Q = C × h^n ── */
+/* ── 巴歇尔槽流量:槽型唯一参数源 + Q = C·hₐⁿ + 适用范围/淹没度校验 ── */
 function genParshallProcess(){
   const steps=[];
   const tbody=document.getElementById('parshall-tbody');
   if(tbody && tbody.children){
     Array.from(tbody.children).forEach(function(tr, idx){
-      const inputs=tr.querySelectorAll('input');
-      if(inputs.length<4) return;
-      const n=parseFloat(inputs[1].value), c=parseFloat(inputs[2].value), h=parseFloat(inputs[3].value);
-      if(isNaN(c)||isNaN(n)||isNaN(h)||h<=0) return;
-      const Q=c*Math.pow(h,n);
+      const st=(typeof parshallRowState==='function')?parshallRowState(tr):null;
+      if(!st || !st.p) return;
+      const p=st.p, h=parseFloat(st.inps[3]?st.inps[3].value:''), hb=parseFloat(st.inps[4]?st.inps[4].value:'');
+      if(Number.isNaN(h)||h<=0) return;
+      const Q=p.c*Math.pow(h,p.n), Qh=Q*3.6;
       steps.push(cpStep('第 '+(idx+1)+' 行 · 巴歇尔槽流量', {
-        math: [
-          'Q = C \\times h^{n}',
-          'Q = '+cpFm(c,2)+' \\times '+cpFm(h,3)+'^{'+cpFm(n,4)+'} = '+cpFm(Q,2)+'\\ \\mathrm{L/s}'
+        subs: [
+          cpSub('槽型', '序号'+p.id+' · '+p.type+' · b='+p.b+' m'),
+          cpSub('参数（自动带出）', 'C = '+p.c+'，n = '+p.n),
+          cpSub('适用水位范围', p.hmin+'～'+p.hmax+'\\ \\mathrm{m}'),
+          cpSub('适用流量范围', p.qmin+'～'+p.qmax+'\\ \\mathrm{L/s}'),
+          cpSub('临界淹没度', (p.sub*100)+'%')
         ],
-        boxed: 'Q_h = '+cpFm(Q*3.6,2)+'\\ \\mathrm{m^3/h}'
+        math: [
+          'Q = C \\times h_a^{n}',
+          'Q = '+p.c+' \\times '+cpFm(h,3)+'^{'+p.n+'} = '+cpFm(Q,4)+'\\ \\mathrm{L/s}',
+          'Q_h = 3.6 \\times '+cpFm(Q,4)+' = '+cpFm(Qh,4)+'\\ \\mathrm{m^3/h}'
+        ],
+        boxed: 'Q_h = '+cpFm(Qh,4)+'\\ \\mathrm{m^3/h}'
       }));
+      const msgs=[];
+      if(h<p.hmin||h>p.hmax) msgs.push('⚠ 输入水位 hₐ = '+cpFm(h,2)+' m，超出当前槽型允许水位范围 '+p.hmin+'～'+p.hmax+' m，结果不可作为有效巴歇尔槽流量结果');
+      if(Q<p.qmin||Q>p.qmax) msgs.push('⚠ 计算流量 '+cpFm(Q,4)+' L/s 超出当前槽型推荐/适用流量范围（'+p.qmin+'～'+p.qmax+' L/s），请在报告中标注不适用');
+      if(Number.isNaN(hb)){
+        msgs.push('未录入下游水头 h_b，当前无法校验淹没度和自由流条件');
+      } else {
+        const S=hb/h*100;
+        steps.push(cpStep('第 '+(idx+1)+' 行 · 淹没度校验', {
+          math: [
+            'S = \\frac{h_b}{h_a} \\times 100\\%',
+            'S = \\frac{'+cpFm(hb,3)+'}{'+cpFm(h,3)+'} \\times 100\\% = '+cpFm(S,1)+'\\%'
+          ],
+          note: S<=p.sub*100
+            ? '自由流条件满足（S = '+cpFm(S,1)+'% ≤ 临界 '+(p.sub*100)+'%），可使用当前自由流公式。'
+            : '⚠ 当前淹没度超过该槽型临界淹没度 '+(p.sub*100)+'%，Q = C·hₐⁿ 自由流公式不应直接作为最终有效结果，请采用相应淹没流修正方法（系统暂未内置修正公式）。'
+        }));
+      }
+      if(msgs.length) steps.push(cpStep('第 '+(idx+1)+' 行 · 适用范围校验', { note: msgs.join('｜') }));
     });
   }
-  const b=num('parshall-b'), nn=num('parshall-n'), c2=num('parshall-c'), h2=num('parshall-h');
-  if(!Number.isNaN(b) && !Number.isNaN(nn) && !Number.isNaN(c2) && !Number.isNaN(h2) && h2>0){
-    const Q=c2*Math.pow(h2,nn);
-    steps.push(cpStep('参数录入 · 巴歇尔槽流量', {
-      math: [
-        'Q = C \\times h^{n}',
-        'Q = '+cpFm(c2,2)+' \\times '+cpFm(h2,3)+'^{'+cpFm(nn,4)+'} = '+cpFm(Q,2)+'\\ \\mathrm{L/s}'
-      ],
-      boxed: 'Q_h = '+cpFm(Q*3.6,2)+'\\ \\mathrm{m^3/h}'
-    }));
-  }
-  if(!steps.length) return cpHint('录入巴歇尔槽参数（指数 n、流量系数 C、液位 h）后，此处自动展示 Q = C × hⁿ 计算过程。');
+  if(!steps.length) return cpHint('录入上方表格数据（选择槽型并填写水位 hₐ，可选 h_b）后，此处自动展示 Q = C × hₐⁿ 计算过程与适用范围校验。');
   return steps.join('');
 }
 function renderParshallProcess(){
@@ -9303,6 +9369,29 @@ function runNoiseGoldenTest(){
   push('极小时间 T=10^(-8.6)=2.51×10^-9s(不显示0.00)', Math.abs(Math.pow(10, (2 - 88) / 10) - 2.511886e-9) <= 1e-12);
   push('极小时间科学计数法 2.51×10^-9', cpSci(2.511886e-9, 2) === '2.51 \\times 10^{-9}');
   push('极小分钟 4.19×10^-11', cpSci(2.511886e-9 / 60, 2) === '4.19 \\times 10^{-11}');
+
+  /* ── P 组 Golden Test:巴歇尔槽(槽型库唯一参数源 + 适用性校验) ── */
+  (function(){
+    const P4=PARSHALL_DATA.find(function(x){ return x.id===4; });
+    const P12=PARSHALL_DATA.find(function(x){ return x.id===12; });
+    const P18=PARSHALL_DATA.find(function(x){ return x.id===18; });
+    const q4=P4.c*Math.pow(0.10,P4.n), q4h=q4*3.6;
+    push('P 小型4: Q=381.2×0.10^1.58≈10.02658159', Math.abs(q4-10.02658159)<=tol);
+    push('P 小型4: Qh≈36.09569371', Math.abs(q4h-36.09569371)<=tol);
+    const q12=P12.c*Math.pow(0.30,P12.n), q12h=q12*3.6;
+    push('P 标准12: Q≈362.46934473', Math.abs(q12-362.46934473)<=tol);
+    push('P 标准12: Qh≈1304.88964102', Math.abs(q12h-1304.88964102)<=tol);
+    push('P 标准12: h=0.30 在水位范围(0.06~0.80)内', 0.30>=P12.hmin && 0.30<=P12.hmax);
+    push('P 标准12: Q 在流量范围(30~1500)内', q12>=P12.qmin && q12<=P12.qmax);
+    const q18=P18.c*Math.pow(0.50,P18.n), q18h=q18*3.6;
+    push('P 大型18: Q=7463×0.50^1.6≈2461.87188452', Math.abs(q18-2461.87188452)<=tol);
+    push('P 大型18: Qh≈8862.73878429', Math.abs(q18h-8862.73878429)<=tol);
+    push('P 标准12: h=2.00 超出水位范围(0.06~0.80) → 不可视为有效', 2.00>P12.hmax);
+    const s5=0.18/0.30*100;
+    push('P 标准12: 淹没度 0.18/0.30=60% ≤ 70% → 自由流满足', Math.abs(s5-60)<=tol && s5<=P12.sub*100);
+    const s6=0.24/0.30*100;
+    push('P 标准12: 淹没度 0.24/0.30=80% > 70% → 自由流公式不直接适用', Math.abs(s6-80)<=tol && s6>P12.sub*100);
+  })();
   /* ── 情况一 5 d/w:LEX,w = LEX,8h(标准周等效 n=5) ── */
   push('情况一 5d/w: 85/85/85, 8h/d → LAeq=LEX,8h=LEX,w=85.0000, 符合', (function(){ const l = cpNoiseEnergyAvg([85, 85, 85]); const e = calculateNoiseDailyExposure(l, 8); const w = calculateNoiseWeeklyExposure(e, 5); return Math.abs(l - 85) <= tol && Math.abs(e - 85) <= tol && Math.abs(w - 85) <= tol && occNoiseJudge(w, 85) === '符合'; })());
   push('情况一 5d/w: 84.2/85.0/84.6, 6h/d → LAeq=84.61227178, LEX,8h=LEX,w=83.36288442, 符合', (function(){ const l = cpNoiseEnergyAvg([84.2, 85.0, 84.6]); const e = calculateNoiseDailyExposure(l, 6); const w = calculateNoiseWeeklyExposure(e, 5); return Math.abs(l - 84.61227178) <= tol && Math.abs(e - 83.36288442) <= tol && Math.abs(w - 83.36288442) <= tol && occNoiseJudge(w, 85) === '符合'; })());
