@@ -9309,22 +9309,34 @@ function handleGridPaste(evt){
   var editable=Array.prototype.slice.call(table.querySelectorAll('input')).filter(function(inp){ return !inp.readOnly && !inp.disabled && inp.type!=='hidden'; });
   var start=editable.indexOf(el);
   if(start<0){ start=0; }
-  var written=0, filled=0;
+  /* 业务列宽:以起点所在行为准(同 tr 内可编辑 input 数),每行按该宽度推进 */
+  var rowEls=el.closest('tr')?Array.prototype.slice.call(el.closest('tr').querySelectorAll('input')).filter(function(inp){ return !inp.readOnly && !inp.disabled && inp.type!=='hidden'; }):null;
+  var rowWidth=rowEls&&rowEls.length?rowEls.length:1;
+  var maxRows=Math.ceil((editable.length-start)/rowWidth);
+  var written=0, totalCells=0, overflowCells=0;
   grid.forEach(function(row, r){
+    if(r>=maxRows){ return; }
     row.forEach(function(cell, c){
-      var idx=start + r*row.length + c; /* 按粘贴单元格维度推进;空单元格仍推进(保持为"") */
+      totalCells++;
+      if(c>=rowWidth){ overflowCells++; return; } /* 超出可编辑宽度:忽略,不覆盖计算列 */
+      var idx=start + r*rowWidth + c;
       if(idx>=editable.length){ return; }
       var target=editable[idx];
-      if(target.readOnly||target.disabled) return;
-      if(cell!=='' || row.some(function(x){ return x!==''; })){ /* 只写有效粘贴内容 */
+      if(cell!==''){
         target.value=cell;
         written++;
       }
-      filled++;
     });
   });
-  if(grid.length>editable.length && typeof toast==='function'){
-    toast('粘贴数据共 '+grid.length+' 行，当前表格仅可接收 '+Math.ceil((editable.length-start)/Math.max(1,grid[0].length))+' 行，已填充前 '+(written>0?Math.ceil(start/written+1):Math.min(grid.length,editable.length))+' 行。','err');
+  var rowsOk=Math.min(grid.length,maxRows);
+  if(typeof toast==='function'){
+    if(grid.length>maxRows){
+      toast('已粘贴 '+rowsOk+' 行 × '+grid[0].length+' 列，超出 '+(grid.length-rowsOk)+' 行未写入（当前表格仅可接收 '+maxRows+' 行）。','err');
+    } else if(overflowCells){
+      toast('已粘贴 '+grid.length+' 行 × '+grid[0].length+' 列；多余 '+overflowCells+' 列为系统计算列/超出可编辑宽度，已忽略。','ok');
+    } else {
+      toast('已粘贴 '+grid.length+' 行 × '+grid[0].length+' 列数据','ok');
+    }
   }
   gridPasteAfterCalc(table, el);
 }
