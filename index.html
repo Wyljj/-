@@ -8842,7 +8842,7 @@ function fgReadPair(prefix, maxRows){
 function fgHint(text){ return cpHint(text); }
 function fgSubList(items){ return items.map(x=>cpSub(x[0], x[1])); }
 
-/* ① 有组织废气主表:平均值 / 基准氧折算 / 排放速率(实测口径,与代码一致) */
+/* ① 有组织废气主表:平均值 / 基准氧折算 / 排放速率 */
 function genFgMainProcess(){
   const steps=[];
   const base=num('fg-base-o2');
@@ -8875,7 +8875,7 @@ function genFgMainProcess(){
         '\\overline{'+it.x+'}=\\frac{1}{n}\\sum x_i',
         '\\overline{'+it.x+'}=\\frac{'+valid.map(v=>cpFm(v,2)).join('+')+'}{'+valid.length+'}'+'='+cpFm(it.m,3)+(it.k.indexOf('％')>=0?'\\%':(it.k.indexOf('℃')>=0?'\\mathrm{^\\circ C}':''))
       ],
-      subs: [ cpSub('有效测量次数', 'n = '+valid.length+'\\ \\mathrm{(算术平均,与代码 avg() 一致)}') ]
+      subs: [ cpSubLeft('有效测量次数', 'n = '+valid.length+'，采用算术平均值') ]
     }));
   }
   const ks=['co','pm','so2','nox'];
@@ -8894,7 +8894,7 @@ function genFgMainProcess(){
     steps.push(cpStep('② 基准氧折算浓度 · '+kNames[k], {
       math: lines,
       subs: [
-        cpSub('参数说明', 'C折: 折算后浓度; C实: 实测浓度; O2,基准: 基准含氧量 '+cpFm(base,1)+'％; O2,实测: 该次排气含氧量'),
+        cpSubLeft('参数说明', 'C折：折算后浓度，mg/m³；C实：实测浓度，mg/m³；O₂基准：基准含氧量 '+cpFm(base,1)+'％；O₂实测：该次排气含氧量，％'),
         cpSub('平均折算浓度', '\\overline{C}_{\\mathrm{折}} = '+cpFm(avgC,3)+'\\ \\mathrm{mg/m^3}')
       ],
       boxed: '\\overline{C}_{\\mathrm{折},'+kNames[k]+'} = '+cpFm(avgC,3)+'\\ \\mathrm{mg/m^3}'
@@ -8913,7 +8913,7 @@ function genFgMainProcess(){
     steps.push(cpStep('③ 排放速率 · '+kNames[k], {
       math: lines,
       subs: [
-        cpSub('参数说明', 'R: 排放速率 kg/h; C: 实测浓度 mg/m³(代码口径 rate=V×Q/10⁶,非折算值,两者一致); Q: 标干流量 m³/h'),
+        cpSubLeft('参数说明', 'R：排放速率，kg/h；C：实测浓度，mg/m³；Q：标干流量，m³/h。'),
         cpSub('平均速率', '\\overline{R} = '+cpFm(avgR,4)+'\\ \\mathrm{kg/h}')
       ],
       boxed: '\\overline{R}_{'+kNames[k]+'} = '+cpFm(avgR,4)+'\\ \\mathrm{kg/h}'
