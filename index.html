@@ -3041,13 +3041,14 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
   </div>
 </div>
 
-</div>
-</div>
-</div><div class="occ-noise-process-box" id="fg-process-box">
+<div class="occ-noise-process-box" id="fg-process-box">
   <div class="occ-noise-process-title">🧮 计算过程 · 有组织废气比对</div>
   <div class="occ-noise-process" id="fg-process">
     <div class="cp-hint">录入有组织废气比对数据后，此处自动展示均值、基准氧折算、误差与判定过程。</div>
   </div>
+</div>
+</div>
+</div>
 </div>
 <div class="template-panel" id="template-noisecheck">
 <div class="card">
@@ -3309,11 +3310,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
   </div>
 </div>
 </div>
-</div><div class="occ-noise-process-box" id="weather-process-box">
+<div class="occ-noise-process-box" id="weather-process-box">
   <div class="occ-noise-process-title">🧮 计算过程 · 气象参数</div>
   <div class="occ-noise-process" id="weather-process">
     <div class="cp-hint">录入日期、时间、经纬度与风速后，此处自动展示太阳高度角、辐射等级、大气稳定度与 1000 m 风速换算过程。</div>
   </div>
+</div>
 </div>
 <div class="template-panel" id="template-ions">
 <div class="card">
@@ -3347,11 +3349,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
       </tbody>
     </table>
   </div>
-</div><div class="occ-noise-process-box" id="ions-process-box">
+<div class="occ-noise-process-box" id="ions-process-box">
   <div class="occ-noise-process-title">🧮 计算过程 · 阴阳离子平衡</div>
   <div class="occ-noise-process" id="ions-process">
     <div class="cp-hint">录入阴阳离子测定结果与总硬度/TDS 后，此处自动展示当量换算、平衡误差与校验过程。</div>
   </div>
+</div>
 </div>
 <div class="template-panel" id="template-odor">
 <div class="card">
@@ -3400,11 +3403,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
   <div class="template-tip" style="margin-top:14px">多物质换算表与臭袋法结果共存于同一模板下，后续可以继续增加结果导出或报告区。</div>
 </div>
 </div>
-</div><div class="occ-noise-process-box" id="odor-process-box">
+<div class="occ-noise-process-box" id="odor-process-box">
   <div class="occ-noise-process-title">🧮 计算过程 · 臭气浓度关系表</div>
   <div class="occ-noise-process" id="odor-process">
     <div class="cp-hint">录入臭气物质摩尔质量 M、质量浓度 C 与嗅辩阈值后，此处自动展示 ppm 换算与稀释倍数过程。</div>
   </div>
+</div>
 </div>
 <div class="template-panel" id="template-cems">
 <div class="card">
@@ -3730,12 +3734,13 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
   </div>
 </div>
 </div>
-</div>
-</div><div class="occ-noise-process-box" id="cems-process-box">
+<div class="occ-noise-process-box" id="cems-process-box">
   <div class="occ-noise-process-title">🧮 计算过程 · CEMS 72 h 调试</div>
   <div class="occ-noise-process" id="cems-process">
     <div class="cp-hint">录入 CEMS 漂移、示值误差、准确度与速度场系数数据后，此处自动展示标准公式链与中间结果。</div>
   </div>
+</div>
+</div>
 </div>
 <div class="template-panel" id="template-occupational">
 <div class="card">
@@ -8664,7 +8669,7 @@ function genCemsProcess(){
     }));
   }
   const noteEl=document.getElementById('cems-summary-note');
-  if(noteEl&&noteEl.textContent&&noteEl.textContent!=='请继续补充检测数据'){
+  if(noteEl&&noteEl.textContent&&noteEl.textContent!=='请继续补充检测数据'&&noteEl.textContent!=='—'){
     steps.push(cpStep('⑤ 汇总', { note: noteEl.textContent }));
   }
   if(!steps.length) return cpHint('录入 CEMS 漂移、示值误差、准确度与速度场系数数据后，此处自动展示标准公式链与中间结果。');
