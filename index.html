@@ -4109,6 +4109,13 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
       <button class="btn danger" onclick="clearIndNoiseData()">🗑️ 清空数据</button>
     </div>
 
+    <div class="occ-noise-process-box" id="occ-ind-noise-process-box">
+      <div class="occ-noise-process-title">🧮 计算过程 · 个体噪声检测结果与判定 [dB(A)]</div>
+      <div class="occ-noise-process" id="occ-ind-noise-process">
+        <div class="cp-hint">录入上方「个体噪声检测结果与判定 [dB(A)]」表格数据后，此处自动展示公式、代入值与中间结果。</div>
+      </div>
+    </div>
+
     <div class="simple-table-container" style="overflow-x:auto;">
       <table class="simple-table" id="occ-electric-table">
         <thead>
@@ -7397,8 +7404,9 @@ function calcOccupational(){
   const totalTimeW = loc1Time + loc2Time + loc3Time;
   const totalWbgt = (totalTimeW > 0) ? (loc1Tw + loc2Tw + loc3Tw) / totalTimeW : NaN;
   setPlain('occ-heat-total-wbgt', !Number.isNaN(totalWbgt) ? totalWbgt.toFixed(1) : '—');
-  /* 刷新「工作场所噪声检测结果与判定」计算过程展示 */
+  /* 刷新「工作场所噪声检测结果与判定」/「个体噪声检测结果与判定」计算过程展示 */
   if (typeof renderOccNoiseProcess === 'function') { try { renderOccNoiseProcess(); } catch(e) {} }
+  if (typeof renderOccIndNoiseProcess === 'function') { try { renderOccIndNoiseProcess(); } catch(e) {} }
 }
 function calcO6Panel(){
   const M = (a,b)=> ((Number.isNaN(a)?0:a) + (Number.isNaN(b)?0:b)*(1/3)) / 6;
@@ -8101,16 +8109,74 @@ function renderOccNoiseProcess(){
   catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
 }
 window.renderOccNoiseProcess=renderOccNoiseProcess;
+/* ── 个体噪声检测结果与判定:计算过程(公式链 LAeq,T → LEX,8h → LEX,w → 判定) ── */
+function genOccIndNoiseProcess(){
+  const steps=[], warns=[];
+  const rows=(document.querySelectorAll && document.querySelectorAll('#occ-individual-noise-table tbody tr'))||[];
+  rows.forEach(function(row, idx){
+    const i=idx+1;
+    const laeq=num('occ-ind-noise-'+i+'-laeq');
+    const time=num('occ-ind-noise-'+i+'-time');
+    const days=num('occ-ind-noise-'+i+'-days');
+    if(Number.isNaN(laeq) && Number.isNaN(time) && Number.isNaN(days)) return;
+    if(Number.isNaN(laeq)){ warns.push('个体 '+i+'：未录入个体噪声 LAeq,T，无法计算 LEX,8h'); return; }
+    if(Number.isNaN(time) || time<=0){ warns.push('个体 '+i+'：接触时间缺失或无效，无法计算 LEX,8h'); return; }
+    const lex8=laeq+10*Math.log10(time/8);
+    steps.push(cpStep('个体 '+i+' · LEX,8h 折算', {
+      math: [
+        'L_{EX,8h} = L_{Aeq,T} + 10\\lg\\frac{T}{T_0}',
+        'L_{EX,8h} = '+cpFm(laeq,4)+' + 10\\lg\\frac{'+cpFm(time,2)+'}{8} = '+cpFm(lex8,4)
+      ],
+      subs: [ cpSub('T（个体接触时间）', 'T = '+cpFm(time,2)+'\\ \\mathrm{h}'), cpSub('T0（标准工作日）', 'T_0 = 8\\ \\mathrm{h}') ],
+      boxed: 'L_{EX,8h} = '+cpFm(lex8,4)+'\\ \\mathrm{dB(A)}'
+    }));
+    if(Number.isNaN(days) || days<=0){ warns.push('个体 '+i+'：工作天数缺失或无效，已计算 LEX,8h，未计算 LEX,w 与判定'); return; }
+    const lexw=lex8+10*Math.log10(days/5);
+    steps.push(cpStep('个体 '+i+' · LEX,w（每周 40 h 等效声级）', {
+      math: [
+        'L_{EX,w} = 10\\lg\\left(\\frac{1}{5}\\sum_{i=1}^{n} 10^{0.1\\left(L_{EX,8h}\\right)_i}\\right)',
+        'L_{EX,w} = '+cpFm(lex8,4)+' + 10\\lg\\frac{'+cpFm(days,1)+'}{5} = '+cpFm(lexw,4)
+      ],
+      subs: [
+        cpSub('当前场景', '每周 '+cpFmt(days)+' 天，每日 LEX,8h 相同，可等价化简为右式'),
+        cpSub('等价化简', 'L_{EX,w} = L_{EX,8h} + 10\\lg\\frac{n}{5}'),
+        cpSub('n（每周实际工作天数）', 'n = '+cpFm(days,1)+'\\ \\mathrm{d}'),
+      ],
+      boxed: 'L_{EX,w} = '+cpFm(lexw,4)+'\\ \\mathrm{dB(A)}'
+    }));
+    const ok=lexw<=85;
+    steps.push(cpStep('个体 '+i+' · 职业接触限值判定', {
+      math: [
+        'L_{EX,w} = '+cpFm(lexw,4)+'\\ \\mathrm{dB(A)},\\quad 职业接触限值 = 85\\ \\mathrm{dB(A)}',
+        'L_{EX,w} '+(ok?'\\le':'\\gt')+' 85\\ \\mathrm{dB(A)}'
+      ],
+      note: ok ? '判定：合格（不超过职业接触限值 85 dB(A)，符合 GBZ 2.2-2007 要求）' : '判定：不合格（超过职业接触限值 85 dB(A)，不符合 GBZ 2.2-2007 要求）'
+    }));
+  });
+  const warnHtml = warns.length ? '<div class="cp-step"><div class="cp-step-title">⚠ 数据校验提示</div>'+warns.map(cpWarn).join('')+'</div>' : '';
+  if(!steps.length){
+    return cpHint('录入上方表格数据后，此处逐步展示：个体噪声 LAeq,T → LEX,8h → LEX,w → 职业接触限值判定。') + warnHtml;
+  }
+  return warnHtml + steps.join('');
+}
+function renderOccIndNoiseProcess(){
+  const box=document.getElementById('occ-ind-noise-process');
+  if(!box) return;
+  try{ box.innerHTML=genOccIndNoiseProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderOccIndNoiseProcess=renderOccIndNoiseProcess;
 try{ renderOccNoiseProcess(); }catch(e){}
+try{ renderOccIndNoiseProcess(); }catch(e){}
 /* KaTeX 异步加载完成后自动重渲染（加载中先展示兜底文本） */
 window.addEventListener('load', function(){
-  setTimeout(function(){ if(window.katex){ try{ renderOccNoiseProcess(); }catch(e){} } }, 80);
+  setTimeout(function(){ if(window.katex){ try{ renderOccNoiseProcess(); }catch(e){} try{ renderOccIndNoiseProcess(); }catch(e){} } }, 80);
 });
 (function(){
   var tries=0;
   var timer=setInterval(function(){
     tries++;
-    if(window.katex || tries>40){ clearInterval(timer); if(window.katex){ try{ renderOccNoiseProcess(); }catch(e){} } }
+    if(window.katex || tries>40){ clearInterval(timer); if(window.katex){ try{ renderOccNoiseProcess(); }catch(e){} try{ renderOccIndNoiseProcess(); }catch(e){} } }
   }, 250);
 })();
 
