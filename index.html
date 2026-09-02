@@ -5682,6 +5682,16 @@ function setInputDisplayValue(id, value){
   if (el) el.value = value;
 }
 
+/* 颗粒物浓度区间(主表与计算过程共用同一判定) */
+function fgDustPmBandInfo(c){
+  if(Number.isNaN(c)) return { band:null, label:'', limit:NaN, type:'' };
+  if(c>200) return { band:'high',  label:'C > 200',        limit:15, type:'rel' };
+  if(c>100) return { band:'medium',label:'100 < C ≤ 200',  limit:20, type:'rel' };
+  if(c>50)  return { band:'low',   label:'50 < C ≤ 100',   limit:25, type:'rel' };
+  if(c>20)  return { band:'vlow',  label:'20 < C ≤ 50',    limit:30, type:'rel' };
+  if(c>10)  return { band:'absm',  label:'10 < C ≤ 20',    limit:6,  type:'abs' };
+  return { band:'absl', label:'C ≤ 10', limit:5, type:'abs' };
+}
 function fluegasCompare(prefix, limitId, mode='rel', dp=2, unit='', coeffId=''){
   const refs = [];
   const cems = [];
@@ -5764,7 +5774,7 @@ function calculateExcelGasComparisonStats(refs, cems){
   const meanDiff = diffs.length ? diffs.reduce((sum, value) => sum + value, 0) / diffs.length : NaN;
   const absMeanDiff = Math.abs(meanDiff);
   const diffStd = diffs.length > 1 ? Math.sqrt(diffs.reduce((sum, value) => sum + Math.pow(value - meanDiff, 2), 0) / (diffs.length - 1)) : NaN;
-  const coeff = getStudentTConfidence(pairs.length);
+  const coeff = getStudentTConfidence(Math.max(2, pairs.length - 1)); /* t 按自由度 v=n-1 */
   const cc = Number.isNaN(diffStd) || coeff === null ? NaN : coeff * diffStd / Math.sqrt(pairs.length);
   const relativeError = Number.isFinite(refAvg) && refAvg !== 0 ? absMeanDiff / refAvg * 100 : NaN;
   const relativeAccuracy = Number.isFinite(refAvg) && refAvg !== 0 && Number.isFinite(cc) ? (absMeanDiff + cc) / refAvg * 100 : NaN;
@@ -5803,11 +5813,17 @@ function fluegasCompareStats(prefix, dp=2, unit=''){
   setPlain(`${prefix}-abs`, formatNum(stats.meanDiff, dp, unit));
   setPlain(`${prefix}-meanabs`, formatNum(stats.absMeanDiff, dp, unit));
   setPlain(`${prefix}-abs-err`, formatNum(stats.absMeanDiff, dp, unit));
-  setPlain(`${prefix}-abs-row`, formatNum(stats.absMeanDiff, dp, unit));
   setPlain(`${prefix}-rel`, formatNum(stats.relativeError, 2, '%'));
   setPlain(`${prefix}-std`, formatNum(stats.diffStd, dp, unit));
   setPlain(`${prefix}-uncertainty`, formatNum(stats.cc, dp, unit));
-  setPlain(`${prefix}-relacc`, formatNum(stats.relativeAccuracy, 2, '%'));
+  /* 含氧量比对:按参比均值 5% 判定分支互斥(≤5%→绝对误差; >5%→相对准确度),另一分支显示"—" */
+  if(prefix==='fg-o2cmp' && !Number.isNaN(stats.refAvg)){
+    setPlain(`${prefix}-abs-row`, stats.refAvg > 5 ? '—' : formatNum(stats.absMeanDiff, dp, unit));
+    setPlain(`${prefix}-relacc`, stats.refAvg > 5 ? formatNum(stats.relativeAccuracy, 2, '%') : '—');
+  } else {
+    setPlain(`${prefix}-abs-row`, formatNum(stats.absMeanDiff, dp, unit));
+    setPlain(`${prefix}-relacc`, formatNum(stats.relativeAccuracy, 2, '%'));
+  }
   return stats;
 }
 
@@ -6269,8 +6285,8 @@ function calcFlueGas(){
   const pmAvg = dustPm.refAvg;
   const pmRelErr = dustPm.relErr;
   const pmAbsAll = dustPm.cemsAvg - dustPm.refAvg;   /* 绝对误差统一 D = B - A */
-  const pmBandC = (c) => (pmAvg > 200 ? 'high' : (pmAvg > 100 ? 'medium' : (pmAvg > 50 ? 'low' : (pmAvg > 20 ? 'vlow' : (pmAvg > 10 ? 'absm' : (pmAvg <= 10 && !isNaN(pmAvg) ? 'absl' : null))))));
-  const pmBand = pmBandC(pmAvg);
+  const pmBandInfo = fgDustPmBandInfo(pmAvg);
+  const pmBand = pmBandInfo.band;
   const pmRelVal = (b) => (pmBand === b ? (isNaN(pmRelErr) ? '—' : formatNum(pmRelErr, 2, '%')) : '—');
   const pmRelJudge = (b, limit) => pmBand !== b ? '—' : (isNaN(pmRelErr) ? '—' : (Math.abs(pmRelErr) <= limit ? '合格' : '不合格'));
   const pmAbsVal = (b) => (pmBand === b ? (isNaN(pmAbsAll) ? '—' : formatNum(pmAbsAll, 2, 'mg/m³')) : '—');
@@ -9066,7 +9082,7 @@ if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderOccFrPr
 function genFgDustProcess(){
   const steps=[];
   const defs=[
-    { key:'pm',   name:'颗粒物(烟尘)', mode:'rel',  dp:2, note:'限值: 参比均值>200→|δ|≤15%;100~200→≤20%;50~100→≤25%;20~50→≤30%;10~20 绝对误差≤6;≤10 绝对误差≤5' },
+    { key:'pm',   name:'颗粒物(烟尘)', mode:'rel',  dp:2, note:'' },
     { key:'flow', name:'流速',         mode:'rel',  dp:2, note:'限值: 参比均值≤10 m/s→|δ|≤12%;>10 m/s→≤10%' },
     { key:'temp', name:'温度',         mode:'abs',  dp:2, note:'限值: |ΔT|≤3 ℃' },
     { key:'moist',name:'含湿量',       mode:'abs',  dp:2, note:'限值: 含湿量≤5%→|Δw|≤1.5%;>5%→|δ|≤25%' }
@@ -9090,13 +9106,22 @@ function genFgDustProcess(){
     } else {
       lines.push('\\delta = \\frac{\\overline{C}_{\\mathrm{在线}} - \\overline{C}_{\\mathrm{参比}}}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(metric,2)+'\\%');
     }
+    const extra=[];
+    if(d.key==='pm' && typeof fgDustPmBandInfo==='function'){
+      const info=fgDustPmBandInfo(refAvg);
+      if(info.band){
+        extra.push(cpSub('适用区间', info.label+'\\ \\mathrm{mg/m^3}（与主表同一分支）'));
+        extra.push(cpSub('执行限值', info.type==='abs' ? '绝对误差 ≤ '+info.limit+'\\ \\mathrm{mg/m^3}' : '相对误差 ±'+info.limit+'%'));
+        extra.push(cpSub('判定', info.type==='abs' ? (Math.abs(metric)<=info.limit?'|Δ| ≤ '+info.limit+' → 符合':'|Δ| > '+info.limit+' → 不符合') : (Math.abs(metric)<=info.limit?'|δ| = '+cpFm(Math.abs(metric),2)+'% ≤ '+info.limit+'% → 符合':'|δ| = '+cpFm(Math.abs(metric),2)+'% > '+info.limit+'% → 不符合')));
+      }
+    }
     steps.push(cpStep('比对计算 · '+d.name, {
       math: lines,
       subs: [
         cpSub('参比值整理', 'n = '+valid.length+'，\\overline{C}_{\\mathrm{参比}} = '+cpFm(refAvg,2)),
         cpSub('在线值整理', '\\overline{C}_{\\mathrm{在线}} = '+cpFm(cemsAvg,2)),
         cpSub('判定', d.note)
-      ]
+      ].concat(extra)
     }));
   });
   if(!steps.length) return fgHint('录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。');
@@ -9144,11 +9169,17 @@ function genFgGasCompareProcess(prefix, title, dp, unit){
   steps.push(cpStep('② 标准偏差与置信系数', {
     math: [
       'S_d = \\sqrt{\\frac{\\sum (d_i-\\bar{d})^2}{n-1}} = '+cpFm(sd,dp),
-      'c_c = t_{(0.975,n)} \\times \\frac{S_d}{\\sqrt{n}}'+(coeff===null?'':' = '+cpFm(coeff,3)+' \\times \\frac{'+cpFm(sd,dp)+'}{\\sqrt{'+rows.length+'}} = '+cpFm(cc,dp))
+      'c_c = t_{0.975,n-1} \\times \\frac{S_d}{\\sqrt{n}}'+(coeff===null?'':' = t_{0.975,'+(rows.length-1)+'} \\times \\frac{'+cpFm(sd,dp)+'}{\\sqrt{'+rows.length+'}} = '+cpFm(coeff,3)+' \\times \\frac{'+cpFm(sd,dp)+'}{'+cpFm(Math.sqrt(rows.length),3)+'} = '+cpFm(cc,dp))
     ],
-    subs: [ cpSub('有效对数', 'n = '+rows.length) ]
+    subs: [ cpSub('有效对数', 'n = '+rows.length), cpSub('自由度', '\\nu = n-1 = '+(rows.length-1)+'，t_{0.975,'+(rows.length-1)+'} = '+cpFm(coeff,3)) ]
   }));
-  steps.push(cpStep('③ 相对误差与相对准确度', {
+  
+  const o2Note=(prefix==='fg-o2cmp' && !Number.isNaN(refAvg)) ? cpStep('③ 适用条件判断（含氧量）', {
+    math: [ '\\overline{C}_{\\mathrm{参比}} = '+cpFm(refAvg,2)+'\\% '+(refAvg>5?'>':'≤')+' 5\\%' ],
+    note: refAvg>5 ? '参比均值大于 5%，因此采用「相对准确度」分支；「绝对误差（≤5%）」分支不适用。' : '参比均值不超过 5%，因此采用「绝对误差」分支；「相对准确度（>5%）」分支不适用。'
+  }) : '';
+  if(o2Note) steps.push(o2Note);
+  steps.push(cpStep('④ 相对误差与相对准确度', {
     math: [
       '\\delta = \\frac{|\\bar{d}|}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(relErr,2)+'\\%',
       'RA = \\frac{|\\bar{d}| + c_c}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(relAcc,2)+'\\%'
@@ -9514,6 +9545,21 @@ function runNoiseGoldenTest(){
     push('G2 NOx: CC≈0.68', Math.abs(cc-0.677)<=0.02);
     push('G2 NOx: 相对误差≈1.17%', Math.abs(rel-1.174)<=0.02);
     push('G2 NOx: 相对准确度≈2.02%', Math.abs(relAcc-2.015)<=0.02);
+
+  /* ── G3 组:颗粒物区间单一事实源 / O₂ 分支互斥 / t 自由度 ── */
+  (function(){
+    push('G3 颗粒物 C=100 → 50<C≤100(±25%)', fgDustPmBandInfo(100).band==='low' && fgDustPmBandInfo(100).limit===25);
+    push('G3 颗粒物 C=100.01 → 100<C≤200(±20%)', fgDustPmBandInfo(100.01).band==='medium' && fgDustPmBandInfo(100.01).limit===20);
+    push('G3 颗粒物 C=200.01 → >200(±15%)', fgDustPmBandInfo(200.01).band==='high' && fgDustPmBandInfo(200.01).limit===15);
+    push('G3 颗粒物 C=20.01 → 20<C≤50(±30%)', fgDustPmBandInfo(20.01).band==='vlow' && fgDustPmBandInfo(20.01).limit===30);
+    push('G3 颗粒物 C=10.01 → 10<C≤20(绝对≤6) / C=10 → ≤10(绝对≤5)', (function(){ const a=fgDustPmBandInfo(10.01), b=fgDustPmBandInfo(10); return a.band==='absm'&&a.limit===6&&a.type==='abs' && b.band==='absl'&&b.limit===5&&b.type==='abs'; })());
+    const o2br=(A)=>({abs:A<=5?1:0, rel:A>5?1:0});
+    push('G3 O₂ A=8.04% → 只启用相对准确度', o2br(8.04).abs===0 && o2br(8.04).rel===1);
+    push('G3 O₂ A=5.00% → 只启用绝对误差', o2br(5.00).abs===1 && o2br(5.00).rel===0);
+    push('G3 O₂ A=5.01% → 只启用相对准确度', o2br(5.01).abs===0 && o2br(5.01).rel===1);
+    push('G3 n=9 → 自由度 v=8, t=2.306', getStudentTConfidence(8)===2.306 && getStudentTConfidence(9)===2.262);
+    push('G3 CC 校验: t_{0.975,8}×0.87/√9=0.67', Math.abs(2.306*0.87/Math.sqrt(9)-0.6674)<=0.01);
+  })();
   })();
   })();
   /* ── 情况一 5 d/w:LEX,w = LEX,8h(标准周等效 n=5) ── */
