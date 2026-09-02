@@ -1636,6 +1636,10 @@ textarea.input-warning {
 .cp-sub { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--text2); align-items: baseline; padding: 2px 0; }
 .cp-sub .cp-sub-k { flex: none; color: var(--text3); }
 .cp-sub .cp-sub-v .katex { font-size: 1.02em; }
+/* 注释式说明块:左对齐,标签宽 100px,说明紧跟,不靠右贴边 */
+.cp-sub.cp-sub-left { justify-content: flex-start; gap: 12px; max-width: 680px; margin-left: 2px; }
+.cp-sub.cp-sub-left .cp-sub-k { width: 100px; min-width: 100px; }
+.cp-sub.cp-sub-left .cp-sub-v { flex: 0 1 auto; text-align: left; }
 .cp-note-var { font-size: 11px; color: var(--text3); margin-top: 6px; line-height: 1.6; }
 /* 判定卡与校验提示（计算过程区域内） */
 .occ-noise-process .occ-warn {
@@ -8016,6 +8020,7 @@ function cpMath(latex, opts){
 }
 function cpMathBoxed(latex){ return cpMath('\\boxed{'+latex+'}', {}); }
 function cpSub(k, vLatex){ return '<div class="cp-sub"><span class="cp-sub-k">'+k+'</span><span class="cp-sub-v">'+cpMath(vLatex, {inline:true})+'</span></div>'; }
+function cpSubLeft(k, vLatex){ return '<div class="cp-sub cp-sub-left"><span class="cp-sub-k">'+k+'</span><span class="cp-sub-v">'+cpMath(vLatex, {inline:true})+'</span></div>'; }
 function cpStep(title, cfg){
   cfg = cfg || {};
   let h = '<div class="cp-step">';
@@ -8386,7 +8391,10 @@ function genNoiseCheckProcess(){
           'L_{AE} = '+cpFm(leq,3)+' + 10\\lg\\frac{'+sec+'}{1} = '+cpFm(sel,3)+'\\ \\mathrm{dB}'
         ],
         subs: [
-          cpSub('参数说明', 'L_{AE}: A计权声暴露级(SEL); L_{Aeq,T}: 测量时间 T 内等效连续A声级; T: 测量时长(s); T_0: 基准时间 = 1\\ \\mathrm{s}')
+          cpSubLeft('参数说明', 'L_{AE}：A计权声暴露级（SEL）'),
+          cpSubLeft('', 'L_{Aeq,T}：测量时间 T 内等效连续A声级'),
+          cpSubLeft('', 'T：测量时长（s）'),
+          cpSubLeft('', 'T_0：基准时间，T_0 = 1\\ \\mathrm{s}')
         ],
         boxed: 'L_{AE} = '+cpFm(sel,3)+'\\ \\mathrm{dB}'
       }));
