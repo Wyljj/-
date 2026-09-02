@@ -2649,7 +2649,13 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
       <button class="btn danger" onclick="clearFlueGasData()">🗑️ 清空数据</button>
     </div>
     <div class="helper-text" style="margin-top:12px">折算公式：C折 = (21-基准氧)/(21-实测氧) × C实；排放速率：R = C实 × Q / 1000000。</div>
+  <div class="occ-noise-process-box" id="fg-main-process">
+  <div class="occ-noise-process-title">🧮 计算过程 · 有组织废气</div>
+  <div class="occ-noise-process" id="fg-main-process-inner">
+    <div class="cp-hint">录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。</div>
   </div>
+</div>
+</div>
 </div>
 
 <div class="fluegas-subpanel" id="fluegas-tab-dust">
@@ -2800,6 +2806,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
     </table>
     </div>
   </div>
+<div class="occ-noise-process-box" id="fg-dust-process">
+  <div class="occ-noise-process-title">🧮 计算过程 · 颗粒物/流速/温度比对</div>
+  <div class="occ-noise-process" id="fg-dust-process-inner">
+    <div class="cp-hint">录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。</div>
+  </div>
+</div>
 </div>
 
 <div class="fluegas-subpanel" id="fluegas-tab-nox">
@@ -2857,6 +2869,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
     </table>
     </div>
   </div>
+<div class="occ-noise-process-box" id="fg-noxcmp-process">
+  <div class="occ-noise-process-title">🧮 计算过程 · 氮氧化物比对</div>
+  <div class="occ-noise-process" id="fg-noxcmp-process-inner">
+    <div class="cp-hint">录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。</div>
+  </div>
+</div>
 </div>
 
 <div class="fluegas-subpanel" id="fluegas-tab-so2">
@@ -2914,6 +2932,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
     </table>
     </div>
   </div>
+<div class="occ-noise-process-box" id="fg-so2cmp-process">
+  <div class="occ-noise-process-title">🧮 计算过程 · 二氧化硫比对</div>
+  <div class="occ-noise-process" id="fg-so2cmp-process-inner">
+    <div class="cp-hint">录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。</div>
+  </div>
+</div>
 </div>
 
 <div class="fluegas-subpanel" id="fluegas-tab-o2">
@@ -2970,6 +2994,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
     </table>
     </div>
   </div>
+<div class="occ-noise-process-box" id="fg-o2cmp-process">
+  <div class="occ-noise-process-title">🧮 计算过程 · 含氧量比对</div>
+  <div class="occ-noise-process" id="fg-o2cmp-process-inner">
+    <div class="cp-hint">录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。</div>
+  </div>
+</div>
 </div>
 
 <div class="fluegas-subpanel" id="fluegas-tab-drift">
@@ -3012,6 +3042,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
     </table>
     </div>
   </div>
+<div class="occ-noise-process-box" id="fg-drift-process">
+  <div class="occ-noise-process-title">🧮 计算过程 · 示值误差/量程漂移</div>
+  <div class="occ-noise-process" id="fg-drift-process-inner">
+    <div class="cp-hint">录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。</div>
+  </div>
+</div>
 </div>
 
 <div class="fluegas-subpanel" id="fluegas-tab-water">
@@ -3039,13 +3075,12 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
     </table>
     </div>
   </div>
-</div>
-
-<div class="occ-noise-process-box" id="fg-process-box">
-  <div class="occ-noise-process-title">🧮 计算过程 · 有组织废气比对</div>
-  <div class="occ-noise-process" id="fg-process">
-    <div class="cp-hint">录入有组织废气比对数据后，此处自动展示均值、基准氧折算、误差与判定过程。</div>
+<div class="occ-noise-process-box" id="fg-water-process">
+  <div class="occ-noise-process-title">🧮 计算过程 · 水质在线比对</div>
+  <div class="occ-noise-process" id="fg-water-process-inner">
+    <div class="cp-hint">录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。</div>
   </div>
+</div>
 </div>
 </div>
 </div>
@@ -8685,84 +8720,110 @@ window.renderCemsProcess=renderCemsProcess;
 if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderCemsProcess);
 
 
-/* ── 有组织废气:均值/基准氧折算/误差判定/水样比对 ── */
-function genFlueGasProcess(){
+/* ── 有组织废气 · 7 子模块计算过程(与 calcFlueGas/calcWaterOnlineComparison 同源) ── */
+function fgAvgX(xs){
+  const v=(xs||[]).filter(x=>!Number.isNaN(x));
+  return v.length ? v.reduce((a,b)=>a+b,0)/v.length : NaN;
+}
+function fgReadPair(prefix, maxRows){
+  const ref=[], cems=[], cnt=0;
+  for (let i=1; i<=maxRows; i++){
+    const r=num(prefix+'-r'+i), c=num(prefix+'-c'+i);
+    if(!Number.isNaN(r)&&!Number.isNaN(c)){ ref.push(r); cems.push(c); }
+  }
+  return { refAvg: fgAvgX(ref), cemsAvg: fgAvgX(cems), n: ref.length, ref, cems };
+}
+function fgHint(text){ return cpHint(text); }
+function fgSubList(items){ return items.map(x=>cpSub(x[0], x[1])); }
+
+/* ① 有组织废气主表:平均值 / 基准氧折算 / 排放速率(实测口径,与代码一致) */
+function genFgMainProcess(){
   const steps=[];
-  const hasAny=[num('fg-o2-avg'),num('fg-temp-avg'),num('fg-moist-avg'),num('fg-flow-avg')].filter(v=>!Number.isNaN(v));
-  if(!hasAny.length) return cpHint('录入有组织废气比对数据后，此处自动展示均值、基准氧折算、误差与判定过程。');
-  const o2a=num('fg-o2-avg'), ta=num('fg-temp-avg'), ma=num('fg-moist-avg'), fa=num('fg-flow-avg');
-  if(!Number.isNaN(o2a)||!Number.isNaN(ta)||!Number.isNaN(ma)||!Number.isNaN(fa)){
-    steps.push(cpStep('① 平均工况参数', {
-      math: ['\\bar{x} = \\frac{1}{n}\\sum_{i=1}^{n} x_i'],
-      subs: [
-        cpSub('O₂ 均值', '\\bar{O_2} = '+cpFm(o2a,3)+'\\%'),
-        cpSub('温度均值', '\\bar{T} = '+cpFm(ta,1)+'\\mathrm{^\\circ C}'),
-        cpSub('含湿量均值', '\\bar{w} = '+cpFm(ma,1)+'\\%'),
-        cpSub('流速均值', '\\bar{v} = '+cpFm(fa,1)+'\\ \\mathrm{m/s}')
-      ]
+  const base=num('fg-base-o2');
+  const cnt=(typeof getFlueGasMeasurementCount==='function')?getFlueGasMeasurementCount():3;
+  const o2=[], flow=[], temp=[], moist=[], pmVol=[];
+  for(let i=1;i<=cnt;i++){ o2.push(num('fg-o2-'+i)); flow.push(num('fg-flow-'+i)); temp.push(num('fg-temp-'+i)); moist.push(num('fg-moist-'+i)); pmVol.push(num('fg-pm-vol-'+i)); }
+  const hasAny=o2.some(v=>!Number.isNaN(v))||flow.some(v=>!Number.isNaN(v))||temp.some(v=>!Number.isNaN(v))||moist.some(v=>!Number.isNaN(v))||pmVol.some(v=>!Number.isNaN(v));
+  if(!hasAny) return fgHint('录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。');
+  const avgAll=function(xs){
+    const v=xs.filter(x=>!Number.isNaN(x));
+    return { m: v.length?v.reduce((a,b)=>a+b,0)/v.length:NaN, n: v.length };
+  };
+  const o2A=avgAll(o2), tA=avgAll(temp), mA=avgAll(moist), fA=avgAll(flow), pA=avgAll(pmVol);
+  const sub=(k,o)=>{
+    if(o.n>=1) return [k, '\\overline{'+o.x+'}=\\frac{'+o.tail.join('+')+'}{'+o.n+'}='+cpFm(o.m,3)];
+    return null;
+  };
+  const items=[
+    { k:'排气含氧量(％)', x:'{O_2}', xs:o2, m:o2A.m, n:o2A.n },
+    { k:'排气温度(℃)', x:'{T}', xs:temp, m:tA.m, n:tA.n },
+    { k:'排气湿量(％)', x:'{w}', xs:moist, m:mA.m, n:mA.n },
+    { k:'标干流量(m³/h)', x:'{Q_s}', xs:flow, m:fA.m, n:fA.n },
+    { k:'颗粒物标干采样体积(L)', x:'{V_s}', xs:pmVol, m:pA.m, n:pA.n }
+  ];
+  for(const it of items){
+    const valid=it.xs.filter(x=>!Number.isNaN(x));
+    if(!valid.length) continue;
+    steps.push(cpStep('① 平均 · '+it.k, {
+      math: [
+        '\\overline{'+it.x+'}=\\frac{1}{n}\\sum x_i',
+        '\\overline{'+it.x+'}=\\frac{'+valid.map(v=>cpFm(v,2)).join('+')+'}{'+valid.length+'}'+'='+cpFm(it.m,3)+(it.k.indexOf('％')>=0?'\\%':(it.k.indexOf('℃')>=0?'\\mathrm{^\\circ C}':''))
+      ],
+      subs: [ cpSub('有效测量次数', 'n = '+valid.length+'\\ \\mathrm{(算术平均,与代码 avg() 一致)}') ]
     }));
   }
-  ['nox','so2','o2','c1'].forEach(function(k){
-    const base=num('fg-'+k+'-base');
-    const o2i=num('fg-'+k+'-o2-1');
-    const vi=num('fg-'+k+'-v1');
-    if(!Number.isNaN(vi) && !Number.isNaN(o2i) && !Number.isNaN(base) && (21-o2i)!==0){
-      const conv=((21-base)/(21-o2i))*vi;
-      steps.push(cpStep('② 基准氧折算 · '+k.toUpperCase(), {
-        math: [
-          'C_{折算} = \\frac{21 - O_{2基}}{21 - O_{2实测}} \\times C_{实测}',
-          'C_{折算} = \\frac{21 - '+cpFm(base,1)+'}{21 - '+cpFm(o2i,1)+'} \\times '+cpFm(vi,3)+' = '+cpFm(conv,3)
-        ]
-      }));
+  const ks=['co','pm','so2','nox'];
+  const kNames={co:'CO',pm:'颗粒物',so2:'SO₂',nox:'NOx'};
+  ks.forEach(function(k){
+    const vals=[];
+    for(let i=1;i<=cnt;i++) vals.push(num('fg-'+k+'-'+i));
+    const valid=vals.map((v,i)=>(!Number.isNaN(v)&&!Number.isNaN(base)&&!Number.isNaN(o2[i])&&(21-o2[i])!==0)?((21-base)/(21-o2[i]))*v:NaN);
+    if(valid.every(v=>Number.isNaN(v))) return;
+    const lines=[ 'C_{\\mathrm{折}} = C_{\\mathrm{实}} \\times \\frac{21 - O_{2,\\mathrm{基准}}}{21 - O_{2,\\mathrm{实测}}}' ];
+    for(let i=0;i<cnt;i++){
+      if(!Number.isNaN(valid[i])) lines.push('C_{\\mathrm{折},'+(i+1)+'} = '+cpFm(vals[i],3)+' \\times \\frac{21 - '+cpFm(base,1)+'}{21 - '+cpFm(o2[i],2)+'} = '+cpFm(valid[i],3));
     }
+    const avgC=fgAvgX(valid);
+    lines.push('\\overline{C}_{\\mathrm{折}} = \\frac{'+valid.filter(v=>!Number.isNaN(v)).map(v=>cpFm(v,3)).join(' + ')+'}{'+valid.filter(v=>!Number.isNaN(v)).length+'} = '+cpFm(avgC,3));
+    steps.push(cpStep('② 基准氧折算浓度 · '+kNames[k], {
+      math: lines,
+      subs: [
+        cpSub('参数说明', 'C折: 折算后浓度; C实: 实测浓度; O2,基准: 基准含氧量 '+cpFm(base,1)+'％; O2,实测: 该次排气含氧量'),
+        cpSub('平均折算浓度', '\\overline{C}_{\\mathrm{折}} = '+cpFm(avgC,3)+'\\ \\mathrm{mg/m^3}')
+      ],
+      boxed: '\\overline{C}_{\\mathrm{折},'+kNames[k]+'} = '+cpFm(avgC,3)+'\\ \\mathrm{mg/m^3}'
+    }));
   });
-  const pmR=num('fg-dust-pm-ravg'), pmC=num('fg-dust-pm-cavg');
-  if(!Number.isNaN(pmR) && !Number.isNaN(pmC) && pmR!==0){
-    const re=(pmC-pmR)/pmR*100;
-    steps.push(cpStep('③ 颗粒物（烟尘）相对误差', {
-      math: ['RE = \\frac{C_{CEMS} - C_{参比}}{C_{参比}} \\times 100\\%',
-        'RE = \\frac{'+cpFm(pmC,2)+' - '+cpFm(pmR,2)+'}{'+cpFm(pmR,2)+'} \\times 100\\% = '+cpFm(re,2)+'\\%'],
-      note: '按烟尘浓度区间套用限值：>200 mg/m³ → ±15%；100~200 → ±20%；50~100 → ±25%；20~50 → ±30%；10~20 绝对误差 ≤6 mg/m³；≤10 绝对误差 ≤5 mg/m³。'
+  ks.forEach(function(k){
+    const vals=[];
+    for(let i=1;i<=cnt;i++) vals.push(num('fg-'+k+'-'+i));
+    const rates=vals.map((v,i)=>(!Number.isNaN(v)&&!Number.isNaN(flow[i]))?v*flow[i]/1000000:NaN);
+    if(rates.every(v=>Number.isNaN(v))) return;
+    const lines=[ 'R = \\frac{C \\times Q}{10^{6}}' ];
+    for(let i=0;i<cnt;i++){
+      if(!Number.isNaN(rates[i])) lines.push('R_{'+(i+1)+'} = \\frac{'+cpFm(vals[i],3)+' \\times '+cpFm(flow[i],1)+'}{10^{6}} = '+cpFm(rates[i],4));
+    }
+    const avgR=fgAvgX(rates);
+    steps.push(cpStep('③ 排放速率 · '+kNames[k], {
+      math: lines,
+      subs: [
+        cpSub('参数说明', 'R: 排放速率 kg/h; C: 实测浓度 mg/m³(代码口径 rate=V×Q/10⁶,非折算值,两者一致); Q: 标干流量 m³/h'),
+        cpSub('平均速率', '\\overline{R} = '+cpFm(avgR,4)+'\\ \\mathrm{kg/h}')
+      ],
+      boxed: '\\overline{R}_{'+kNames[k]+'} = '+cpFm(avgR,4)+'\\ \\mathrm{kg/h}'
     }));
-  }
-  const flowR=num('fg-dust-flow-ravg'), flowC=num('fg-dust-flow-cavg');
-  if(!Number.isNaN(flowR) && !Number.isNaN(flowC) && flowR!==0){
-    steps.push(cpStep('④ 流量相对误差', {
-      math: ['RE = \\frac{v_{CEMS} - v_{参比}}{v_{参比}} \\times 100\\% = '+cpFm((flowC-flowR)/flowR*100,2)+'\\%'],
-      note: '限值：流速 ≤10 m/s → ±12%；>10 m/s → ±10%。'
-    }));
-  }
-  const tempR=num('fg-dust-temp-ravg'), tempC=num('fg-dust-temp-cavg');
-  if(!Number.isNaN(tempR) && !Number.isNaN(tempC)){
-    steps.push(cpStep('⑤ 烟温绝对误差', {
-      math: ['\\Delta T = T_{CEMS} - T_{参比} = '+cpFm(tempC-tempR,2)+'\\ \\mathrm{^\\circ C}'],
-      note: '限值：|ΔT| ≤ 3 ℃。'
-    }));
-  }
-  const moistR=num('fg-dust-moist-ravg'), moistC=num('fg-dust-moist-cavg');
-  if(!Number.isNaN(moistR) && !Number.isNaN(moistC)){
-    steps.push(cpStep('⑥ 含湿量误差', {
-      math: ['\\Delta w = w_{CEMS} - w_{参比} = '+cpFm(moistC-moistR,2)+'\\%'],
-      note: '限值：含湿量 ≤5% → 绝对误差 ≤1.5%；>5% → 相对误差 ≤25%。'
-    }));
-  }
-  const waterEl=document.getElementById('fg-water-sample-rel1');
-  if(waterEl && waterEl.textContent && waterEl.textContent!=='—'){
-    steps.push(cpStep('⑦ 水质在线比对', {
-      math: ['\\Delta = C_{在线} - C_{实验室},\\quad 相对误差 = \\frac{\\Delta}{C_{实验室}} \\times 100\\%'],
-      note: '第 1 组相对误差 '+waterEl.textContent+'（其余各组同法，见明细表）。'
-    }));
-  }
+  });
   return steps.join('');
 }
-function renderFlueGasProcess(){
-  const box=document.getElementById('fg-process');
+function renderFgMainProcess(){
+  const box=document.getElementById('fg-main-process');
   if(!box) return;
-  try{ box.innerHTML=genFlueGasProcess(); }
+  try{ box.innerHTML=genFgMainProcess(); }
   catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
 }
-window.renderFlueGasProcess=renderFlueGasProcess;
-if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderFlueGasProcess);
+window.renderFgMainProcess=renderFgMainProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderFgMainProcess);
+
 
 /* ── 职业卫生 · 化学因素:CTWA/STEL/超标判定 + 标况体积 ── */
 function genOccChemProcess(){
@@ -8885,6 +8946,244 @@ function renderOccHeatProcess(){
 }
 window.renderOccHeatProcess=renderOccHeatProcess;
 if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderOccHeatProcess);
+
+
+/* ② 颗粒物/流速/温度比对(与 fluegasCompare + 浓度区间限值一致) */
+function genFgDustProcess(){
+  const steps=[];
+  const defs=[
+    { key:'pm',   name:'颗粒物(烟尘)', mode:'rel',  dp:2, note:'限值: 参比均值>200→|δ|≤15%;100~200→≤20%;50~100→≤25%;20~50→≤30%;10~20 绝对误差≤6;≤10 绝对误差≤5' },
+    { key:'flow', name:'流速',         mode:'rel',  dp:2, note:'限值: 参比均值≤10 m/s→|δ|≤12%;>10 m/s→≤10%' },
+    { key:'temp', name:'温度',         mode:'abs',  dp:2, note:'限值: |ΔT|≤3 ℃' },
+    { key:'moist',name:'含湿量',       mode:'abs',  dp:2, note:'限值: 含湿量≤5%→|Δw|≤1.5%;>5%→|δ|≤25%' }
+  ];
+  defs.forEach(function(d){
+    const pr='fg-dust-'+d.key;
+    const valid=[];
+    for(let i=1;i<=30;i++){
+      const r=num(pr+'-r'+i), c=num(pr+'-c'+i);
+      if(!Number.isNaN(r)&&!Number.isNaN(c)) valid.push({r,c,i});
+    }
+    if(!valid.length) return;
+    const refAvg=fgAvgX(valid.map(v=>v.r)), cemsAvg=fgAvgX(valid.map(v=>v.c));
+    const absErr=cemsAvg-refAvg;
+    const relErr=(!Number.isNaN(absErr)&&refAvg!==0)?absErr/refAvg*100:NaN;
+    const lines=[ 'd_i = C_{\\mathrm{在线},i} - C_{\\mathrm{参比},i}' ];
+    valid.forEach(v=>{ lines.push('d_{'+v.i+'} = '+cpFm(v.c,2)+' - '+cpFm(v.r,2)+' = '+cpFm(v.c-v.r,2)); });
+    const metric=(d.mode==='abs')?absErr:relErr;
+    if(d.mode==='abs'){
+      lines.push('\\Delta = \\overline{C}_{\\mathrm{在线}} - \\overline{C}_{\\mathrm{参比}} = '+cpFm(cemsAvg,2)+' - '+cpFm(refAvg,2)+' = '+cpFm(metric,2));
+    } else {
+      lines.push('\\delta = \\frac{\\overline{C}_{\\mathrm{在线}} - \\overline{C}_{\\mathrm{参比}}}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(metric,2)+'\\%');
+    }
+    steps.push(cpStep('比对计算 · '+d.name, {
+      math: lines,
+      subs: [
+        cpSub('参比值整理', 'n = '+valid.length+'，\\overline{C}_{\\mathrm{参比}} = '+cpFm(refAvg,2)),
+        cpSub('在线值整理', '\\overline{C}_{\\mathrm{在线}} = '+cpFm(cemsAvg,2)),
+        cpSub('判定', d.note)
+      ]
+    }));
+  });
+  if(!steps.length) return fgHint('录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。');
+  return steps.join('');
+}
+function renderFgDustProcess(){
+  const box=document.getElementById('fg-dust-process');
+  if(!box) return;
+  try{ box.innerHTML=genFgDustProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderFgDustProcess=renderFgDustProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderFgDustProcess);
+
+/* ③④⑤ 氮氧化物/二氧化硫/含氧量比对(与 fluegasCompareStats + calculateExcelGasComparisonStats 一致) */
+function genFgGasCompareProcess(prefix, title, dp, unit){
+  const steps=[];
+  const rows=[];
+  for(let i=1;i<=30;i++){
+    const r=num(prefix+'-r'+i), c=num(prefix+'-c'+i);
+    if(!Number.isNaN(r)&&!Number.isNaN(c)) rows.push({r,c,i});
+  }
+  if(!rows.length) return fgHint('录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。');
+  const refs=rows.map(x=>x.r), cems=rows.map(x=>x.c);
+  const refAvg=fgAvgX(refs), cemsAvg=fgAvgX(cems);
+  const diffs=cems.map((c,i)=>c-refs[i]);
+  const meanDiff=diffs.reduce((a,b)=>a+b,0)/diffs.length;
+  const absMeanDiff=Math.abs(meanDiff);
+  const sd=rows.length>1?Math.sqrt(diffs.reduce((a,b)=>a+Math.pow(b-meanDiff,2),0)/(rows.length-1)):NaN;
+  const coeff=(typeof getStudentTConfidence==='function')?getStudentTConfidence(rows.length):null;
+  const cc=(coeff===null||Number.isNaN(sd))?NaN:coeff*sd/Math.sqrt(rows.length);
+  const relErr=(refAvg!==0)?absMeanDiff/refAvg*100:NaN;
+  const relAcc=(refAvg!==0&&!Number.isNaN(cc))?(absMeanDiff+cc)/refAvg*100:NaN;
+  const lines=[ 'd_i = C_{\\mathrm{CEMS},i} - C_{\\mathrm{参比},i}' ];
+  rows.forEach(x=>{ lines.push('d_{'+x.i+'} = '+cpFm(x.c,dp)+' - '+cpFm(x.r,dp)+' = '+cpFm(x.c-x.r,dp)); });
+  lines.push('\\bar{d} = \\frac{'+diffs.map(v=>cpFm(v,dp)).join(' + ')+'}{'+rows.length+'} = '+cpFm(meanDiff,dp));
+  lines.push('|\\bar{d}| = '+cpFm(absMeanDiff,dp));
+  steps.push(cpStep('① 差值整理 · '+title, {
+    math: lines,
+    subs: [
+      cpSub('参比均值', '\\overline{C}_{\\mathrm{参比}} = '+cpFm(refAvg,dp)),
+      cpSub('CEMS 均值', '\\overline{C}_{\\mathrm{CEMS}} = '+cpFm(cemsAvg,dp))
+    ]
+  }));
+  steps.push(cpStep('② 标准偏差与置信系数', {
+    math: [
+      'S_d = \\sqrt{\\frac{\\sum (d_i-\\bar{d})^2}{n-1}} = '+cpFm(sd,dp),
+      'c_c = t_{(0.975,n)} \\times \\frac{S_d}{\\sqrt{n}}'+(coeff===null?'':' = '+cpFm(coeff,3)+' \\times \\frac{'+cpFm(sd,dp)+'}{\\sqrt{'+rows.length+'}} = '+cpFm(cc,dp))
+    ],
+    subs: [ cpSub('有效对数', 'n = '+rows.length) ]
+  }));
+  steps.push(cpStep('③ 相对误差与相对准确度', {
+    math: [
+      '\\delta = \\frac{|\\bar{d}|}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(relErr,2)+'\\%',
+      'RA = \\frac{|\\bar{d}| + c_c}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(relAcc,2)+'\\%'
+    ]
+  }));
+  return steps.join('');
+}
+function genFgNoxcmpProcess(){ return genFgGasCompareProcess('fg-noxcmp','氮氧化物比对',2,'mg/m³'); }
+function genFgSo2cmpProcess(){ return genFgGasCompareProcess('fg-so2cmp','二氧化硫比对',2,'mg/m³'); }
+function genFgO2cmpProcess(){ return genFgGasCompareProcess('fg-o2cmp','含氧量比对',2,'%'); }
+function makeFgCompareRenderer(id, gen){
+  return function(){ const box=document.getElementById(id); if(!box) return; try{ box.innerHTML=gen(); } catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; } };
+}
+window.renderFgNoxcmpProcess=makeFgCompareRenderer('fg-noxcmp-process', genFgNoxcmpProcess);
+window.renderFgSo2cmpProcess=makeFgCompareRenderer('fg-so2cmp-process', genFgSo2cmpProcess);
+window.renderFgO2cmpProcess=makeFgCompareRenderer('fg-o2cmp-process', genFgO2cmpProcess);
+if(window.__occProcessRenderers){ window.__occProcessRenderers.push(renderFgNoxcmpProcess); window.__occProcessRenderers.push(renderFgSo2cmpProcess); window.__occProcessRenderers.push(renderFgO2cmpProcess); }
+
+/* ⑥ 示值误差/量程漂移(与 calcDriftItem 一致) */
+function genFgDriftProcess(){
+  const steps=[];
+  const defs=[['so2',2.5,2.5],['nox',5,2.5],['o2',5,2.5]];
+  defs.forEach(function(d){
+    const gas=d[0], indLimit=d[1], driftLimit=d[2];
+    const full=num('fg-drift-'+gas+'-full-scale');
+    const rows=[]; let any=false;
+    for(let i=1;i<=3;i++){
+      const r=num('fg-drift-'+gas+'-ind-ref'+i), c=num('fg-drift-'+gas+'-ind-cems'+i);
+      if(!Number.isNaN(r)&&!Number.isNaN(c)&&r!==0){ rows.push({i, err:(c-r)/r*100}); any=true; }
+    }
+    const resp=num('fg-drift-'+gas+'-response');
+    const zero=num('fg-drift-'+gas+'-zero'), span=num('fg-drift-'+gas+'-span');
+    if(!Number.isNaN(resp)) any=true;
+    if(!Number.isNaN(zero)||!Number.isNaN(span)) any=true;
+    if(!any) return;
+    const lines=[];
+    if(rows.length){
+      lines.push('\\delta_i = \\frac{C_{\\mathrm{CEMS},i} - C_{\\mathrm{标准},i}}{C_{\\mathrm{标准},i}} \\times 100\\%');
+      rows.forEach(x=>{ lines.push('\\delta_{'+x.i+'} = '+cpFm(x.err,2)+'\\%'); });
+    }
+    if(!Number.isNaN(resp)&&resp>0) lines.push('t_{响应} = '+cpFm(resp,0)+'\\ \\mathrm{s}');
+    if(!Number.isNaN(full)&&full>0){
+      ['zero','span'].forEach(function(t){
+        const raw=num('fg-drift-'+gas+'-'+t);
+        if(!Number.isNaN(raw)) lines.push((t==='zero'?'零点漂移 = ':'量程漂移 = ')+'\\frac{'+cpFm(raw,1)+'}{'+cpFm(full,0)+'} \\times 100\\% = '+cpFm(raw/full*100,2)+'\\%');
+      });
+    }
+    steps.push(cpStep('漂移检测 · '+gas.toUpperCase(), {
+      math: lines,
+      subs: [
+        cpSub('示值误差限值', '|\\delta| \\le '+cpFm(indLimit,1)+'\\%'),
+        cpSub('零点/量程漂移限值', '|x| \\div 满量程 \\le '+cpFm(driftLimit,1)+'\\%'),
+        cpSub('响应时间限值', 't \\le 200\\ \\mathrm{s}')
+      ]
+    }));
+  });
+  if(!steps.length) return fgHint('录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。');
+  return steps.join('');
+}
+function renderFgDriftProcess(){
+  const box=document.getElementById('fg-drift-process');
+  if(!box) return;
+  try{ box.innerHTML=genFgDriftProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderFgDriftProcess=renderFgDriftProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderFgDriftProcess);
+
+/* ⑦ 水质在线比对(与 calcWaterOnlineComparison 一致) */
+function genFgWaterProcess(){
+  const steps=[];
+  const mk=function(prefix, label, rows, tag){
+    const lines=['\\Delta_i = C_{\\mathrm{在线},i} - C_{\\mathrm{实验室},i} 或 C_{\\mathrm{标准},i}','\\delta_i = \\frac{\\Delta_i}{C_{\\mathrm{实验室}/\\mathrm{标准},i}} \\times 100\\%'];
+    let any=false;
+    for(let i=1;i<=rows;i++){
+      const on=num(prefix+'-online'+i), lab=num(prefix+'-'+label+i);
+      if(!Number.isNaN(on)&&!Number.isNaN(lab)){
+        lines.push('\\Delta_{'+i+'} = '+cpFm(on,2)+' - '+cpFm(lab,2)+' = '+cpFm(on-lab,2)+(lab!==0?'，\\delta_{'+i+'} = '+cpFm((on-lab)/lab*100,2)+'\\%':''));
+        any=true;
+      }
+    }
+    if(!any) return;
+    steps.push(cpStep(tag+' · 绝对误差/相对误差', { math: lines }));
+  };
+  mk('fg-water-sample','lab',6,'实际水样比对');
+  mk('fg-water-qc','std',5,'质控样品比对');
+  if(!steps.length) return fgHint('录入上方数据后，此处将逐步展示计算公式、数据代入、中间结果及判定。');
+  return steps.join('');
+}
+function renderFgWaterProcess(){
+  const box=document.getElementById('fg-water-process');
+  if(!box) return;
+  try{ box.innerHTML=genFgWaterProcess(); }
+  catch(e){ box.innerHTML='<div class="cp-hint">计算过程生成失败：'+e.message+'</div>'; }
+}
+window.renderFgWaterProcess=renderFgWaterProcess;
+if(window.__occProcessRenderers) window.__occProcessRenderers.push(renderFgWaterProcess);
+
+/* 调度器:现有 calcFlueGas / calcWaterOnlineComparison 钩子仍调用 renderFlueGasProcess */
+window.renderFlueGasProcess=function(){
+  [renderFgMainProcess, renderFgDustProcess, renderFgNoxcmpProcess, renderFgSo2cmpProcess, renderFgO2cmpProcess, renderFgDriftProcess, renderFgWaterProcess].forEach(function(f){ try{ f(); }catch(e){} });
+};
+
+
+/* ── 有组织废气计算过程回归自检(可选,控制台运行 window.runFlueGasProcessTest()) ── */
+window.runFlueGasProcessTest=function(){
+  const inputs=[];
+  document.querySelectorAll('#template-fluegas input, #template-fluegas .vi-input').forEach(function(el){ inputs.push([el.id, el.value]); });
+  const set=(id,v)=>{ const el=document.getElementById(id); if(el){ el.value=String(v); } };
+  const back={};
+  function snap(ids){ ids.forEach(function(id){ back[id]=(document.getElementById(id)||{}).value; }); }
+  function restore(){ Object.keys(back).forEach(function(id){ const el=document.getElementById(id); if(el) el.value=back[id]; }); }
+  const r=[];
+  const push=(name,cond)=>{ r.push({name:name, ok:!!cond}); };
+  const ids=['fg-base-o2','fg-o2-1','fg-o2-2','fg-o2-3','fg-flow-1','fg-flow-2','fg-flow-3','fg-temp-1','fg-temp-2','fg-temp-3',
+    'fg-moist-1','fg-moist-2','fg-moist-3','fg-co-1','fg-co-2','fg-co-3','fg-pm-1','fg-pm-2','fg-pm-3',
+    'fg-dust-pm-r1','fg-dust-pm-c1','fg-dust-pm-r2','fg-dust-pm-c2','fg-dust-temp-r1','fg-dust-temp-c1','fg-dust-temp-r2','fg-dust-temp-c2',
+    'fg-noxcmp-r1','fg-noxcmp-c1','fg-noxcmp-r2','fg-noxcmp-c2','fg-noxcmp-r3','fg-noxcmp-c3',
+    'fg-drift-so2-full-scale','fg-drift-so2-ind-ref1','fg-drift-so2-ind-cems1','fg-drift-so2-zero','fg-drift-so2-response',
+    'fg-water-sample-online1','fg-water-sample-lab1'];
+  snap(ids);
+  set('fg-base-o2',3.5);
+  [1,2,3].forEach(function(i){ set('fg-o2-'+i,[1,2,3][i-1]); set('fg-flow-'+i,[600,620,580][i-1]); set('fg-temp-'+i,[120,122,118][i-1]); set('fg-moist-'+i,[5,6,4][i-1]); set('fg-co-'+i,[3,4,2][i-1]); set('fg-pm-'+i,[30,35,32][i-1]); });
+  set('fg-dust-pm-r1',50); set('fg-dust-pm-c1',55); set('fg-dust-pm-r2',52); set('fg-dust-pm-c2',57);
+  set('fg-dust-temp-r1',150); set('fg-dust-temp-c1',152); set('fg-dust-temp-r2',151); set('fg-dust-temp-c2',153.5);
+  set('fg-noxcmp-r1',100); set('fg-noxcmp-c1',103); set('fg-noxcmp-r2',105); set('fg-noxcmp-c2',110); set('fg-noxcmp-r3',95); set('fg-noxcmp-c3',98);
+  set('fg-drift-so2-full-scale',500); set('fg-drift-so2-ind-ref1',100); set('fg-drift-so2-ind-cems1',102); set('fg-drift-so2-zero',5); set('fg-drift-so2-response',180);
+  set('fg-water-sample-online1',10.32); set('fg-water-sample-lab1',10.00);
+  try{
+    if(typeof calcFlueGas==='function') calcFlueGas();
+    const cell=(id)=>(document.getElementById(id)||{}).textContent||'—';
+    push('主表 C折,1 = 2.625(与过程一致)', cell('fg-co-conv-1')==='2.625');
+    push('主表 平均折算 CO = 2.751', cell('fg-co-a2')==='2.751');
+    push('主表 速率 R1 = 0.0018', cell('fg-co-rate-1')==='0.0018');
+    const pmRel=cell('fg-dust-pm-rel-high');
+    push('主表 颗粒物相对误差 '+pmRel+' ≤15% → 判定', pmRel==='9.80%');
+    push('主表 temp 误差 ≤3℃ → 合格', cell('fg-dust-temp-judge')==='合格');
+    push('主表 NOx 差值 d1 = 3.00', cell('fg-noxcmp-d1')==='3.00');
+    push('主表 NOx 相对误差 = 3.67%', cell('fg-noxcmp-rel')==='3.67%');
+    push('主表 漂移零点 = 1.00%', cell('fg-drift-so2-zero-pct')==='1.00%');
+    push('主表 示值误差1 = 2.00%', cell('fg-drift-so2-ind-err1')==='2.00%');
+    push('主表 水样 Δ1 = 0.32 / δ1 = 3.20%', cell('fg-water-sample-abs1')==='0.32' && cell('fg-water-sample-rel1')==='3.20%');
+  }catch(e){ r.push({name:'执行异常: '+e.message, ok:false}); }
+  restore();
+  const failed=r.filter(x=>!x.ok);
+  const msg='有组织废气计算过程回归: '+(failed.length?('失败 '+failed.length+' 项: '+failed.map(x=>x.name).join('；')):('全部通过('+r.length+' 项)'));
+  if(typeof toast==='function') toast(msg, failed.length?'err':'ok');
+  return { total:r.length, failed:failed };
+};
 
 /* ── 噪声判定边界 / 公式辅助(全局) ── */
 function occNoiseJudge(value, limit){
