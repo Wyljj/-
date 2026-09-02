@@ -3985,7 +3985,7 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td><input class="vi-input" id="occ-noise-md1-v3" oninput="calcOccupational()" step="0.000001" type="number"/></td>
             <td class="result-cell" id="occ-noise-md1-laeq">—</td>
             <td rowspan="3" class="result-cell" id="occ-noise-md-lex8">—</td>
-            <td rowspan="3" class="occ-muted-cell">—</td>
+            <td rowspan="3" class="result-cell" id="occ-noise-md-lexw">—</td>
             <td rowspan="3"><input class="vi-input" id="occ-noise-md-limit" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td rowspan="3" class="result-cell" id="occ-noise-md-judge">—</td>
           </tr>
@@ -7244,6 +7244,10 @@ function calcOccupational(){
 
   const mdLimit = num('occ-noise-md-limit');
   const md = calcMultiNoise('md', NaN, mdLimit, 'occ-noise-md-lex8', 'occ-noise-md-judge', false);
+  /* 多场所情况一即 5 d/w:每周 5 个工作日 LEX,8h 相同 → 经标准周等效函数得 LEX,w = LEX,8h + 10lg(5/5) = LEX,8h;判定统一绑定 LEX,w */
+  const mdLexw = calculateNoiseWeeklyExposure(md.daily, 5);
+  setPlain('occ-noise-md-lexw', fmtNoiseLong(mdLexw));
+  setJudge('occ-noise-md-judge', noiseJudge(mdLexw, mdLimit));
   const mwDays = num('occ-noise-mw-days');
   const mwLimit = num('occ-noise-mw-limit');
   const mw = calcMultiNoise('mw', mwDays, mwLimit, 'occ-noise-mw-lexw', 'occ-noise-mw-judge', true);
@@ -7992,12 +7996,14 @@ function genOccNoiseWorkplace(){
     return {outs, te, st, l8:10*Math.log10(te/8)};
   };
 
-  /* ⑦⑧⑨ 多场所 · 情况一 */
+  /* ⑧⑨⑩⑪ 多场所 · 情况一 */
   const md=multi('md',false);
   if(md){
     const lim=num('occ-noise-md-limit');
     /* 仅展示用中间量:L_Aeq,Te = 10lg(ΣE/ΣT),不参与 LEX,8h = 10lg(ΣE/8) 计算 */
     const mdTe=10*Math.log10(md.te/md.st);
+    /* 仅展示用:L_EX,w = L_EX,8h + 10lg(5/5) = L_EX,8h(5 d/w,每日相同),不改 LEX,8h */
+    const mdLw=calculateNoiseWeeklyExposure(md.l8, 5);
     steps.push(cpStep('⑧ 多场所情况一（5d/w）· 能量贡献计算', {
       math: ['E_i = T_i \\times 10^{0.1 L_{Aeq,T_i}}'],
       subs: md.outs.map(x=>cpSub('场所'+cn(x.i), 'E_{'+x.i+'} = '+cpFm(x.t,2)+'\\times 10^{0.1\\times '+cpFm(x.leq,3)+'} = '+cpLnum(x.t*Math.pow(10,0.1*x.leq))))
@@ -8024,20 +8030,32 @@ function genOccNoiseWorkplace(){
       subs: [ cpSub('Te（实际接触时间）', 'T_e = '+cpFm(md.st,1)+'\\ \\mathrm{h}'), cpSub('T0（标准工作日）', 'T_0 = 8\\ \\mathrm{h}') ],
       boxed: 'L_{EX,8h} = '+cpFm(md.l8,4)+'\\ \\mathrm{dB(A)}'
     }));
-    steps.push(cpVerdictCard('L_{EX,8h}', '工作日等效声级', md.l8, 'dB(A)', lim));
+    steps.push(cpStep('⑪ LEX,w（每周 40 h 等效声级）', {
+      math: [
+        'L_{EX,w} = 10\\lg\\left(\\frac{1}{5}\\sum_{i=1}^{n} 10^{0.1\\left(L_{EX,8h}\\right)_i}\\right)',
+        'L_{EX,w} = '+cpFm(md.l8,4)+' + 10\\lg\\frac{5}{5} = '+cpFm(mdLw,4)
+      ],
+      subs: [
+        cpSub('当前场景', 'n = 5，且每日 LEX,8h 相同，可等价化简为右式'),
+        cpSub('等价化简', 'L_{EX,w} = L_{EX,8h} + 10\\lg\\frac{n}{5}'),
+        cpSub('n（每周实际工作天数）', 'n = 5\\ \\mathrm{d}'),
+      ],
+      boxed: 'L_{EX,w} = '+cpFm(mdLw,4)+'\\ \\mathrm{dB(A)}'
+    }));
+    steps.push(cpVerdictCard('L_{EX,w}', '周等效声级', mdLw, 'dB(A)', lim));
   }
 
-  /* ⑨⑩⑪⑫ 多场所 · 情况二 */
+  /* ⑫⑬⑭⑮ 多场所 · 情况二 */
   const mw=multi('mw',true);
   if(mw){
     const lim=num('occ-noise-mw-limit');
-    steps.push(cpStep('⑪ 多场所情况二（≠5d/w）· 能量贡献计算', {
+    steps.push(cpStep('⑫ 多场所情况二（≠5d/w）· 能量贡献计算', {
       math: ['E_i = T_i \\times 10^{0.1 L_{Aeq,T_i}}'],
       subs: mw.outs.map(x=>cpSub('场所'+cn(x.i), 'E_{'+x.i+'} = '+cpFm(x.t,2)+'\\times 10^{0.1\\times '+cpFm(x.leq,3)+'} = '+cpLnum(x.t*Math.pow(10,0.1*x.leq))))
         .concat([cpSub('合计', '\\sum E = '+cpLnum(mw.te)+'\\qquad \\sum T = '+cpFmt(mw.st)+'\\ \\mathrm{h}')]),
       note: E_NOTE
     }));
-    steps.push(cpStep('⑫ 工作日综合结果（LAeq,Te）', {
+    steps.push(cpStep('⑬ 工作日综合结果（LAeq,Te）', {
       math: [
         'L_{Aeq,T} = 10\\lg\\left(\\frac{1}{T}\\sum_{i=1}^{n} T_i \\, 10^{0.1 L_{Aeq,T_i}}\\right)\\tag{1}',
         'L_{Aeq,T_e} = 10\\lg\\left[\\frac{'+mw.outs.map(x=>cpFm(x.t,2)+'\\times 10^{0.1\\times '+cpFm(x.leq,4)+'}').join(' + ')+'}{'+mw.outs.map(x=>cpFm(x.t,2)).join('+')+'}\\right]'
@@ -8045,7 +8063,7 @@ function genOccNoiseWorkplace(){
       boxed: 'L_{Aeq,T_e} = '+cpFm(mw.laeqTe,4)+'\\ \\mathrm{dB(A)}',
       note: E_NOTE
     }));
-    steps.push(cpStep('⑬ 8h 标准化 LEX,8h（一天 8h 等效声级）', {
+    steps.push(cpStep('⑭ 8h 标准化 LEX,8h（一天 8h 等效声级）', {
       math: [
         'L_{EX,8h} = L_{Aeq,T_e} + 10\\lg\\frac{T_e}{T_0}\\tag{2}',
         'L_{EX,8h} = '+cpFm(mw.laeqTe,4)+' + 10\\lg\\left(\\frac{'+cpFm(mw.st,2)+'}{8}\\right)',
@@ -8055,7 +8073,7 @@ function genOccNoiseWorkplace(){
       subs: [ cpSub('Te（实际接触时间）', 'T_e = '+cpFm(mw.st,2)+'\\ \\mathrm{h}'), cpSub('T0（标准工作日）', 'T_0 = 8\\ \\mathrm{h}') ],
       boxed: 'L_{EX,8h} = '+cpFm(mw.l8,4)+'\\ \\mathrm{dB(A)}'
     }));
-    steps.push(cpStep('⑭ LEX,w（每周 40 h 等效声级）', {
+    steps.push(cpStep('⑮ LEX,w（每周 40 h 等效声级）', {
       math: [
         'L_{EX,w} = 10\\lg\\left(\\frac{1}{5}\\sum_{i=1}^{n} 10^{0.1\\left(L_{EX,8h}\\right)_i}\\right)\\tag{3}',
         'L_{EX,w} = '+cpFm(mw.l8,4)+' + 10\\lg\\frac{'+cpFm(mw.dw,1)+'}{5} = '+cpFm(mw.l8+10*Math.log10(mw.dw/5),4)
@@ -8177,6 +8195,8 @@ function runNoiseGoldenTest(){
   push('C LEX,8h ≈ 82.93091042', Math.abs(cL8 - 82.93091042) <= tol);
   push('C 判定 82.9309 ≤ 85 → 符合', occNoiseJudge(cL8, 85) === '符合');
   push('C 展示 "84.1803 - 1.2494 = 82.9309" 无 "- -"/"+ -"', (function(){ const s = cpL8SubLatex(84.18029778, 6, 82.93091042); return s.indexOf('84.1803 - 1.2494 = 82.9309') >= 0 && s.indexOf('- -') < 0 && s.indexOf('+ -') < 0; })());
+  push('C 多场所情况一 5d/w LEX,w = LEX,8h ≈ 82.93091042', (function(){ const w = calculateNoiseWeeklyExposure(cL8, 5); return Math.abs(w - 82.93091042) <= tol && Math.abs(w - cL8) <= tol; })());
+  push('C 判定统一绑定 LEX,w → 符合', (function(){ const w = calculateNoiseWeeklyExposure(cL8, 5); return occNoiseJudge(w, 85) === '符合'; })());
   /* 判定卡差值显示归一化:85.0-85.0 → 0.0(禁止 -0.0) */
   push('判定卡 85.0-85.0 差值显示 0.0 而非 -0.0', (function(){ const s = cpVerdictCard('L_{EX,8h}', '工作日等效声级', 85, 'dB(A)', 85); return s.indexOf('-0.0') < 0 && s.indexOf('0.0 dB(A)') >= 0; })());
   push('判定卡 84.9-85.0 差值显示 -0.1', (function(){ const s = cpVerdictCard('L_{EX,8h}', '工作日等效声级', 84.9, 'dB(A)', 85); return s.indexOf('-0.1 dB(A)') >= 0; })());
