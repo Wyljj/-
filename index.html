@@ -1582,7 +1582,7 @@ textarea.input-warning {
   #template-noisecheck .simple-table,
   #template-parshall .simple-table,
   #template-ions .simple-table { min-width: max(680px, 100%); }
-  #occ-noise-table, #occ-electric-table, #occ-chem-table { min-width: 980px; }
+  #occ-noise-table, #occ-noise-md-table, #occ-noise-mw-table, #occ-electric-table, #occ-chem-table { min-width: 980px; }
 
   .result-value { font-size: 16px; word-break: break-word; }
   .btn-row, .tool-actions { justify-content: stretch; }
@@ -1993,18 +1993,18 @@ tbody#parshall-lookup-body > tr:nth-child(25) { border-bottom: 2px solid #000000
 .parshall-btn-row { display: flex; flex-direction: row; align-items: center; justify-content: center; margin-bottom: 12px; gap: 12px; }
 .parshall-add-btn { background-color: #3b82f6 !important; color: #ffffff !important; border-radius: 8px !important; padding: 8px 16px !important; border: none !important; }
 .parshall-remove-btn, .parshall-clear-btn { background-color: transparent !important; color: #ef4444 !important; border-radius: 8px !important; padding: 8px 16px !important; border: 1px solid #ef4444 !important; }
-table.simple-table:not(#fg-measurement-table):not(#occ-chem-table):not(#occ-noise-table):not(#occ-individual-noise-table) td:first-child { text-align:center; white-space: normal; word-break: break-word; width: 220px !important; flex-shrink: 0; }
+table.simple-table:not(#fg-measurement-table):not(#occ-chem-table):not(#occ-noise-table):not(#occ-individual-noise-table):not(#occ-noise-md-table):not(#occ-noise-mw-table) td:first-child { text-align:center; white-space: normal; word-break: break-word; width: 220px !important; flex-shrink: 0; }
 table#occ-chem-table th:first-child, table#occ-chem-table td:first-child { width: 100px !important; min-width: 100px; max-width: 100px; }
-table.simple-table:not(#fg-measurement-table):not(#occ-noise-table):not(#occ-individual-noise-table) td:nth-child(2) { width: 56px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; white-space: nowrap; word-break: keep-all; }
-table.simple-table:not(#fg-measurement-table):not(#occ-noise-table):not(#occ-individual-noise-table) td:nth-child(n+3):not(:last-child) { width: 30px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; }
-table.simple-table:not(#fg-measurement-table):not(#occ-noise-table):not(#occ-individual-noise-table) td:last-child { width: 30px !important; font-size: 13px !important; font-weight: bold; }
-#occ-noise-table { min-width: 1500px; table-layout: fixed; }
-#occ-noise-table th,
-#occ-noise-table td { width: auto !important; min-width: 74px; }
-#occ-noise-table td:first-child { width: 58px !important; min-width: 58px; }
-#occ-noise-table td:nth-child(2) { width: 180px !important; min-width: 180px; text-align:center; }
-#occ-noise-table td:nth-child(3) { width: 180px !important; min-width: 180px; }
-#occ-noise-table .occ-noise-title {
+table.simple-table:not(#fg-measurement-table):not(#occ-noise-table):not(#occ-individual-noise-table):not(#occ-noise-md-table):not(#occ-noise-mw-table) td:nth-child(2) { width: 56px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; white-space: nowrap; word-break: keep-all; }
+table.simple-table:not(#fg-measurement-table):not(#occ-noise-table):not(#occ-individual-noise-table):not(#occ-noise-md-table):not(#occ-noise-mw-table) td:nth-child(n+3):not(:last-child) { width: 30px !important; font-size: 13px !important; font-weight: bold; flex-shrink: 0; }
+table.simple-table:not(#fg-measurement-table):not(#occ-noise-table):not(#occ-individual-noise-table):not(#occ-noise-md-table):not(#occ-noise-mw-table) td:last-child { width: 30px !important; font-size: 13px !important; font-weight: bold; }
+#occ-noise-table, #occ-noise-md-table, #occ-noise-mw-table { min-width: 1500px; table-layout: fixed; }
+#occ-noise-table th, #occ-noise-md-table th, #occ-noise-mw-table th,
+#occ-noise-table td, #occ-noise-md-table td, #occ-noise-mw-table td { width: auto !important; min-width: 74px; }
+#occ-noise-table td:first-child, #occ-noise-md-table td:first-child, #occ-noise-mw-table td:first-child { width: 58px !important; min-width: 58px; }
+#occ-noise-table td:nth-child(2), #occ-noise-md-table td:nth-child(2), #occ-noise-mw-table td:nth-child(2) { width: 180px !important; min-width: 180px; text-align:center; }
+#occ-noise-table td:nth-child(3), #occ-noise-md-table td:nth-child(3), #occ-noise-mw-table td:nth-child(3) { width: 180px !important; min-width: 180px; }
+#occ-noise-md-table .occ-noise-title, #occ-noise-mw-table .occ-noise-title, #occ-noise-table .occ-noise-title {
   font-size:18px;
   color:var(--text);
   background:var(--bg2);
@@ -2021,13 +2021,13 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table):not(#occ-ind
   text-align:center;
   font-weight:700;
 }
-#occ-noise-table .occ-noise-subsection td {
+#occ-noise-table .occ-noise-subsection td, #occ-noise-md-table .occ-noise-subsection td, #occ-noise-mw-table .occ-noise-subsection td {
   background: rgba(63, 185, 80, 0.10);
   color: var(--text);
   text-align:left;
   font-weight:700;
 }
-#occ-noise-table .result-cell {
+#occ-noise-table .result-cell, #occ-noise-md-table .result-cell, #occ-noise-mw-table .result-cell {
   text-align: center;
   font-weight: bold;
   color: var(--text);
@@ -2039,8 +2039,8 @@ table.simple-table:not(#fg-measurement-table):not(#occ-noise-table):not(#occ-ind
 #occ-noise-table > tbody > tr:nth-child(3) > td.occ-muted-cell { background-color: transparent; }
 #occ-noise-table > tbody > tr:nth-child(11) > td.occ-muted-cell { background-color: transparent; }
 #occ-noise-table > tbody > tr:nth-child(15) > td.occ-muted-cell { background-color: transparent; }
-#occ-noise-table .occ-judge-ok { color: var(--green); }
-#occ-noise-table .occ-judge-fail { color: var(--red); }
+#occ-noise-table .occ-judge-ok, #occ-noise-md-table .occ-judge-ok, #occ-noise-mw-table .occ-judge-ok { color: var(--green); }
+#occ-noise-table .occ-judge-fail, #occ-noise-md-table .occ-judge-fail, #occ-noise-mw-table .occ-judge-fail { color: var(--red); }
 #occ-electric-table { min-width: 1320px; table-layout: fixed; margin-top: 18px; }
 #occ-electric-table th,
 #occ-electric-table td { width: auto !important; min-width: 86px; }
@@ -2222,7 +2222,7 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
     max-width: 100%; overflow-x: auto !important; overflow-y: visible;
     -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
   }
-  #occ-chem-table, #occ-noise-table, #occ-electric-table { min-width: 980px !important; }
+  #occ-chem-table, #occ-noise-table, #occ-noise-md-table, #occ-noise-mw-table, #occ-electric-table { min-width: 980px !important; }
   .template-sidebar {
     left: 0; width: min(86vw, 320px); max-width: min(86vw, 320px);
     height: 100dvh; max-height: 100dvh;
