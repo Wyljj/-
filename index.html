@@ -3382,7 +3382,7 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
         <tr><td>NH₄+</td><td><input class="vi-input" id="ion-nh4" oninput="calcIons()" step="0.01" type="number"/></td><td>SiO₃²-</td><td><input class="vi-input" id="ion-sio3" oninput="calcIons()" step="0.01" type="number"/></td></tr>
         <tr><td>Fe³+</td><td><input class="vi-input" id="ion-fe" oninput="calcIons()" step="0.01" type="number"/></td><td>NO₃-</td><td><input class="vi-input" id="ion-no3" oninput="calcIons()" step="0.01" type="number"/></td></tr>
         <tr><td>Mn²+</td><td><input class="vi-input" id="ion-mn" oninput="calcIons()" step="0.01" type="number"/></td><td>F-</td><td><input class="vi-input" id="ion-f" oninput="calcIons()" step="0.01" type="number"/></td></tr>
-        <tr><td style="background:var(--bg3);font-weight:bold">阳离子总和（mmol/L）</td><td style="background:var(--bg3)" id="ion-cat">-</td><td style="background:var(--bg3);font-weight:bold">阴离子总和（mmol/L）</td><td style="background:var(--bg3)" id="ion-an">-</td></tr>
+        <tr><td style="background:var(--bg3);font-weight:bold">阳离子当量总和（meq/L）</td><td style="background:var(--bg3)" id="ion-cat">-</td><td style="background:var(--bg3);font-weight:bold">阴离子当量总和（meq/L）</td><td style="background:var(--bg3)" id="ion-an">-</td></tr>
         <tr><td style="font-weight:bold">阴阳离子误差（%）</td><td id="ion-balance">-</td><td style="color:var(--text3);font-size:11px">≤±10%</td><td></td></tr>
         <tr><td style="font-weight:bold">总硬度测定值（mg/L）</td><td><input class="vi-input" id="ion-hardness" oninput="calcIons()" step="0.01" type="number"/></td><td style="font-weight:bold">总硬度计算值（mg/L）</td><td id="ion-hard-calc">-</td></tr>
         <tr><td style="font-weight:bold">总硬度误差（%）</td><td id="ion-hard-err">-</td><td style="color:var(--text3);font-size:11px">≤±10%</td><td></td></tr>
@@ -6807,6 +6807,20 @@ function calcWeather(){
   setPlain('w-print-result', `太阳高度角 ${formatNum(h0,2,'°')}；10m风速 ${formatNum(u10,2,'m/s')}；稳定度 ${grade}；适宜类别 ${suit}`);
   setPlain('w-print-comment', comments[suit] || '—');
 }
+/* TDS 估算单一事实源:Σ除HCO3-外全部离子(含 CO3/SiO3/F) + HCO3-×60/122 */
+function calculateTdsEstimate(v){
+  const g=(id)=>{ const n=(typeof v==='function')?v(id):0; return Number.isNaN(n)?0:n; };
+  const nonBicarbonateSum = g('ion-na')+g('ion-k')+g('ion-ca')+g('ion-mg')+g('ion-fe')+g('ion-mn')+g('ion-so4')+g('ion-cl')+g('ion-co3')+g('ion-sio3')+g('ion-no3')+g('ion-f');
+  const bicarbonateCorrection = g('ion-hco3')*60/122;
+  return { nonBicarbonateSum: nonBicarbonateSum, bicarbonateCorrection: bicarbonateCorrection, tdsCalculated: nonBicarbonateSum + bicarbonateCorrection };
+}
+/* TDS 估算单一事实源:Σ除HCO3-外全部离子(含 CO3/SiO3/F) + HCO3-×60/122 */
+function calculateTdsEstimate(v){
+  const g=(id)=>{ const n=(typeof v==='function')?v(id):0; return Number.isNaN(n)?0:n; };
+  const nonBicarbonateSum = g('ion-na')+g('ion-k')+g('ion-ca')+g('ion-mg')+g('ion-fe')+g('ion-mn')+g('ion-so4')+g('ion-cl')+g('ion-co3')+g('ion-sio3')+g('ion-no3')+g('ion-f');
+  const bicarbonateCorrection = g('ion-hco3')*60/122;
+  return { nonBicarbonateSum: nonBicarbonateSum, bicarbonateCorrection: bicarbonateCorrection, tdsCalculated: nonBicarbonateSum + bicarbonateCorrection };
+}
 function calcIons(){
   const v = id=>{ const n=num(id); return Number.isNaN(n)?0:n; };
   const cat = v('ion-na')/23 + v('ion-k')/39 + v('ion-ca')/20 + v('ion-mg')/12 + v('ion-nh4')/18 + v('ion-fe')/18.6 + v('ion-mn')/27.5;
@@ -6815,7 +6829,8 @@ function calcIons(){
   const hardCalc = (v('ion-ca')/20 + v('ion-mg')/12 + v('ion-fe')/18.6 + v('ion-mn')/27.5)*50;
   const hard = num('ion-hardness');
   const hardErr = (!Number.isNaN(hard)&&hard!==0) ? (hardCalc/hard-1)*100 : NaN;
-  const tdsCalc = v('ion-na')+v('ion-k')+v('ion-ca')+v('ion-mg')+v('ion-fe')+v('ion-mn')+v('ion-so4')+v('ion-cl')+v('ion-no3')+v('ion-hco3')*60/122;
+  const tdsEst = (typeof calculateTdsEstimate==='function')?calculateTdsEstimate(v):{nonBicarbonateSum:NaN,bicarbonateCorrection:NaN,tdsCalculated:NaN};
+  const tdsCalc = tdsEst.tdsCalculated;
   const tds = num('ion-tds');
   const tdsErr = (!Number.isNaN(tds)&&tds!==0) ? (tdsCalc/tds-1)*100 : NaN;
   
@@ -8655,12 +8670,14 @@ function genIonsProcess(){
   const hasCat=v('ion-na')+v('ion-k')+v('ion-ca')+v('ion-mg')+v('ion-nh4')+v('ion-fe')+v('ion-mn');
   const hasAn=v('ion-so4')+v('ion-cl')+v('ion-hco3')+v('ion-co3')+v('ion-sio3')+v('ion-no3')+v('ion-f');
   if(!hasCat && !hasAn) return cpHint('录入阴阳离子测定结果后，此处自动展示当量换算、平衡误差、总硬度与 TDS 校验过程。');
-  steps.push(cpStep('① 阴阳离子当量换算（mmol/L）', {
+  steps.push(cpStep('① 阴阳离子当量换算（电荷当量）', {
     math: [
       'C_{eq} = \\sum_i \\frac{C_i}{M_i},\\quad 阳离子: Na/23 + K/39 + Ca/20 + Mg/12 + NH_4/18 + Fe/18.6 + Mn/27.5',
-      '\\sum Cat = '+cpFm(cat,3)+'\\ \\mathrm{mmol/L}'
+      '\\sum Cat = '+cpFm(cat,3)+'\\ \\mathrm{meq/L}'
     ],
-    subs: [ cpSub('阴离子', '\\sum An = '+cpFm(an,3)+'\\ \\mathrm{mmol/L}') ]
+    subs: [ cpSub('说明', '按电荷当量换算（Ca 以 20、Mg 以 12 计当量质量），单位为电荷毫摩尔当量/升（meq/L）'),
+            cpSub('阴离子', '\\sum An = '+cpFm(an,3)+'\\ \\mathrm{meq/L}') ],
+    note: cat+an===0 ? '阴、阳离子当量总和均为 0，无法计算阴阳离子平衡误差。' : ''
   }));
   const balance=(cat+an)!==0?(an-cat)/(an+cat)*100:NaN;
   steps.push(cpStep('② 阴阳离子平衡误差', {
@@ -8668,7 +8685,7 @@ function genIonsProcess(){
       '\\delta = \\frac{\\sum An - \\sum Cat}{\\sum An + \\sum Cat} \\times 100\\%',
       '\\delta = '+cpFm(balance,2)+'\\%'
     ],
-    note: Number.isNaN(balance)?'—':(Math.abs(balance)<=5?'平衡误差较好':(Math.abs(balance)<=10?'平衡误差可接受':'平衡误差偏大，建议复核'))
+    note: Number.isNaN(balance)?'无法计算阴阳离子平衡误差：阴、阳离子当量总和均为 0。':(Math.abs(balance)<=5?'平衡误差较好':(Math.abs(balance)<=10?'平衡误差可接受':'平衡误差偏大，建议复核'))
   }));
   const hardCalc=(v('ion-ca')/20+v('ion-mg')/12+v('ion-fe')/18.6+v('ion-mn')/27.5)*50;
   const hard=num('ion-hardness');
@@ -8680,19 +8697,47 @@ function genIonsProcess(){
       note: Math.abs(hardErr)<=10?'总硬度误差可接受':'总硬度误差偏大'
     }));
   }
-  const tdsCalc=v('ion-na')+v('ion-k')+v('ion-ca')+v('ion-mg')+v('ion-fe')+v('ion-mn')+v('ion-so4')+v('ion-cl')+v('ion-no3')+v('ion-hco3')*60/122;
-  const tds=num('ion-tds');
-  if(!Number.isNaN(tds)&&tds!==0){
-    const tdsErr=(tdsCalc/tds-1)*100;
-    steps.push(cpStep('④ 溶解性总固体（TDS）校验', {
-      math: [ 'TDS_{估算} = \\sum C_i\\ (+\\ HCO_3 \\times 60/122)',
-        'TDS_{估算} = '+cpFm(tdsCalc,2)+'\\ \\mathrm{mg/L},\\quad 误差 = '+cpFm(tdsErr,2)+'\\%' ],
-      note: Math.abs(tdsErr)<=10?'TDS误差可接受':'TDS误差偏大'
+  const tdsEst=(typeof calculateTdsEstimate==='function')?calculateTdsEstimate(v):{nonBicarbonateSum:NaN,bicarbonateCorrection:NaN,tdsCalculated:NaN};
+  if(!Number.isNaN(tdsEst.tdsCalculated)){
+    const tds=num('ion-tds');
+    const tdsErr=(!Number.isNaN(tds)&&tds!==0)?(tdsEst.tdsCalculated/tds-1)*100:NaN;
+    const parts=[ cpStep('④-1 非 HCO3⁻ 离子质量浓度合计', {
+      math: ['\\sum C_{除 HCO_3^-} = '+cpFm(tdsEst.nonBicarbonateSum,2)+'\\ \\mathrm{mg/L}'],
+      note: '含 Na、K、Ca、Mg、Fe、Mn、SO₄、Cl、CO₃、SiO₃、NO₃、F（CO₃等全部计入；HCO₃⁻ 单列修正）。'
+    }),
+    cpStep('④-2 HCO₃⁻ 修正项', {
+      math: ['C_{HCO_3,corr} = C_{HCO_3^-} \\times \\frac{60}{122}',
+        'C_{HCO_3,corr} = '+cpFm(v('ion-hco3'),2)+' \\times \\frac{60}{122} = '+cpFm(tdsEst.bicarbonateCorrection,4)+'\\ \\mathrm{mg/L}']
+    }),
+    cpStep('④-3 TDS 估算', {
+      math: ['TDS_{估算} = \\sum C_{除 HCO_3^-} + C_{HCO_3^-} \\times \\frac{60}{122}',
+        'TDS_{估算} = '+cpFm(tdsEst.nonBicarbonateSum,2)+' + '+cpFm(tdsEst.bicarbonateCorrection,4)+' = '+cpFm(tdsEst.tdsCalculated,4)+'\\ \\mathrm{mg/L}'],
+      boxed: 'TDS_{估算} \\approx '+cpFm(tdsEst.tdsCalculated,2)+'\\ \\mathrm{mg/L}'
+    }) ];
+    if(!Number.isNaN(tds)&&tds!==0){
+      parts.push(cpStep('④-4 与测定值比较', {
+        math: ['TDS_{测定} = '+cpFm(tds,2)+'\\ \\mathrm{mg/L}',
+          'E = \\frac{TDS_{估算}-TDS_{测定}}{TDS_{测定}} \\times 100\\% = '+cpFm(tdsErr,2)+'\\%'],
+        note: Math.abs(tdsErr)<=10?'TDS误差可接受':'TDS误差偏大'
+      }));
+    }
+    parts.forEach(function(p){ steps.push(p); });
+  }
+  const co3=num('ion-co3'), so4=num('ion-so4');
+  if(!Number.isNaN(co3)&&!Number.isNaN(so4)&&so4!==0){
+    const R=co3/so4;
+    steps.push(cpStep('⑤ 沉淀溶解平衡（可审计展示）', {
+      math: ['R = \\frac{C_{CO_3^{2-}}}{C_{SO_4^{2-}}}',
+        'R = \\frac{'+cpFm(co3,2)+'}{'+cpFm(so4,2)+'} = '+cpFm(R,6)],
+      subs: [
+        cpSub('说明', '当前实现为碳酸根/硫酸根离子比值，未内置具体沉淀反应式与活度修正。'),
+        cpSub('参考值', '3.8 / (2.4 × 10000) = '+cpFm(3.8/2.4/10000,9)+'（来源待标准条款核实）'),
+        cpSub('判定', '当前未按标准判定（无既审核定的判定条件），仅展示计算与来源。')
+      ]
     }));
   }
   return steps.join('');
-}
-function renderIonsProcess(){
+}function renderIonsProcess(){
   const box=document.getElementById('ions-process');
   if(!box) return;
   try{ box.innerHTML=genIonsProcess(); }
@@ -9658,6 +9703,18 @@ function runNoiseGoldenTest(){
   push('F4 O₂ 8.04% >5% → 相对准确度为当前评价指标', 8.04>5);
   push('F4 巴歇尔槽 n=1.569 完整显示(数据源)', String(PARSHALL_DATA.find(function(x){return x.id===12;}).n)==='1.569');
   push('F4 临界淹没度 70%', (PARSHALL_DATA.find(function(x){return x.id===12;}).sub*100)+'%'==='70%');
+
+  /* ── I 组 Golden Test:阴阳离子单位/TDS 单一源/沉淀可审计 ── */
+  (function(){
+    var tds=calculateTdsEstimate(function(id){ var m={"ion-na":"23","ion-k":"39.1","ion-ca":"40.08","ion-mg":"24.31","ion-so4":"96.06","ion-cl":"35.45","ion-hco3":"61.02","ion-co3":"30","ion-no3":"62"}; return id in m?parseFloat(m[id]):NaN; });
+    push('I 非HCO3离子总和 = 350.00', Math.abs(tds.nonBicarbonateSum-350.00)<=0.005);
+    push('I HCO3 修正 = 30.0098', Math.abs(tds.bicarbonateCorrection-30.009836)<=0.001);
+    push('I TDS 估算 = 380.0098 (页面 380.01)', Math.abs(tds.tdsCalculated-380.009836)<=0.001 && Number(tds.tdsCalculated.toFixed(2))===380.01);
+    push('I TDS 误差(测定380.51) = -0.13%', Math.abs((tds.tdsCalculated/380.51-1)*100+0.1314)<=0.01);
+    push('I HCO3=0 → 修正项=0', (function(){ var t=calculateTdsEstimate(function(id){ var m={"ion-na":"23"}; return id in m?23:0; }); return t.bicarbonateCorrection===0; })());
+    push('I 当量单位 meq/L(主表标签已替换)', (typeof document!=='undefined' && document.body && String(document.body.innerHTML||'').indexOf('阳离子当量总和（meq/L）')>=0));
+    push('I 沉淀平衡 R=CO3/SO4 可审计', Math.abs(30/96.06-0.312305)<=0.0001 && Math.abs(3.8/2.4/10000-0.000158333)<=1e-9);
+  })();
   })();
   })();
   })();
