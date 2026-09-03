@@ -1018,9 +1018,8 @@ textarea.input-warning {
 
 /* ── Buttons ── */
 .btn-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; text-align: center; }
-/* 噪声多工作场所·区域操作按钮行(触屏友好:自动换行,不横向溢出) */
-.occ-noise-btn-row td { white-space: normal; text-align: left; padding: 8px 6px; }
-.occ-noise-btn-row .btn { margin: 3px 6px 3px 0; min-height: 34px; }
+/* 噪声多工作场所·区域操作按钮行(与其他模块同款 btn-row,触屏友好:自动换行,不横向溢出) */
+.occ-noise-btn-row .btn { min-height: 34px; }
 .btn {
   height: 32px; padding: 0 14px; font-size: 12px;
   border-radius: 6px; border: 1px solid var(--border2);
@@ -4088,8 +4087,17 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td><input class="vi-input" id="occ-noise-p3-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td colspan="3" class="result-cell" id="occ-noise-p3-avg">—</td><td colspan="4"></td>
           </tr>
-          <tr class="occ-noise-section"><td colspan="12" style="text-align:center;">相同工作岗位多个工作场所：情况一 5d/w，=8h/d 或 ≠8h/d</td></tr>
-          <tr>
+                  </tbody>
+      </table>
+    </div>
+    <div class="simple-table-container" style="overflow-x:auto;">
+      <table class="simple-table" id="occ-noise-md-table">
+        <thead>
+          <tr><th colspan="12" class="occ-noise-title">相同工作岗位多个工作场所：情况一 5d/w，=8h/d 或 ≠8h/d</th></tr>
+          <tr><th>序号</th><th>检测地点</th><th>工种</th><th>接触时间<br/>H/D</th><th colspan="3">单次测量结果</th><th>LAeq,Ti</th><th>LEX,8h</th><th>LEX,w</th><th>职业接触限值</th><th>判定</th></tr>
+        </thead>
+        <tbody id="occ-noise-md-body">
+<tr id="occ-noise-md1-row">
             <td>1</td><td>第一工作场所</td><td><input class="vi-input" id="occ-noise-md1-name"/></td>
             <td><input class="vi-input" id="occ-noise-md1-time" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-md1-v1" oninput="calcOccupational()" step="0.000001" type="number"/></td>
@@ -4101,7 +4109,7 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td rowspan="3"><input class="vi-input" id="occ-noise-md-limit" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td rowspan="3" class="result-cell" id="occ-noise-md-judge">—</td>
           </tr>
-          <tr>
+          <tr id="occ-noise-md2-row">
             <td>2</td><td>第二工作场所</td><td><input class="vi-input" id="occ-noise-md2-name"/></td>
             <td><input class="vi-input" id="occ-noise-md2-time" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-md2-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
@@ -4109,7 +4117,7 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td><input class="vi-input" id="occ-noise-md2-v3" oninput="calcOccupational()" step="0.000001" type="number"/></td>
             <td class="result-cell" id="occ-noise-md2-laeq">—</td>
           </tr>
-          <tr>
+          <tr id="occ-noise-md3-row">
             <td>3</td><td>第三工作场所</td><td><input class="vi-input" id="occ-noise-md3-name"/></td>
             <td><input class="vi-input" id="occ-noise-md3-time" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-md3-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
@@ -4117,15 +4125,22 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td><input class="vi-input" id="occ-noise-md3-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td class="result-cell" id="occ-noise-md3-laeq">—</td>
           </tr>
-          <tr class="occ-noise-btn-row" id="occ-noise-md-btns">
-            <td colspan="12">
-              <button class="btn primary" onclick="addOccNoiseWorkplace('md')">＋ 添加工作场所</button>
-              <button class="btn danger" onclick="removeOccNoiseWorkplace('md')">－ 删除最后一行</button>
-              <button class="btn danger" onclick="clearOccNoiseArea('md')">清空本区数据</button>
-            </td>
-          </tr>
-          <tr class="occ-noise-section"><td colspan="12" style="text-align:center;">相同工作岗位多个工作场所：情况二 ≠5d/w</td></tr>
-          <tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="btn-row">
+      <button class="btn primary" onclick="addOccNoiseWorkplace('md')">＋ 添加工作场所</button>
+      <button class="btn danger" onclick="removeOccNoiseWorkplace('md')">－ 删除最后一行</button>
+      <button class="btn danger" onclick="clearOccNoiseArea('md')">清空本区数据</button>
+    </div>
+    <div class="simple-table-container" style="overflow-x:auto;">
+      <table class="simple-table" id="occ-noise-mw-table">
+        <thead>
+          <tr><th colspan="12" class="occ-noise-title">相同工作岗位多个工作场所：情况二 ≠5d/w</th></tr>
+          <tr><th>序号</th><th>检测地点</th><th>工种</th><th>接触时间<br/>H/D</th><th colspan="3">单次测量结果</th><th>LAeq,Ti</th><th>LEX,8h</th><th>LEX,w</th><th>职业接触限值</th><th>判定</th></tr>
+        </thead>
+        <tbody id="occ-noise-mw-body">
+<tr id="occ-noise-mw1-row">
             <td>1</td><td>第一工作场所</td><td><input class="vi-input" id="occ-noise-mw1-name"/></td>
             <td><input class="vi-input" id="occ-noise-mw1-time" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-mw1-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
@@ -4137,7 +4152,7 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td rowspan="3"><input class="vi-input" id="occ-noise-mw-limit" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td rowspan="3" class="result-cell" id="occ-noise-mw-judge">—</td>
           </tr>
-          <tr>
+          <tr id="occ-noise-mw2-row">
             <td>2</td><td>第二工作场所</td><td><input class="vi-input" id="occ-noise-mw2-name"/></td>
             <td><input class="vi-input" id="occ-noise-mw2-time" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-mw2-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
@@ -4145,7 +4160,7 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td><input class="vi-input" id="occ-noise-mw2-v3" oninput="calcOccupational()" step="0.000001" type="number"/></td>
             <td class="result-cell" id="occ-noise-mw2-laeq">—</td>
           </tr>
-          <tr>
+          <tr id="occ-noise-mw3-row">
             <td>3</td><td>第三工作场所</td><td><input class="vi-input" id="occ-noise-mw3-name"/></td>
             <td><input class="vi-input" id="occ-noise-mw3-time" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td><input class="vi-input" id="occ-noise-mw3-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>
@@ -4158,15 +4173,13 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td><input class="vi-input" id="occ-noise-mw-days" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td colspan="8" class="result-cell" id="occ-noise-multi-note">—</td>
           </tr>
-          <tr class="occ-noise-btn-row" id="occ-noise-mw-btns">
-            <td colspan="12">
-              <button class="btn primary" onclick="addOccNoiseWorkplace('mw')">＋ 添加工作场所</button>
-              <button class="btn danger" onclick="removeOccNoiseWorkplace('mw')">－ 删除最后一行</button>
-              <button class="btn danger" onclick="clearOccNoiseArea('mw')">清空本区数据</button>
-            </td>
-          </tr>
         </tbody>
       </table>
+    </div>
+    <div class="btn-row">
+      <button class="btn primary" onclick="addOccNoiseWorkplace('mw')">＋ 添加工作场所</button>
+      <button class="btn danger" onclick="removeOccNoiseWorkplace('mw')">－ 删除最后一行</button>
+      <button class="btn danger" onclick="clearOccNoiseArea('mw')">清空本区数据</button>
     </div>
     <div class="occ-noise-process-box" id="occ-noise-process-box">
       <div class="occ-noise-process-title">🧮 计算过程 · 工作场所噪声检测结果与判定 [dB(A)]</div>
@@ -7332,28 +7345,27 @@ function occNoiseRenumber(area){
   });
 }
 /* 动态行模板:列结构与既有行一致(序号 场所名称 工种 接触时间 三次测量 LAeq,Ti) */
-function occNoiseRowHtml(area, i){
+function occNoiseRowCells(area, i){
   const b = 'occ-noise-'+area+i;
-  return '<tr id="'+b+'-row">'
-    + '<td>'+i+'</td><td>'+occNoisePlaceName(i)+'</td>'
+  return '<td>'+i+'</td><td>'+occNoisePlaceName(i)+'</td>'
     + '<td><input class="vi-input" id="'+b+'-name"/></td>'
     + '<td><input class="vi-input" id="'+b+'-time" oninput="calcOccupational()" step="0.1" type="number"/></td>'
     + '<td><input class="vi-input" id="'+b+'-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>'
     + '<td><input class="vi-input" id="'+b+'-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>'
     + '<td><input class="vi-input" id="'+b+'-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>'
-    + '<td class="result-cell" id="'+b+'-laeq">—</td></tr>';
+    + '<td class="result-cell" id="'+b+'-laeq">—</td>';
 }
 function addOccNoiseWorkplace(area, silent){
   if(!(area==='md'||area==='mw')) return false;
   const n = occNoiseAreaRows[area]||3;
   const nxt = occNoiseNextCount(area, +1);
   if(nxt===n){ if(!silent && typeof toast==='function') toast('最多支持 '+OCC_NOISE_MAX_ROWS+' 个工作场所','err'); return false; }
-  const tmp = document.createElement('tbody');
-  tmp.innerHTML = '<tr>'+occNoiseRowHtml(area, nxt)+'</tr>';
-  const tr = tmp.firstChild;
-  const anchor = document.getElementById('occ-noise-'+area+'-btns');
-  if(anchor && anchor.parentNode) anchor.parentNode.insertBefore(tr, anchor);
-  else { const tb = document.querySelector('#occ-noise-table tbody'); if(tb) tb.appendChild(tr); }
+  const tb = document.getElementById('occ-noise-'+area+'-body');
+  if(!tb){ if(!silent && typeof toast==='function') toast('数据表未就绪，请刷新后重试','err'); return false; }
+  const tr = document.createElement('tr');
+  tr.id = 'occ-noise-'+area+nxt+'-row';
+  tr.innerHTML = occNoiseRowCells(area, nxt);
+  tb.appendChild(tr);
   occNoiseAreaRows[area] = nxt;
   occNoiseRenumber(area);
   if(!silent && typeof toast==='function') toast('已添加'+occNoisePlaceName(nxt)+'（当前 '+nxt+' 个）','ok');
@@ -9562,6 +9574,11 @@ var GRID_PASTE_ADD_ROW={
     return addFn;
   })()
 };
+/* 多工作场所表格(拆分后):沿用同一按区域自动补行器 */
+if(GRID_PASTE_ADD_ROW['occ-noise-table']){
+  GRID_PASTE_ADD_ROW['occ-noise-md-table']=GRID_PASTE_ADD_ROW['occ-noise-table'];
+  GRID_PASTE_ADD_ROW['occ-noise-mw-table']=GRID_PASTE_ADD_ROW['occ-noise-table'];
+}
 function gridPasteAfterCalc(table, originEl){
   var id=table && table.id;
   try{
