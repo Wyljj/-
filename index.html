@@ -6810,14 +6810,14 @@ function calcWeather(){
 /* TDS 估算单一事实源:Σ除HCO3-外全部离子(含 CO3/SiO3/F) + HCO3-×60/122 */
 function calculateTdsEstimate(v){
   const g=(id)=>{ const n=(typeof v==='function')?v(id):0; return Number.isNaN(n)?0:n; };
-  const nonBicarbonateSum = g('ion-na')+g('ion-k')+g('ion-ca')+g('ion-mg')+g('ion-fe')+g('ion-mn')+g('ion-so4')+g('ion-cl')+g('ion-co3')+g('ion-sio3')+g('ion-no3')+g('ion-f');
+  const nonBicarbonateSum = g('ion-na')+g('ion-k')+g('ion-ca')+g('ion-mg')+g('ion-nh4')+g('ion-fe')+g('ion-mn')+g('ion-so4')+g('ion-cl')+g('ion-co3')+g('ion-sio3')+g('ion-no3')+g('ion-f');
   const bicarbonateCorrection = g('ion-hco3')*60/122;
   return { nonBicarbonateSum: nonBicarbonateSum, bicarbonateCorrection: bicarbonateCorrection, tdsCalculated: nonBicarbonateSum + bicarbonateCorrection };
 }
 /* TDS 估算单一事实源:Σ除HCO3-外全部离子(含 CO3/SiO3/F) + HCO3-×60/122 */
 function calculateTdsEstimate(v){
   const g=(id)=>{ const n=(typeof v==='function')?v(id):0; return Number.isNaN(n)?0:n; };
-  const nonBicarbonateSum = g('ion-na')+g('ion-k')+g('ion-ca')+g('ion-mg')+g('ion-fe')+g('ion-mn')+g('ion-so4')+g('ion-cl')+g('ion-co3')+g('ion-sio3')+g('ion-no3')+g('ion-f');
+  const nonBicarbonateSum = g('ion-na')+g('ion-k')+g('ion-ca')+g('ion-mg')+g('ion-nh4')+g('ion-fe')+g('ion-mn')+g('ion-so4')+g('ion-cl')+g('ion-co3')+g('ion-sio3')+g('ion-no3')+g('ion-f');
   const bicarbonateCorrection = g('ion-hco3')*60/122;
   return { nonBicarbonateSum: nonBicarbonateSum, bicarbonateCorrection: bicarbonateCorrection, tdsCalculated: nonBicarbonateSum + bicarbonateCorrection };
 }
@@ -8703,7 +8703,7 @@ function genIonsProcess(){
     const tdsErr=(!Number.isNaN(tds)&&tds!==0)?(tdsEst.tdsCalculated/tds-1)*100:NaN;
     const parts=[ cpStep('④-1 非 HCO3⁻ 离子质量浓度合计', {
       math: ['\\sum C_{除 HCO_3^-} = '+cpFm(tdsEst.nonBicarbonateSum,2)+'\\ \\mathrm{mg/L}'],
-      note: '含 Na、K、Ca、Mg、Fe、Mn、SO₄、Cl、CO₃、SiO₃、NO₃、F（CO₃等全部计入；HCO₃⁻ 单列修正）。'
+      note: '含 Na、K、Ca、Mg、NH₄、Fe、Mn、SO₄、Cl、CO₃、SiO₃、NO₃、F（CO₃等全部计入；HCO₃⁻ 单独修正）。'
     }),
     cpStep('④-2 HCO₃⁻ 修正项', {
       math: ['C_{HCO_3,corr} = C_{HCO_3^-} \\times \\frac{60}{122}',
@@ -9714,6 +9714,16 @@ function runNoiseGoldenTest(){
     push('I HCO3=0 → 修正项=0', (function(){ var t=calculateTdsEstimate(function(id){ var m={"ion-na":"23"}; return id in m?23:0; }); return t.bicarbonateCorrection===0; })());
     push('I 当量单位 meq/L(主表标签已替换)', (typeof document!=='undefined' && document.body && String(document.body.innerHTML||'').indexOf('阳离子当量总和（meq/L）')>=0));
     push('I 沉淀平衡 R=CO3/SO4 可审计', Math.abs(30/96.06-0.312305)<=0.0001 && Math.abs(3.8/2.4/10000-0.000158333)<=1e-9);
+
+    /* NH4 纳入 TDS 修正回归 */
+    (function(){
+      var tdsNH4=calculateTdsEstimate(function(id){ var m={"ion-na":"46","ion-k":"39","ion-ca":"20","ion-mg":"12","ion-nh4":"18","ion-fe":"18.6","ion-mn":"27.5","ion-so4":"96.06","ion-cl":"35.45","ion-hco3":"61.02","ion-co3":"30","ion-sio3":"38.04","ion-no3":"62","ion-f":"19"}; return id in m?parseFloat(m[id]):NaN; });
+      push('I2 NH4=18 → 非HCO3合计=461.65', Math.abs(tdsNH4.nonBicarbonateSum-461.65)<=0.01);
+      push('I2 NH4=18 → TDS=491.66', Math.abs(tdsNH4.tdsCalculated-491.659836)<=0.01 && Number(tdsNH4.tdsCalculated.toFixed(2))===491.66);
+      push('I2 TDS误差(测定494.94)= -0.66%', Math.abs((tdsNH4.tdsCalculated/494.94-1)*100+0.6630)<=0.01);
+      var tdsNH4z=calculateTdsEstimate(function(id){ var m={"ion-na":"46","ion-k":"39","ion-ca":"20","ion-mg":"12","ion-nh4":"0","ion-fe":"18.6","ion-mn":"27.5","ion-so4":"96.06","ion-cl":"35.45","ion-hco3":"61.02","ion-co3":"30","ion-sio3":"38.04","ion-no3":"62","ion-f":"19"}; return id in m?parseFloat(m[id]):NaN; });
+      push('I2 NH4=0 → TDS=473.66(比A少18.00)', Math.abs(tdsNH4z.tdsCalculated-473.659836)<=0.01 && Math.abs(tdsNH4.tdsCalculated-tdsNH4z.tdsCalculated-18.00)<=0.01);
+    })();
   })();
   })();
   })();
