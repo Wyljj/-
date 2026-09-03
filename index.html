@@ -4168,7 +4168,7 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td><input class="vi-input" id="occ-noise-mw3-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td class="result-cell" id="occ-noise-mw3-laeq">—</td>
           </tr>
-          <tr class="occ-noise-subsection">
+          <tr class="occ-noise-subsection" id="occ-noise-mw-sub">
             <td colspan="3">每周实际工作天数（每日噪声暴露模式相同）</td>
             <td><input class="vi-input" id="occ-noise-mw-days" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td colspan="8" class="result-cell" id="occ-noise-multi-note">—</td>
@@ -7365,7 +7365,10 @@ function addOccNoiseWorkplace(area, silent){
   const tr = document.createElement('tr');
   tr.id = 'occ-noise-'+area+nxt+'-row';
   tr.innerHTML = occNoiseRowCells(area, nxt);
-  tb.appendChild(tr);
+  /* 情况二:「每周实际工作天数」行始终固定在全部动态工作场所之后 */
+  const subAnchor = (area==='mw') ? document.getElementById('occ-noise-mw-sub') : null;
+  if(subAnchor && subAnchor.parentNode === tb) tb.insertBefore(tr, subAnchor);
+  else tb.appendChild(tr);
   occNoiseAreaRows[area] = nxt;
   occNoiseRenumber(area);
   if(!silent && typeof toast==='function') toast('已添加'+occNoisePlaceName(nxt)+'（当前 '+nxt+' 个）','ok');
@@ -7405,6 +7408,13 @@ function clearOccNoiseArea(area, doc){
     const el = doc.getElementById(id);
     if(el) el.textContent = '—';
   });
+  /* 情况二:本区数据同时含每周实际工作天数(不参与场所数/粘贴/LAeq合成,仅参与 LEX,w 折算) */
+  if(area==='mw'){
+    const daysInp = doc.getElementById('occ-noise-mw-days');
+    if(daysInp) daysInp.value = '';
+    const note = doc.getElementById('occ-noise-multi-note');
+    if(note) note.textContent = '—';
+  }
   /* 传入隔离 DOM(回归自检等)时仅清数据:不弹提示、不触发页面重算 */
   const isolated = (typeof document==='object' && doc !== document);
   if(!isolated && typeof toast==='function') toast('已清空'+(area==='md'?'情况一':'情况二')+'本区数据（保留 '+(occNoiseAreaRows[area]||3)+' 行）','ok');
