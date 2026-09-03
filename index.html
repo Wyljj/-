@@ -1018,6 +1018,9 @@ textarea.input-warning {
 
 /* ── Buttons ── */
 .btn-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; text-align: center; }
+/* 噪声多工作场所·区域操作按钮行(触屏友好:自动换行,不横向溢出) */
+.occ-noise-btn-row td { white-space: normal; text-align: left; padding: 8px 6px; }
+.occ-noise-btn-row .btn { margin: 3px 6px 3px 0; min-height: 34px; }
 .btn {
   height: 32px; padding: 0 14px; font-size: 12px;
   border-radius: 6px; border: 1px solid var(--border2);
@@ -4114,6 +4117,13 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td><input class="vi-input" id="occ-noise-md3-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td class="result-cell" id="occ-noise-md3-laeq">—</td>
           </tr>
+          <tr class="occ-noise-btn-row" id="occ-noise-md-btns">
+            <td colspan="12">
+              <button class="btn primary" onclick="addOccNoiseWorkplace('md')">＋ 添加工作场所</button>
+              <button class="btn danger" onclick="removeOccNoiseWorkplace('md')">－ 删除最后一行</button>
+              <button class="btn danger" onclick="clearOccNoiseArea('md')">清空本区数据</button>
+            </td>
+          </tr>
           <tr class="occ-noise-section"><td colspan="12" style="text-align:center;">相同工作岗位多个工作场所：情况二 ≠5d/w</td></tr>
           <tr>
             <td>1</td><td>第一工作场所</td><td><input class="vi-input" id="occ-noise-mw1-name"/></td>
@@ -4147,6 +4157,13 @@ div#occ-chem > div > div:nth-child(2) > table.simple-table > thead > tr:nth-chil
             <td colspan="3">每周实际工作天数（每日噪声暴露模式相同）</td>
             <td><input class="vi-input" id="occ-noise-mw-days" oninput="calcOccupational()" step="0.1" type="number"/></td>
             <td colspan="8" class="result-cell" id="occ-noise-multi-note">—</td>
+          </tr>
+          <tr class="occ-noise-btn-row" id="occ-noise-mw-btns">
+            <td colspan="12">
+              <button class="btn primary" onclick="addOccNoiseWorkplace('mw')">＋ 添加工作场所</button>
+              <button class="btn danger" onclick="removeOccNoiseWorkplace('mw')">－ 删除最后一行</button>
+              <button class="btn danger" onclick="clearOccNoiseArea('mw')">清空本区数据</button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -7262,6 +7279,124 @@ function clearIndNoiseData() {
   results.forEach(result => result.textContent = '—');
 }
 
+
+/* ── 相同工作岗位多个工作场所:动态行状态与工具(仅行管理,噪声核心公式零改动) ── */
+const OCC_NOISE_CN = ['','一','二','三','四','五','六','七','八','九','十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十','二十一','二十二','二十三','二十四','二十五','二十六','二十七','二十八','二十九','三十','三十一','三十二','三十三','三十四','三十五','三十六','三十七','三十八','三十九','四十'];
+const OCC_NOISE_CIRCLES = ['','①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩','⑪','⑫','⑬','⑭','⑮','⑯','⑰','⑱','⑲','⑳'];
+const OCC_NOISE_MAX_ROWS = 40;
+const occNoiseAreaRows = { md: 3, mw: 3 };
+function occNoisePlaceName(i){ return '第'+(OCC_NOISE_CN[i]||String(i))+'工作场所'; }
+function occNoiseNextCount(area, delta){
+  if(!(area==='md'||area==='mw')) return (occNoiseAreaRows[area]||3);
+  const cur = occNoiseAreaRows[area]||3;
+  return Math.max(1, Math.min(OCC_NOISE_MAX_ROWS, cur+delta));
+}
+/* 按操作序列模拟行数(与 DOM 增删同一夹紧规则:下限1、上限40) */
+function occNoiseSimulate(base, deltas){
+  let n = Math.max(1, Math.min(OCC_NOISE_MAX_ROWS, base));
+  (deltas||[]).forEach(function(d){ n = Math.max(1, Math.min(OCC_NOISE_MAX_ROWS, n+d)); });
+  return n;
+}
+/* 多场所噪声·有效行收集:与既有逐行有效性规则完全一致(有测量值且接触时间>0 才计入),主表/过程/回归共用单一实现 */
+function occNoiseCollect(prefix, maxN, getNum, getVals){
+  const outs = [], misses = [];
+  for(let i=1;i<=maxN;i++){
+    const t = getNum('occ-noise-'+prefix+i+'-time');
+    const vals = getVals('occ-noise-'+prefix+i);
+    const leq = cpNoiseEnergyAvg(vals);
+    if(vals.length && !Number.isNaN(leq) && !Number.isNaN(t) && t>0) outs.push({i:i, t:t, vals:vals, leq:leq});
+    else if(vals.length || !Number.isNaN(t)) misses.push(i);
+  }
+  return { outs: outs, misses: misses };
+}
+/* 多场所噪声·能量合成与 8h 标准化:ΣE=ΣTi·10^(0.1·LAeq,Ti);LAeq,Te=10lg(ΣE/ΣT);LEX,8h=10lg(ΣE/8) */
+function occNoiseAggregate(outs){
+  const te = outs.reduce(function(a,x){ return a + x.t*Math.pow(10,0.1*x.leq); }, 0);
+  const st = outs.reduce(function(a,x){ return a + x.t; }, 0);
+  const laeqTe = (te>0 && st>0) ? 10*Math.log10(te/st) : NaN;
+  const l8 = te>0 ? 10*Math.log10(te/8) : NaN;
+  return { te: te, st: st, laeqTe: laeqTe, l8: l8 };
+}
+function occNoiseRenumber(area){
+  const n = occNoiseAreaRows[area]||3, base = 'occ-noise-'+area;
+  for(let i=1;i<=n;i++){
+    const row = document.getElementById(base+i+'-row');
+    if(!row) continue;
+    const tds = row.querySelectorAll('td');
+    if(tds.length) tds[0].textContent = String(i);
+    if(tds.length>1) tds[1].textContent = occNoisePlaceName(i);
+  }
+  [base+'-limit', base+'-lex8', base+'-lexw', base+'-judge'].forEach(function(id){
+    const el = document.getElementById(id);
+    if(el) el.setAttribute('rowspan', String(n));
+  });
+}
+/* 动态行模板:列结构与既有行一致(序号 场所名称 工种 接触时间 三次测量 LAeq,Ti) */
+function occNoiseRowHtml(area, i){
+  const b = 'occ-noise-'+area+i;
+  return '<tr id="'+b+'-row">'
+    + '<td>'+i+'</td><td>'+occNoisePlaceName(i)+'</td>'
+    + '<td><input class="vi-input" id="'+b+'-name"/></td>'
+    + '<td><input class="vi-input" id="'+b+'-time" oninput="calcOccupational()" step="0.1" type="number"/></td>'
+    + '<td><input class="vi-input" id="'+b+'-v1" oninput="calcOccupational()" step="0.1" type="number"/></td>'
+    + '<td><input class="vi-input" id="'+b+'-v2" oninput="calcOccupational()" step="0.1" type="number"/></td>'
+    + '<td><input class="vi-input" id="'+b+'-v3" oninput="calcOccupational()" step="0.1" type="number"/></td>'
+    + '<td class="result-cell" id="'+b+'-laeq">—</td></tr>';
+}
+function addOccNoiseWorkplace(area, silent){
+  if(!(area==='md'||area==='mw')) return false;
+  const n = occNoiseAreaRows[area]||3;
+  const nxt = occNoiseNextCount(area, +1);
+  if(nxt===n){ if(!silent && typeof toast==='function') toast('最多支持 '+OCC_NOISE_MAX_ROWS+' 个工作场所','err'); return false; }
+  const tmp = document.createElement('tbody');
+  tmp.innerHTML = '<tr>'+occNoiseRowHtml(area, nxt)+'</tr>';
+  const tr = tmp.firstChild;
+  const anchor = document.getElementById('occ-noise-'+area+'-btns');
+  if(anchor && anchor.parentNode) anchor.parentNode.insertBefore(tr, anchor);
+  else { const tb = document.querySelector('#occ-noise-table tbody'); if(tb) tb.appendChild(tr); }
+  occNoiseAreaRows[area] = nxt;
+  occNoiseRenumber(area);
+  if(!silent && typeof toast==='function') toast('已添加'+occNoisePlaceName(nxt)+'（当前 '+nxt+' 个）','ok');
+  if(!silent && typeof calcOccupational==='function') calcOccupational();
+  return true;
+}
+function removeOccNoiseWorkplace(area){
+  if(!(area==='md'||area==='mw')) return false;
+  const n = occNoiseAreaRows[area]||3;
+  if(n<=1){ if(typeof toast==='function') toast('至少保留 1 个工作场所','err'); return false; }
+  const row = document.getElementById('occ-noise-'+area+n+'-row');
+  if(row){
+    const hasData = Array.prototype.some.call(row.querySelectorAll('input'), function(inp){ return String(inp.value||'').trim()!==''; });
+    if(hasData && !(typeof confirm==='function' && confirm('该工作场所已有数据，确认删除？'))) return false;
+    if(row.parentNode) row.parentNode.removeChild(row);
+  }
+  occNoiseAreaRows[area] = n-1;
+  occNoiseRenumber(area);
+  if(typeof toast==='function') toast('已删除'+occNoisePlaceName(n)+'（当前 '+(n-1)+' 个）','ok');
+  if(typeof calcOccupational==='function') calcOccupational();
+  return true;
+}
+function clearOccNoiseArea(area, doc){
+  if(!(area==='md'||area==='mw')) return false;
+  doc = doc || (typeof document!=='undefined' ? document : null);
+  if(!doc) return false;
+  const base = 'occ-noise-'+area;
+  for(let i=1;i<=60;i++){
+    if(!doc.getElementById) break;
+    const row = doc.getElementById(base+i+'-row');
+    if(!row) break;
+    row.querySelectorAll('input').forEach(function(inp){ inp.value=''; });
+    const laeq = doc.getElementById(base+i+'-laeq');
+    if(laeq) laeq.textContent = '—';
+  }
+  [base+'-lex8', base+'-lexw', base+'-judge'].forEach(function(id){
+    const el = doc.getElementById(id);
+    if(el) el.textContent = '—';
+  });
+  if(typeof toast==='function') toast('已清空'+(area==='md'?'情况一':'情况二')+'本区数据（保留 '+(occNoiseAreaRows[area]||3)+' 行）','ok');
+  if(typeof calcOccupational==='function') calcOccupational();
+  return true;
+}
 function calcOccupational(){
   // 情况一计算函数：一个工种一个场所
   // C_TWA = AVERAGE(CSTE_1到CSTE_5) × 接触时间 / 8
@@ -7405,20 +7540,15 @@ function calcOccupational(){
   });
 
   const calcMultiNoise = (prefix, daysValue, limitValue, resultId, judgeId, weekly=false) => {
-    let totalEnergy = 0;
-    let totalTime = 0;
-    let active = 0;
-    for (let i = 1; i <= 3; i++) {
-      const t = num(`occ-noise-${prefix}${i}-time`);
-      const rowVals = noiseVals(`occ-noise-${prefix}${i}`);
-      const rowLaeq = energyAvg(rowVals);
-      setPlain(`occ-noise-${prefix}${i}-laeq`, rowVals.length ? fmtNoiseLong(rowLaeq) : '—');
-      if (rowVals.length && !Number.isNaN(rowLaeq) && !Number.isNaN(t) && t > 0) {
-        totalEnergy += t * Math.pow(10, 0.1 * rowLaeq);
-        totalTime += t;
-        active++;
-      }
+    const maxN = (typeof occNoiseAreaRows==='object' && occNoiseAreaRows[prefix]) ? occNoiseAreaRows[prefix] : 3;
+    const collected = occNoiseCollect(prefix, maxN, num, noiseVals);
+    for(let i=1;i<=maxN;i++){
+      const x = collected.outs.find(function(o){ return o.i===i; });
+      setPlain(`occ-noise-${prefix}${i}-laeq`, x ? fmtNoiseLong(x.leq) : '—');
     }
+    const totalEnergy = collected.outs.reduce(function(a,x){ return a + x.t*Math.pow(10,0.1*x.leq); }, 0);
+    const totalTime = collected.outs.reduce(function(a,x){ return a + x.t; }, 0);
+    const active = collected.outs.length;
     const daily = totalEnergy > 0 ? 10 * Math.log10(totalEnergy / 8) : NaN;
     const laeqTe = (totalEnergy > 0 && totalTime > 0) ? 10 * Math.log10(totalEnergy / totalTime) : NaN;
     /* GBZ 2.2-2007 公式链：LEX,8h = 10·lg[ΣTi·10^(0.1·LAeq,i)/8]；LEX,w = LEX,8h + 10·lg(Tw/5) */
@@ -8140,7 +8270,7 @@ function cpVerdictCard(titleLatex, label, value, unit, limit){
 function genOccNoiseWorkplace(){
   const steps=[], warns=[];
   const sv=prefix=>{ const v=[]; for(let i=1;i<=3;i++){ const n=num(prefix+'-v'+i); if(!Number.isNaN(n)) v.push(n); } return v; };
-  const cn=i=> i===1?'一':(i===2?'二':'三');
+  const cn=i=> (typeof OCC_NOISE_CN==='object' && OCC_NOISE_CN[i]) ? OCC_NOISE_CN[i] : String(i);
   const chk3=(label,vals)=>{ if(vals.length && vals.length<3) warns.push(label+'：当前仅 '+vals.length+' 次测量，不满足推荐采样要求（≥3 次）'); };
   const chk8=(label,t)=>{ if(!Number.isNaN(t) && t>8) warns.push(label+'：实际接触时间合计为 '+t+' h，超过标准工作日 8 h。T0 = 8 h 为噪声等效折算的标准化基准（并非 Te 的硬上限），系统已按标准公式进行 8 h 等效折算，请核对工作时间录入是否符合实际。'); };
   const E_NOTE='注：上式中的能量值为声能量指数（无量纲），并非 dB(A) 值；只有取 10 倍常用对数后才回到分贝量纲。';
@@ -8238,14 +8368,10 @@ function genOccNoiseWorkplace(){
 
   /* 多场所公共计算 */
   const multi=(prefix,weekly)=>{
-    const outs=[], misses=[];
-    for(let i=1;i<=3;i++){
-      const t=num('occ-noise-'+prefix+i+'-time'), vals=sv('occ-noise-'+prefix+i);
-      const nm='场所'+cn(i);
-      chk3(nm, vals);
-      if(vals.length && !Number.isNaN(t) && t>0) outs.push({i, t, leq:cpNoiseEnergyAvg(vals)});
-      else if(vals.length || !Number.isNaN(t)) misses.push(nm);
-    }
+    const maxN=(typeof occNoiseAreaRows==='object'&&occNoiseAreaRows[prefix])?occNoiseAreaRows[prefix]:3;
+    const collected=occNoiseCollect(prefix, maxN, num, sv);
+    const outs=collected.outs, misses=collected.misses.map(function(i){ return '场所'+cn(i); });
+    outs.forEach(function(x){ chk3('场所'+cn(x.i), x.vals); });
     if(!outs.length) return null;
     if(misses.length) warns.push('多场所'+(weekly?'情况二':'情况一')+'：'+misses.join('、')+'数据不完整（时间或测量值缺失），未计入本次计算，请核对');
     const te=outs.reduce((a,x)=>a+x.t*Math.pow(10,0.1*x.leq),0);
@@ -8270,7 +8396,8 @@ function genOccNoiseWorkplace(){
     const mdLw=calculateNoiseWeeklyExposure(md.l8, 5);
     steps.push(cpStep('⑧ 多场所情况一（5d/w）· 能量贡献计算', {
       math: ['E_i = T_i \\times 10^{0.1 L_{Aeq,T_i}}'],
-      subs: md.outs.map(x=>cpSub('场所'+cn(x.i), 'E_{'+x.i+'} = '+cpFm(x.t,2)+'\\times 10^{0.1\\times '+cpFm(x.leq,3)+'} = '+cpLnum(x.t*Math.pow(10,0.1*x.leq))))
+      subs: md.outs.map(x=>cpSub((OCC_NOISE_CIRCLES[x.i]||('('+x.i+')'))+occNoisePlaceName(x.i)+'（'+x.vals.length+' 次测量） · LAeq,T'+x.i, 'L_{Aeq,T_'+x.i+'} = '+cpFm(x.leq,4)+'\\ \\mathrm{dB(A)}'))
+        .concat(md.outs.map(x=>cpSub('场所'+cn(x.i), 'E_{'+x.i+'} = '+cpFm(x.t,2)+'\\times 10^{0.1\\times '+cpFm(x.leq,3)+'} = '+cpLnum(x.t*Math.pow(10,0.1*x.leq)))))
         .concat([cpSub('合计', '\\sum E = '+cpLnum(md.te)+'\\qquad \\sum T = '+cpFmt(md.st)+'\\ \\mathrm{h}')]),
       note: E_NOTE
     }));
@@ -8315,7 +8442,8 @@ function genOccNoiseWorkplace(){
     const lim=num('occ-noise-mw-limit');
     steps.push(cpStep('⑫ 多场所情况二（≠5d/w）· 能量贡献计算', {
       math: ['E_i = T_i \\times 10^{0.1 L_{Aeq,T_i}}'],
-      subs: mw.outs.map(x=>cpSub('场所'+cn(x.i), 'E_{'+x.i+'} = '+cpFm(x.t,2)+'\\times 10^{0.1\\times '+cpFm(x.leq,3)+'} = '+cpLnum(x.t*Math.pow(10,0.1*x.leq))))
+      subs: mw.outs.map(x=>cpSub((OCC_NOISE_CIRCLES[x.i]||('('+x.i+')'))+occNoisePlaceName(x.i)+'（'+x.vals.length+' 次测量） · LAeq,T'+x.i, 'L_{Aeq,T_'+x.i+'} = '+cpFm(x.leq,4)+'\\ \\mathrm{dB(A)}'))
+        .concat(mw.outs.map(x=>cpSub('场所'+cn(x.i), 'E_{'+x.i+'} = '+cpFm(x.t,2)+'\\times 10^{0.1\\times '+cpFm(x.leq,3)+'} = '+cpLnum(x.t*Math.pow(10,0.1*x.leq)))))
         .concat([cpSub('合计', '\\sum E = '+cpLnum(mw.te)+'\\qquad \\sum T = '+cpFmt(mw.st)+'\\ \\mathrm{h}')]),
       note: E_NOTE
     }));
@@ -9426,7 +9554,13 @@ var GRID_PASTE_ADD_ROW={
   'noise-table-600': function(){ if(typeof addNoiseRow600==='function') addNoiseRow600(); },
   'noise-table-1200': function(){ if(typeof addNoiseRow1200==='function') addNoiseRow1200(); },
   'parshall-input-table': function(){ if(typeof addParshallRow==='function') addParshallRow(); },
-  'occ-individual-noise-table': function(){ if(typeof addIndNoiseRow==='function') addIndNoiseRow(); }
+  'occ-individual-noise-table': function(){ if(typeof addIndNoiseRow==='function') addIndNoiseRow(); },
+  'occ-noise-table': (function(){
+    function areaOf(el){ if(!el||!el.id) return null; return (/^occ-noise-(md|mw)\d+-(name|time|v1|v2|v3)$/.test(el.id)) ? (el.id.indexOf('occ-noise-md')===0?'md':'mw') : null; }
+    function addFn(el){ const area=areaOf(el); if(!area||typeof addOccNoiseWorkplace!=='function') return false; return addOccNoiseWorkplace(area, true); }
+    addFn.countRows=function(el){ const area=areaOf(el); if(!area) return 0; return (typeof occNoiseAreaRows==='object'&&occNoiseAreaRows[area])?occNoiseAreaRows[area]:3; };
+    return addFn;
+  })()
 };
 function gridPasteAfterCalc(table, originEl){
   var id=table && table.id;
@@ -9463,12 +9597,11 @@ function handleGridPaste(evt){
   if(!table){ return; }
   var addFn=GRID_PASTE_ADD_ROW[table.id];
   if(addFn){
-    var trCount=table.querySelectorAll('tbody tr').length;
+    var countRows=(addFn && addFn.countRows) ? function(){ return addFn.countRows(el); } : function(){ return table.querySelectorAll('tbody tr').length; };
     var need=0;
     for(var guard=0; guard<60; guard++){
-      var trs=table.querySelectorAll('tbody tr');
-      if(trs.length>=grid.length) break;
-      if(!addFn()) break; /* 无法加行则停止 */
+      if(countRows()>=grid.length) break;
+      if(!addFn(el)) break; /* 无法加行则停止 */
       need++;
     }
   }
@@ -9478,6 +9611,38 @@ function handleGridPaste(evt){
   /* 业务列宽:以起点所在行为准(同 tr 内可编辑 input 数),每行按该宽度推进 */
   var rowEls=el.closest('tr')?Array.prototype.slice.call(el.closest('tr').querySelectorAll('input')).filter(function(inp){ return !inp.readOnly && !inp.disabled && inp.type!=='hidden'; }):null;
   var rowWidth=rowEls&&rowEls.length?rowEls.length:1;
+  /* 噪声多工作场所:按区域逐行写入(行结构 名称/时间/3测值;自动补行后按行对齐,不跨越其它区域) */
+  var occArea=(/^occ-noise-(md|mw)\d+-(name|time|v1|v2|v3)$/.test(el.id))?(el.id.indexOf('occ-noise-md')===0?'md':'mw'):null;
+  if(occArea){
+    var COLS=['name','time','v1','v2','v3'];
+    var colOffset=0;
+    for(var ci=0;ci<COLS.length;ci++){ if(el.id.indexOf('-'+COLS[ci])===el.id.length-COLS[ci].length-1){ colOffset=ci; break; } }
+    var written=0, totalCells=0, overflowCells=0;
+    grid.forEach(function(row, r){
+      if(r>=60) return;
+      var tr=document.getElementById('occ-noise-'+occArea+(r+1)+'-row');
+      if(!tr) return;
+      var inpMap={};
+      var inputs=Array.prototype.slice.call(tr.querySelectorAll('input')).filter(function(inp){ return !inp.readOnly && !inp.disabled && inp.type!=='hidden'; });
+      inputs.forEach(function(inp){ for(var k=0;k<COLS.length;k++){ if(inp.id.indexOf('-'+COLS[k])===inp.id.length-COLS[k].length-1){ inpMap[k]=inp; } } });
+      row.forEach(function(cell, c){
+        totalCells++;
+        var k=colOffset+c;
+        if(k>=COLS.length){ overflowCells++; return; }
+        var target=inpMap[k];
+        if(!target) return;
+        if(cell!==''){ target.value=cell; written++; }
+      });
+    });
+    var rowsOk=Math.min(grid.length,60);
+    if(typeof toast==='function'){
+      if(rowsOk<grid.length){ toast('已粘贴 '+rowsOk+' 行 × '+grid[0].length+' 列，超出 '+(grid.length-rowsOk)+' 行未写入（最多 '+60+' 个工作场所）。','err'); }
+      else if(overflowCells){ toast('已粘贴 '+grid.length+' 行 × '+grid[0].length+' 列；多余 '+overflowCells+' 列超出本区域可编辑宽度，已忽略。','ok'); }
+      else { toast('已粘贴 '+grid.length+' 行 × '+grid[0].length+' 列数据','ok'); }
+    }
+    gridPasteAfterCalc(table, el);
+    return;
+  }
   var maxRows=Math.ceil((editable.length-start)/rowWidth);
   var written=0, totalCells=0, overflowCells=0;
   grid.forEach(function(row, r){
@@ -9732,6 +9897,74 @@ function runNoiseGoldenTest(){
   push('情况一 5d/w: 85/85/85, 8h/d → LAeq=LEX,8h=LEX,w=85.0000, 符合', (function(){ const l = cpNoiseEnergyAvg([85, 85, 85]); const e = calculateNoiseDailyExposure(l, 8); const w = calculateNoiseWeeklyExposure(e, 5); return Math.abs(l - 85) <= tol && Math.abs(e - 85) <= tol && Math.abs(w - 85) <= tol && occNoiseJudge(w, 85) === '符合'; })());
   push('情况一 5d/w: 84.2/85.0/84.6, 6h/d → LAeq=84.61227178, LEX,8h=LEX,w=83.36288442, 符合', (function(){ const l = cpNoiseEnergyAvg([84.2, 85.0, 84.6]); const e = calculateNoiseDailyExposure(l, 6); const w = calculateNoiseWeeklyExposure(e, 5); return Math.abs(l - 84.61227178) <= tol && Math.abs(e - 83.36288442) <= tol && Math.abs(w - 83.36288442) <= tol && occNoiseJudge(w, 85) === '符合'; })());
   push('情况一 5d/w LEX,w 显示值与 LEX,8h 一致(format 8dp)', (function(){ const l = cpNoiseEnergyAvg([84.2, 85.0, 84.6]); const e = calculateNoiseDailyExposure(l, 6); const w = calculateNoiseWeeklyExposure(e, 5); return Number(w.toFixed(8)) === Number(e.toFixed(8)); })());
+
+  /* ── NW 组:相同工作岗位多个工作场所·动态行(仅行管理,公式复算复用既有实现) ── */
+  (function(){
+    var mdT={1:2,2:3,3:1,4:2,5:1.5};
+    var mdV={1:[87,86.5,87.3],2:[82,82.6,81.8],3:[79.2,79.8,79.5],4:[83,83.4,82.8],5:[85,84.8,85.2]};
+    var numMd=function(id){ var m=String(id).match(/^occ-noise-md(\d+)-time$/); if(!m) return NaN; return (m[1] in mdT)?mdT[m[1]]:NaN; };
+    var valsMd=function(prefix){ var m=String(prefix).match(/^occ-noise-md(\d+)$/); if(!m) return []; return (m[1] in mdV)?mdV[m[1]]:[]; };
+    var g5=occNoiseCollect('md', 5, numMd, valsMd);
+    var a5=occNoiseAggregate(g5.outs);
+    push('NW-A 情况一默认3行', (occNoiseAreaRows.md||3)===3 && (occNoiseAreaRows.mw||3)===3);
+    push('NW-B 情况一添加3次→6行且动态命名', occNoiseNextCount('md',3)===6 && occNoisePlaceName(1)==='第一工作场所' && occNoisePlaceName(4)==='第四工作场所' && occNoisePlaceName(6)==='第六工作场所');
+    push('NW-C 情况一删除2次→4行且编号连续', (function(){ var n=occNoiseSimulate(3,[1,1,1,-1,-1]); return n===4 && occNoisePlaceName(4)==='第四工作场所'; })());
+    push('NW-D 情况一6行时情况二仍3行(独立)', (occNoiseAreaRows.mw||3)===3);
+    push('NW-E 情况二5行时情况一不受影响', occNoiseNextCount('mw',2)===5 && (occNoiseAreaRows.md||3)===3);
+    push('NW-F 5个有效场所全部计入 n=5', g5.outs.length===5 && Math.abs(a5.st-9.5)<=tol && Math.abs(a5.l8-84.86358479)<=tol);
+    push('NW-F2 逐场所 LAeq,Ti 黄金值', Math.abs(g5.outs[0].leq-86.94576719)<=tol && Math.abs(g5.outs[1].leq-82.14680984)<=tol && Math.abs(g5.outs[2].leq-79.50690501)<=tol && Math.abs(g5.outs[3].leq-83.07387961)<=tol && Math.abs(g5.outs[4].leq-85.00306957)<=tol);
+    push('NW-F3 LAeq,Te=84.1172 / ΣE 可审计', Math.abs(a5.laeqTe-84.11724861)<=tol && Math.abs(a5.te-2451593528.120251)<=1e-3);
+    push('NW-G 第6行空白→仍n=5 结果同F', (function(){ var g=occNoiseCollect('md',6,numMd,valsMd); var a=occNoiseAggregate(g.outs); return g.outs.length===5 && Math.abs(a.st-9.5)<=tol && Math.abs(a.l8-84.86358479)<=tol; })());
+    push('NW-H 删除第5行→n=4 全部重算', (function(){ var g=occNoiseCollect('md',4,numMd,valsMd); var a=occNoiseAggregate(g.outs); return g.outs.length===4 && Math.abs(a.st-8)<=tol && Math.abs(a.te-1976916498.350435)<=1e-3 && Math.abs(a.l8-83.92898339)<=tol; })());
+    push('NW-I 情况二 D=6 → LEX,w=LEX,8h+10lg(6/5)', (function(){ var l8=84.86358479; var lw=calculateNoiseWeeklyExposure(l8,6); return Math.abs(lw-(l8+10*Math.log10(6/5)))<=tol && Math.abs(lw-85.65539725)<=tol; })());
+    push('NW-J 矩形粘贴5行→自动补行且结果一致', (function(){
+      var t=gridParsePasteText('2\t87.0\t86.5\t87.3\n3\t82.0\t82.6\t81.8\n1\t79.2\t79.8\t79.5\n2\t83.0\t83.4\t82.8\n1.5\t85.0\t84.8\t85.2');
+      if(t.length!==5 || t[1].length!==4) return false;
+      if(occNoiseNextCount('md',t.length-3)!==5) return false;
+      var g=occNoiseCollect('md',5, function(id){ var m=String(id).match(/^occ-noise-md(\d+)-time$/); if(!m) return NaN; return parseFloat(t[Number(m[1])-1][0]); }, function(prefix){ var m=String(prefix).match(/^occ-noise-md(\d+)$/); if(!m) return []; var rw=t[Number(m[1])-1]; return rw?[parseFloat(rw[1]),parseFloat(rw[2]),parseFloat(rw[3])]:[]; });
+      var a=occNoiseAggregate(g.outs);
+      return g.outs.length===5 && Math.abs(a.l8-84.86358479)<=tol && Math.abs(a.st-9.5)<=tol;
+    })());
+    push('NW-K 最低保留1行', occNoiseNextCount('md',-100)===1 && occNoiseNextCount('mw',-100)===1);
+    push('NW-L 两区域清空互不影响', (function(){
+      var mdInp={value:'87.0'}, mwInp={value:'85.0'}, cells={};
+      var fakeDoc={ getElementById: function(id){
+        if(id==='occ-noise-md1-row') return { querySelectorAll:function(){ return [mdInp]; } };
+        if(id==='occ-noise-mw1-row') return { querySelectorAll:function(){ return [mwInp]; } };
+        if(id==='occ-noise-md1-laeq'||id==='occ-noise-mw1-laeq'||id.indexOf('occ-noise-md-lex8')===0||id.indexOf('occ-noise-md-lexw')===0||id==='occ-noise-md-judge'||id.indexOf('occ-noise-mw-lex8')===0||id.indexOf('occ-noise-mw-lexw')===0||id==='occ-noise-mw-judge') return cells[id]||(cells[id]={textContent:'—'});
+        return null;
+      }};
+      clearOccNoiseArea('md', fakeDoc);
+      return mdInp.value==='' && mwInp.value==='85.0' && cells['occ-noise-md-lex8'] && cells['occ-noise-md-lex8'].textContent==='—' && (!(cells['occ-noise-mw-lex8']) || cells['occ-noise-mw-lex8'].textContent==='—');
+    })());
+    push('NW-M 计算过程按5个场所动态展开(逐场所+能量+无残留)', (function(){
+      if(typeof genOccNoiseWorkplace!=='function') return false;
+      if(typeof document!=='object' || !document) return false;
+      var saveGet=document.getElementById, okGet=true;
+      var stub={ getElementById: function(id){
+        var m=String(id).match(/^occ-noise-md(\d+)-(time|v1|v2|v3)$/);
+        if(!m) return null;
+        var k=Number(m[1]);
+        if(!(k>=1&&k<=5)) return null;
+        if(m[2]==='time') return { value: String([2,3,1,2,1.5][k-1]) };
+        var col=(m[2]==='v1'?0:m[2]==='v2'?1:2);
+        return { value: String([87,86.5,87.3,82,82.6,81.8,79.2,79.8,79.5,83,83.4,82.8,85,84.8,85.2][ (k-1)*3+col ]) };
+      }};
+      try{ document.getElementById=stub.getElementById; }catch(e){ okGet=false; }
+      if(!okGet) return false;
+      var saveMd=(typeof occNoiseAreaRows==='object'&&occNoiseAreaRows)?occNoiseAreaRows.md:3;
+      if(typeof occNoiseAreaRows==='object'&&occNoiseAreaRows) occNoiseAreaRows.md=5;
+      try{
+        var html=genOccNoiseWorkplace();
+        var cnt=(String(html).split('次测量） · LAeq,T').length-1);
+        return String(html).indexOf('第五工作场所')>=0 && String(html).indexOf('LAeq,T5')>=0 && cnt===5 && String(html).indexOf('场所五')>=0;
+      } finally {
+        try{ if(typeof occNoiseAreaRows==='object'&&occNoiseAreaRows) occNoiseAreaRows.md=saveMd; }catch(e){}
+        try{ if(saveGet) document.getElementById=saveGet; else delete document.getElementById; }catch(e){}
+      }
+    })());
+  })();
+
   const failed = r.filter(x => !x.ok);
   try { console.log('[噪声回归自检] ' + r.map(x => (x.ok ? 'PASS' : 'FAIL') + ' ' + x.name).join('\n')); } catch(e){}
   if (typeof toast === 'function') {
