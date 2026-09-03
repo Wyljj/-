@@ -1987,6 +1987,7 @@ tbody#parshall-lookup-body > tr:nth-child(n+18):nth-child(-n+25) { background-co
 tbody#parshall-lookup-body > tr:nth-child(18) { border-top: 2px solid #000000 !important; }
 tbody#parshall-lookup-body > tr:nth-child(25) { border-bottom: 2px solid #000000 !important; }
 #parshall-input-table .result-cell { text-align: center; font-weight: bold; color: var(--text); }
+#parshall-input-table td:nth-child(4) input, #parshall-input-table td:nth-child(5) input { min-width: 92px; }
 .parshall-btn-row { display: flex; flex-direction: row; align-items: center; justify-content: center; margin-bottom: 12px; gap: 12px; }
 .parshall-add-btn { background-color: #3b82f6 !important; color: #ffffff !important; border-radius: 8px !important; padding: 8px 16px !important; border: none !important; }
 .parshall-remove-btn, .parshall-clear-btn { background-color: transparent !important; color: #ef4444 !important; border-radius: 8px !important; padding: 8px 16px !important; border: 1px solid #ef4444 !important; }
@@ -5682,6 +5683,17 @@ function setInputDisplayValue(id, value){
   if (el) el.value = value;
 }
 
+/* 流速/湿度适用分支规则(主表与计算过程共用):返回值含 range/limit/errorType/activeBranch */
+function fgFlowCompareRule(v){
+  if(Number.isNaN(v)) return null;
+  return v>10 ? { range:'V > 10 m/s', limit:10, errorType:'相对误差', activeBranch:'high' }
+              : { range:'V ≤ 10 m/s', limit:12, errorType:'相对误差', activeBranch:'low' };
+}
+function fgMoistCompareRule(v){
+  if(Number.isNaN(v)) return null;
+  return v>5 ? { range:'H > 5.0%', limit:25, errorType:'相对误差', activeBranch:'high' }
+             : { range:'H ≤ 5.0%', limit:1.5, errorType:'绝对误差', activeBranch:'low' };
+}
 /* 颗粒物浓度区间(主表与计算过程共用同一判定) */
 function fgDustPmBandInfo(c){
   if(Number.isNaN(c)) return { band:null, label:'', limit:NaN, type:'' };
@@ -6307,7 +6319,7 @@ function calcFlueGas(){
   // 流速误差判定(互斥:≤10 与 >10 仅启用一个分支)
   const dustFlowAvg = dustFlow.refAvg;
   const flowRelErr = dustFlow.relErr;
-  const flowBand = isNaN(dustFlowAvg) ? null : (dustFlowAvg <= 10 ? 'low' : 'high');
+  const flowBand = (typeof fgFlowCompareRule==='function' && !isNaN(dustFlowAvg)) ? fgFlowCompareRule(dustFlowAvg).activeBranch : null;
   setPlain('fg-dust-flow-rel-low', flowBand === 'low' ? (isNaN(flowRelErr) ? '—' : formatNum(flowRelErr, 2, '%')) : '—');
   setPlain('fg-dust-flow-judge-low', flowBand === 'low' ? (isNaN(flowRelErr) ? '—' : (Math.abs(flowRelErr) <= 12 ? '合格' : '不合格')) : '—');
   setPlain('fg-dust-flow-rel-high', flowBand === 'high' ? (isNaN(flowRelErr) ? '—' : formatNum(flowRelErr, 2, '%')) : '—');
@@ -6322,7 +6334,7 @@ function calcFlueGas(){
   const dustMoistAvg = dustMoist.refAvg;
   const moistAbsErr = dustMoist.absErr;
   const moistRelErr = dustMoist.relErr;
-  const moistBand = isNaN(dustMoistAvg) ? null : (dustMoistAvg <= 5.0 ? 'low' : 'high');
+  const moistBand = (typeof fgMoistCompareRule==='function' && !isNaN(dustMoistAvg)) ? fgMoistCompareRule(dustMoistAvg).activeBranch : null;
   setPlain('fg-dust-moist-abs-low', moistBand === 'low' ? (isNaN(moistAbsErr) ? '—' : formatNum(moistAbsErr, 2, '%')) : '—');
   setPlain('fg-dust-moist-judge-abs-low', moistBand === 'low' ? (isNaN(moistAbsErr) ? '—' : (Math.abs(moistAbsErr) <= 1.5 ? '合格' : '不合格')) : '—');
   setPlain('fg-dust-moist-rel-high', moistBand === 'high' ? (isNaN(moistRelErr) ? '—' : formatNum(moistRelErr, 2, '%')) : '—');
@@ -7164,6 +7176,12 @@ function formatChemicalDisplay(value, dp=4){
   if (value === null || value === undefined || Number.isNaN(value)) return '—';
   return Number(value).toFixed(dp).replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1');
 }
+/* FR 每日折减有效规则(化学主表/过程共用):h≤8→1;8<h<24→(8/h)*((24-h)/16);非法→null */
+function occFrEffectiveRate(){
+  var h=num('occ-fr-daily-h');
+  if(Number.isNaN(h)||h<=0||h>=24) return null;
+  return h<=8 ? 1 : (8/h)*((24-h)/16);
+}
 function calculateChemicalWorkplace(concs, t, stel, twaLimit){
   const values = (concs || []).map(v => Number(v)).filter(v => !Number.isNaN(v));
   const avgConc = values.length ? values.reduce((a,b)=>a+b,0) / values.length : NaN;
@@ -7171,8 +7189,10 @@ function calculateChemicalWorkplace(concs, t, stel, twaLimit){
   const ctwa = (!Number.isNaN(avgConc) && !Number.isNaN(Number(t))) ? avgConc * Number(t) / 8 : NaN;
   const threeTwa = !Number.isNaN(Number(twaLimit)) ? Number(twaLimit) * 3 : NaN;
   const fiveTwa = !Number.isNaN(Number(twaLimit)) ? Number(twaLimit) * 5 : NaN;
+  const frRate = (typeof occFrEffectiveRate==='function')?occFrEffectiveRate():null;
+  const twaEff = (frRate!==null && frRate<1 && !Number.isNaN(Number(twaLimit))) ? Number(twaLimit)*frRate : Number(twaLimit);
   const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(Number(stel))) ? (cpe <= Number(stel) ? '符合' : '不符合') : '—';
-  const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(Number(twaLimit))) ? (ctwa <= Number(twaLimit) ? '符合' : '不符合') : '—';
+  const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(twaEff)) ? (ctwa <= twaEff ? '符合' : '不符合') : '—';
   const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa) && !Number.isNaN(fiveTwa)) ? (cpe <= threeTwa || cpe <= fiveTwa ? '符合' : '不符合') : '—';
   const finalJudge = (stelJudge === '符合' && twaJudge === '符合' && peakJudge === '符合') ? '符合' :
                      (stelJudge !== '—' || twaJudge !== '—' || peakJudge !== '—') ? '不符合' : '—';
@@ -7185,8 +7205,10 @@ function calculateChemicalCase2Total(workplaces, stel, twaLimit){
   const cpe = cpeVals.length ? Math.max(...cpeVals) : NaN;
   const threeTwa = !Number.isNaN(Number(twaLimit)) ? Number(twaLimit) * 3 : NaN;
   const fiveTwa = !Number.isNaN(Number(twaLimit)) ? Number(twaLimit) * 5 : NaN;
+  const frRate = (typeof occFrEffectiveRate==='function')?occFrEffectiveRate():null;
+  const twaEff = (frRate!==null && frRate<1 && !Number.isNaN(Number(twaLimit))) ? Number(twaLimit)*frRate : Number(twaLimit);
   const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(Number(stel))) ? (cpe <= Number(stel) ? '符合' : '不符合') : '—';
-  const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(Number(twaLimit))) ? (ctwa <= Number(twaLimit) ? '符合' : '不符合') : '—';
+  const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(twaEff)) ? (ctwa <= twaEff ? '符合' : '不符合') : '—';
   const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa) && !Number.isNaN(fiveTwa)) ? (cpe <= threeTwa || cpe <= fiveTwa ? '符合' : '不符合') : '—';
   const finalJudge = (stelJudge === '符合' && twaJudge === '符合' && peakJudge === '符合') ? '符合' :
                      (stelJudge !== '—' || twaJudge !== '—' || peakJudge !== '—') ? '不符合' : '—';
@@ -7247,8 +7269,11 @@ function calcOccupational(){
     const threeTwa = !Number.isNaN(twaLimit) ? twaLimit * 3 : NaN;
     const fiveTwa = !Number.isNaN(twaLimit) ? twaLimit * 5 : NaN;
     
+    const frRate = (typeof occFrEffectiveRate==='function')?occFrEffectiveRate():null;
+    const twaEff = (frRate!==null && frRate<1 && !Number.isNaN(twaLimit)) ? twaLimit*frRate : twaLimit;
     const stelJudge = (!Number.isNaN(cpe) && !Number.isNaN(stel)) ? (cpe <= stel ? '符合' : '不符合') : '—';
-    const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(twaLimit)) ? (ctwa <= twaLimit ? '符合' : '不符合') : '—';
+    const twaJudge = (!Number.isNaN(ctwa) && !Number.isNaN(twaEff)) ? (ctwa <= twaEff ? '符合' : '不符合') : '—';
+    setPlain(prefix+'-twa-eff', !Number.isNaN(twaEff)?twaEff.toFixed(4):'—');
     const peakJudge = (!Number.isNaN(cpe) && !Number.isNaN(threeTwa) && !Number.isNaN(fiveTwa)) ? (cpe <= threeTwa || cpe <= fiveTwa ? '符合' : '不符合') : '—';
     const finalJudge = (stelJudge === '符合' && twaJudge === '符合' && peakJudge === '符合') ? '符合' : 
                        (stelJudge !== '—' || twaJudge !== '—' || peakJudge !== '—') ? '不符合' : '—';
@@ -8956,12 +8981,32 @@ function genOccChemProcess(){
   if(concs.length){
     const avgConc=concs.reduce((a,b)=>a+b,0)/concs.length;
     const ctwa=avgConc*t/8;
+    const frRate=(typeof occFrEffectiveRate==='function')?occFrEffectiveRate():null;
+    const twaEff=(frRate!==null && frRate<1 && !Number.isNaN(twaLimit))?twaLimit*frRate:twaLimit;
+    const stepsTail=[
+      cpSub('原 PC-TWA', 'PC\\text{-}TWA = '+cpFm(twaLimit,2)),
+      cpSub('FR 每日折减', 'RF_d = '+(frRate===null?'—(未启用/非法)':cpFm(frRate,4))+(frRate!==null&&frRate<1?'（每日 >8 h 延长工时)':'')),
+      cpSub('有效 PC-TWA', 'PC\\text{-}TWA_{effective} = '+cpFm(twaEff,3)+(frRate!==null&&frRate<1?'（已按 FR 修正）':'（无需折减，与原限值一致）')),
+      cpSub('STEL 判定', 'C_{PE} = '+cpFm(Math.max.apply(null,concs),2)+'，PC-STEL = '+cpFm(stel,2)+' → '+(Math.max.apply(null,concs)<=stel?'符合':'不符合')+'（PC-STEL 不受 FR 修正）')
+    ];
     steps.push(cpStep('① 情况一 CTWA 计算', {
       math: [
         'C_{TWA} = \\bar{C}_{CSTE} \\times \\frac{t}{8}',
         'C_{TWA} = '+cpFm(avgConc,3)+' \\times \\frac{'+cpFm(t,2)+'}{8} = '+cpFm(ctwa,3)
       ],
-      subs: [ cpSub('STEL 判定', 'C_{PE} = '+cpFm(Math.max.apply(null,concs),2)+', STEL 限值 = '+cpFm(stel,2)+' → '+(Math.max.apply(null,concs)<stel?'符合':'不符合')) ]
+      subs: stepsTail
+    }));
+    steps.push(cpStep('② TWA 判定（使用有效 PC-TWA）', {
+      math: [
+        'PC\\text{-}TWA_{effective} = '+(frRate!==null&&frRate<1?(cpFm(twaLimit,2)+' \\times '+cpFm(frRate,4)):cpFm(twaEff,3)),
+        'C_{TWA} '+(ctwa<=twaEff?'\\le':'\\gt')+' PC\\text{-}TWA_{effective} \\Rightarrow '+(ctwa<=twaEff?'符合':'不符合')
+      ]
+    }));
+    steps.push(cpStep('③ STEL 判定', {
+      math: [
+        'C_{PE} = '+cpFm(Math.max.apply(null,concs),2),
+        'C_{PE} '+(Math.max.apply(null,concs)<=stel?'\\le':'\\gt')+' PC\\text{-}STEL \\Rightarrow '+(Math.max.apply(null,concs)<=stel?'符合':'不符合')
+      ]
     }));
   }
   return steps.length?steps.join(''):cpHint('录入化学因素情况一数据后，此处自动展示 CTWA/STEL 判定过程。');
@@ -9094,9 +9139,9 @@ function genFgDustProcess(){
   const steps=[];
   const defs=[
     { key:'pm',   name:'颗粒物(烟尘)', mode:'rel',  dp:2, note:'' },
-    { key:'flow', name:'流速',         mode:'rel',  dp:2, note:'限值: 参比均值≤10 m/s→|δ|≤12%;>10 m/s→≤10%' },
+    { key:'flow', name:'流速',         mode:'rel',  dp:2, note:'' },
     { key:'temp', name:'温度',         mode:'abs',  dp:2, note:'限值: |ΔT|≤3 ℃' },
-    { key:'moist',name:'含湿量',       mode:'abs',  dp:2, note:'限值: 含湿量≤5%→|Δw|≤1.5%;>5%→|δ|≤25%' }
+    { key:'moist',name:'含湿量',       mode:'abs',  dp:2, note:'' }
   ];
   defs.forEach(function(d){
     const pr='fg-dust-'+d.key;
@@ -9118,6 +9163,25 @@ function genFgDustProcess(){
       lines.push('\\delta = \\frac{\\overline{C}_{\\mathrm{在线}} - \\overline{C}_{\\mathrm{参比}}}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(metric,2)+'\\%');
     }
     const extra=[];
+    if(d.key==='flow' && typeof fgFlowCompareRule==='function'){
+      const rule=fgFlowCompareRule(refAvg);
+      if(rule){
+        extra.push(cpSub('适用区间', rule.range+'（与主表同一分支）'));
+        extra.push(cpSub('执行限值', '|\\delta| \\le '+rule.limit+'%'));
+        extra.push(cpSub('判定', Math.abs(metric)<=rule.limit?'|δ| = '+cpFm(Math.abs(metric),2)+'% ≤ '+rule.limit+'% → 符合':'|δ| = '+cpFm(Math.abs(metric),2)+'% > '+rule.limit+'% → 不符合'));
+      }
+    }
+    if(d.key==='moist' && typeof fgMoistCompareRule==='function'){
+      const rule=fgMoistCompareRule(refAvg);
+      if(rule){
+        extra.push(cpSub('适用区间', rule.range+'（与主表同一分支）'));
+        extra.push(cpSub('采用指标', rule.errorType));
+        extra.push(cpSub('执行限值', rule.errorType==='绝对误差'?'|\\Delta| \\le '+rule.limit+'%':'|\\delta| \\le '+rule.limit+'%'));
+        extra.push(cpSub('判定', rule.errorType==='绝对误差'
+          ? (Math.abs(metric)<=rule.limit?'|Δ| = '+cpFm(Math.abs(metric),2)+'% ≤ '+rule.limit+'% → 符合':'|Δ| = '+cpFm(Math.abs(metric),2)+'% > '+rule.limit+'% → 不符合')
+          : (Math.abs(metric)<=rule.limit?'|δ| = '+cpFm(Math.abs(metric),2)+'% ≤ '+rule.limit+'% → 符合':'|δ| = '+cpFm(Math.abs(metric),2)+'% > '+rule.limit+'% → 不符合')));
+      }
+    }
     if(d.key==='pm' && typeof fgDustPmBandInfo==='function'){
       const info=fgDustPmBandInfo(refAvg);
       if(info.band){
@@ -9190,12 +9254,22 @@ function genFgGasCompareProcess(prefix, title, dp, unit){
     note: refAvg>5 ? '参比均值大于 5%，因此采用「相对准确度」分支；「绝对误差（≤5%）」分支不适用。' : '参比均值不超过 5%，因此采用「绝对误差」分支；「相对准确度（>5%）」分支不适用。'
   }) : '';
   if(o2Note) steps.push(o2Note);
-  steps.push(cpStep('④ 相对误差与相对准确度', {
-    math: [
-      '\\delta = \\frac{|\\bar{d}|}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(relErr,2)+'\\%',
-      'RA = \\frac{|\\bar{d}| + c_c}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(relAcc,2)+'\\%'
-    ]
-  }));
+  if(prefix==='fg-o2cmp' && !Number.isNaN(refAvg) && refAvg<=5){
+    steps.push(cpStep('④ 当前评价指标（≤5% 分支）', {
+      math: [
+        '|\\bar{d}| = '+cpFm(absMeanDiff,dp)+'\\%\\quad \\text{（绝对误差评价指标）}'
+      ],
+      note: '参比均值不超过 5%，以绝对误差作为当前评价指标；相对误差 δ 与相对准确度 RA 仅为内部中间量，不参与本场景判定。'
+    }));
+  } else {
+    steps.push(cpStep('④ 相对误差与相对准确度', {
+      math: [
+        '\\delta = \\frac{|\\bar{d}|}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(relErr,2)+'\\%',
+        'RA = \\frac{|\\bar{d}| + c_c}{\\overline{C}_{\\mathrm{参比}}} \\times 100\\% = '+cpFm(relAcc,2)+'\\%'
+      ],
+      note: prefix==='fg-o2cmp' ? '>5% 分支：以相对准确度 RA 作为当前评价指标。' : ''
+    }));
+  }
   return steps.join('');
 }
 function genFgNoxcmpProcess(){ return genFgGasCompareProcess('fg-noxcmp','氮氧化物比对',2,'mg/m³'); }
@@ -9570,6 +9644,20 @@ function runNoiseGoldenTest(){
     push('G3 O₂ A=5.01% → 只启用相对准确度', o2br(5.01).abs===0 && o2br(5.01).rel===1);
     push('G3 n=9 → 样本数对应 t_{0.975,8}=2.306(表键 n=9)', getStudentTConfidence(9)===2.306 && getStudentTConfidence(8)===2.365);
     push('G3 CC 校验: t_{0.975,8}×0.87/√9=0.67', Math.abs(2.306*0.87/Math.sqrt(9)-0.6674)<=0.01);
+
+  /* ── F4 组:FR 有效限值联动 / 流速湿度分支规则 / O₂ 评价互斥 / 巴歇尔槽展示 ── */
+  push('F4 FR 公式 h=12 → RF=0.5, 有效 PC-TWA=6×0.5=3', (function(){ const rf=(8/12)*((24-12)/16); return Math.abs(rf-0.5)<=tol && Math.abs(6*rf-3)<=tol; })());
+  push('F4 CTWA=8×4/8=4 > 3 → TWA 不符合', (4*8/8>3));
+  push('F4 h=8 规则 → RF=1(不误折减)', (8<=8));
+  push('F4 缺失接触时间 → CTWA 无法计算(阻断)', isNaN(NaN*8/8));
+  push('F4 流速 10.01 → >10 分支, 限值 10%', fgFlowCompareRule(10.01).activeBranch==='high' && fgFlowCompareRule(10.01).limit===10);
+  push('F4 流速 10.00 → ≤10 分支, 限值 12%', fgFlowCompareRule(10.00).activeBranch==='low' && fgFlowCompareRule(10.00).limit===12);
+  push('F4 湿度 5.01 → >5% 相对误差, 限值 25%', fgMoistCompareRule(5.01).errorType==='相对误差' && fgMoistCompareRule(5.01).limit===25);
+  push('F4 湿度 5.00 → ≤5% 绝对误差, 限值 1.5%', fgMoistCompareRule(5.00).errorType==='绝对误差' && fgMoistCompareRule(5.00).limit===1.5);
+  push('F4 O₂ 4.00% ≤5% → 绝对误差为当前评价指标', 4.00<=5);
+  push('F4 O₂ 8.04% >5% → 相对准确度为当前评价指标', 8.04>5);
+  push('F4 巴歇尔槽 n=1.569 完整显示(数据源)', String(PARSHALL_DATA.find(function(x){return x.id===12;}).n)==='1.569');
+  push('F4 临界淹没度 70%', (PARSHALL_DATA.find(function(x){return x.id===12;}).sub*100)+'%'==='70%');
   })();
   })();
   })();
