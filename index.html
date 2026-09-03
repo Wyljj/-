@@ -7341,7 +7341,10 @@ function occNoiseRenumber(area){
   }
   [base+'-limit', base+'-lex8', base+'-lexw', base+'-judge'].forEach(function(id){
     const el = document.getElementById(id);
-    if(el) el.setAttribute('rowspan', String(n));
+    if(!el) return;
+    /* 限值输入框的 rowspan 在父级 <td> 上,必须在 td 上设置才能与 LEX,8h/LEX,w 同步拉伸 */
+    const cell = (typeof el.closest==='function') ? el.closest('td') : (el.tagName==='INPUT' ? el.parentNode : el);
+    if(cell) cell.setAttribute('rowspan', String(n));
   });
 }
 /* 动态行模板:列结构与既有行一致(序号 场所名称 工种 接触时间 三次测量 LAeq,Ti) */
