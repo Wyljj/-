@@ -7405,8 +7405,10 @@ function clearOccNoiseArea(area, doc){
     const el = doc.getElementById(id);
     if(el) el.textContent = '—';
   });
-  if(typeof toast==='function') toast('已清空'+(area==='md'?'情况一':'情况二')+'本区数据（保留 '+(occNoiseAreaRows[area]||3)+' 行）','ok');
-  if(typeof calcOccupational==='function') calcOccupational();
+  /* 传入隔离 DOM(回归自检等)时仅清数据:不弹提示、不触发页面重算 */
+  const isolated = (typeof document==='object' && doc !== document);
+  if(!isolated && typeof toast==='function') toast('已清空'+(area==='md'?'情况一':'情况二')+'本区数据（保留 '+(occNoiseAreaRows[area]||3)+' 行）','ok');
+  if(!isolated && typeof calcOccupational==='function') calcOccupational();
   return true;
 }
 function calcOccupational(){
